@@ -35,30 +35,30 @@ using apollo::cyber::common::GlobalData;
 
 bool Scheduler::CreateTask(const RoutineFactory& factory,
                            const std::string& name) {
-  return CreateTask(factory.create_routine(), name, factory.GetDataVisitor());
+  return CreateTask(factory.create_routine(), name, factory.GetDataVisitor());//调用重载
 }
 
 bool Scheduler::CreateTask(std::function<void()>&& func,
                            const std::string& name,
                            std::shared_ptr<DataVisitorBase> visitor) {
-  if (cyber_unlikely(stop_.load())) {
+  if (cyber_unlikely(stop_.load())) {//如果调度器已停止
     ADEBUG << "scheduler is stoped, cannot create task!";
     return false;
   }
 
-  auto task_id = GlobalData::RegisterTaskName(name);
+  auto task_id = GlobalData::RegisterTaskName(name);//给出该task的id
 
-  auto cr = std::make_shared<CRoutine>(func);
+  auto cr = std::make_shared<CRoutine>(func);//生成协程来执行该task，并设置其id与name
   cr->set_id(task_id);
   cr->set_name(name);
   AINFO << "create croutine: " << name;
 
-  if (!DispatchTask(cr)) {
+  if (!DispatchTask(cr)) {//派发该协程，如果不成功则返回false
     return false;
   }
 
-  if (visitor != nullptr) {
-    visitor->RegisterNotifyCallback([this, task_id]() {
+  if (visitor != nullptr) {//派发该协程成功，则返回true
+    visitor->RegisterNotifyCallback([this, task_id]() {//注册数据（对应channel）的回调函数为本调度器唤醒本协程对应的processor
       if (cyber_unlikely(stop_.load())) {
         return;
       }
@@ -68,7 +68,7 @@ bool Scheduler::CreateTask(std::function<void()>&& func,
   return true;
 }
 
-bool Scheduler::NotifyTask(uint64_t crid) {
+bool Scheduler::NotifyTask(uint64_t crid) {//唤醒协程
   if (cyber_unlikely(stop_.load())) {
     return true;
   }

@@ -32,10 +32,10 @@ namespace apollo {
 namespace cyber {
 namespace croutine {
 
-using RoutineFunc = std::function<void()>;
+using RoutineFunc = std::function<void()>;//协程要执行的任务
 using Duration = std::chrono::microseconds;
 
-enum class RoutineState { READY, FINISHED, SLEEP, IO_WAIT, DATA_WAIT };
+enum class RoutineState { READY, FINISHED, SLEEP, IO_WAIT, DATA_WAIT };//协程状态枚举，5种
 
 class CRoutine {
  public:
@@ -45,7 +45,7 @@ class CRoutine {
   // static interfaces
   static void Yield();
   static void Yield(const RoutineState &state);
-  static void SetMainContext(const std::shared_ptr<RoutineContext> &context);
+  static void SetMainContext(const std::shared_ptr<RoutineContext> &context);//协程执行环境，栈等
   static CRoutine *GetCurrentRoutine();
   static char **GetMainStack();
 
@@ -98,28 +98,38 @@ class CRoutine {
   CRoutine(CRoutine &) = delete;
   CRoutine &operator=(CRoutine &) = delete;
 
-  std::string name_;
+  std::string name_;//协程名
   std::chrono::steady_clock::time_point wake_time_ =
-      std::chrono::steady_clock::now();
+      std::chrono::steady_clock::now();//苏醒时间
 
-  RoutineFunc func_;
-  RoutineState state_;
+  RoutineFunc func_;//执行任务
+  RoutineState state_;//协程状态
 
-  std::shared_ptr<RoutineContext> context_;
+  std::shared_ptr<RoutineContext> context_;//执行环境
 
-  std::atomic_flag lock_ = ATOMIC_FLAG_INIT;
-  std::atomic_flag updated_ = ATOMIC_FLAG_INIT;
+  std::atomic_flag lock_ = ATOMIC_FLAG_INIT;//原子标志-锁
+  std::atomic_flag updated_ = ATOMIC_FLAG_INIT;//原子标志-被更新
+  //原子操作是不可打断的最低粒度操作，是线程安全的
+  //原子操作是一种lock free的操作，不需要同步锁，具有很高的性能。
+  //原子类提供的成员函数都是原子的，是线程安全的。
+  //atomic_flag，只有两种操作：test and set、clear
+  //test_and_set保证多线程环境下只被设置一次
+  //clear状态可以理解为bool类型的false，set状态可理解为true状态。
+  //test_and_set会检测flag是否处于set状态，如果不是，则将其设置为set状态，并返回false；否则返回true。
 
-  bool force_stop_ = false;
+  bool force_stop_ = false;//被迫停止标志
 
-  int processor_id_ = -1;
-  uint32_t priority_ = 0;
-  uint64_t id_ = 0;
+  int processor_id_ = -1;//绑定process的id
+  uint32_t priority_ = 0;//协程优先级
+  uint64_t id_ = 0;//协程id
 
-  std::string group_name_;
+  std::string group_name_;//所在组名
 
-  static thread_local CRoutine *current_routine_;
-  static thread_local char *main_stack_;
+  static thread_local CRoutine *current_routine_;//processor当前协程
+  static thread_local char *main_stack_;//主栈
+  //C++中变量的4种存储周期（automatic，static，dynamic，thread）
+  //thread_local 关键字修饰的变量具有线程（thread）周期，这些变量在线程开始的时候被生成，在线程结束的时候被销毁
+  //如果类的成员函数内定义了 thread_local 变量，则对于同一个线程内的该类的多个对象都会共享一个变量实例
 };
 
 inline void CRoutine::Yield(const RoutineState &state) {
@@ -140,7 +150,7 @@ inline RoutineContext *CRoutine::GetContext() { return context_.get(); }
 
 inline char **CRoutine::GetStack() { return &(context_->sp); }
 
-inline void CRoutine::Run() { func_(); }
+inline void CRoutine::Run() { func_(); }//执行任务
 
 inline void CRoutine::set_state(const RoutineState &state) { state_ = state; }
 
@@ -150,11 +160,11 @@ inline std::chrono::steady_clock::time_point CRoutine::wake_time() const {
   return wake_time_;
 }
 
-inline void CRoutine::Wake() { state_ = RoutineState::READY; }
+inline void CRoutine::Wake() { state_ = RoutineState::READY; }//苏醒，状态置为ready
 
-inline void CRoutine::HangUp() { CRoutine::Yield(RoutineState::DATA_WAIT); }
+inline void CRoutine::HangUp() { CRoutine::Yield(RoutineState::DATA_WAIT); }//挂起，状态置为data_wait
 
-inline void CRoutine::Sleep(const Duration &sleep_duration) {
+inline void CRoutine::Sleep(const Duration &sleep_duration) {//睡眠，设置苏醒时间，状态置为sleep
   wake_time_ = std::chrono::steady_clock::now() + sleep_duration;
   CRoutine::Yield(RoutineState::SLEEP);
 }
@@ -173,8 +183,9 @@ inline void CRoutine::set_processor_id(int processor_id) {
   processor_id_ = processor_id;
 }
 
-inline RoutineState CRoutine::UpdateState() {
+inline RoutineState CRoutine::UpdateState() {//更新状态，并返回新的状态
   // Synchronous Event Mechanism
+  //sleep，睡眠时间到则置为ready
   if (state_ == RoutineState::SLEEP &&
       std::chrono::steady_clock::now() > wake_time_) {
     state_ = RoutineState::READY;
@@ -182,7 +193,8 @@ inline RoutineState CRoutine::UpdateState() {
   }
 
   // Asynchronous Event Mechanism
-  if (!updated_.test_and_set(std::memory_order_release)) {
+  if (!updated_.test_and_set(std::memory_order_release)) {//检查updated标志（限制cpu指令重排）
+    //wait，状态置为ready
     if (state_ == RoutineState::DATA_WAIT || state_ == RoutineState::IO_WAIT) {
       state_ = RoutineState::READY;
     }
@@ -194,15 +206,15 @@ inline uint32_t CRoutine::priority() const { return priority_; }
 
 inline void CRoutine::set_priority(uint32_t priority) { priority_ = priority; }
 
-inline bool CRoutine::Acquire() {
+inline bool CRoutine::Acquire() {//获取
   return !lock_.test_and_set(std::memory_order_acquire);
 }
 
-inline void CRoutine::Release() {
+inline void CRoutine::Release() {//释放
   return lock_.clear(std::memory_order_release);
 }
 
-inline void CRoutine::SetUpdateFlag() {
+inline void CRoutine::SetUpdateFlag() {//clear updated标志
   updated_.clear(std::memory_order_release);
 }
 

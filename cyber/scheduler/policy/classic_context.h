@@ -35,19 +35,19 @@ namespace apollo {
 namespace cyber {
 namespace scheduler {
 
-static constexpr uint32_t MAX_PRIO = 20;
+static constexpr uint32_t MAX_PRIO = 20;//最大优先级
 
-#define DEFAULT_GROUP_NAME "default_grp"
+#define DEFAULT_GROUP_NAME "default_grp"//默认组名
 
-using CROUTINE_QUEUE = std::vector<std::shared_ptr<CRoutine>>;
-using MULTI_PRIO_QUEUE = std::array<CROUTINE_QUEUE, MAX_PRIO>;
-using CR_GROUP = std::unordered_map<std::string, MULTI_PRIO_QUEUE>;
-using LOCK_QUEUE = std::array<base::AtomicRWLock, MAX_PRIO>;
-using RQ_LOCK_GROUP = std::unordered_map<std::string, LOCK_QUEUE>;
+using CROUTINE_QUEUE = std::vector<std::shared_ptr<CRoutine>>;//协程队列（vector）
+using MULTI_PRIO_QUEUE = std::array<CROUTINE_QUEUE, MAX_PRIO>;//多优先级-协程队列（array<vector>）
+using CR_GROUP = std::unordered_map<std::string, MULTI_PRIO_QUEUE>;//协程组（map<name,array<vector>>)
+using LOCK_QUEUE = std::array<base::AtomicRWLock, MAX_PRIO>;//多优先级-协程队列-锁（array）
+using RQ_LOCK_GROUP = std::unordered_map<std::string, LOCK_QUEUE>;//协程组-锁组（map<name,array>）
 
-using GRP_WQ_MUTEX = std::unordered_map<std::string, MutexWrapper>;
-using GRP_WQ_CV = std::unordered_map<std::string, CvWrapper>;
-using NOTIFY_GRP = std::unordered_map<std::string, int>;
+using GRP_WQ_MUTEX = std::unordered_map<std::string, MutexWrapper>;//协程组-互斥量组
+using GRP_WQ_CV = std::unordered_map<std::string, CvWrapper>;//协程组-信号量组
+using NOTIFY_GRP = std::unordered_map<std::string, int>;//协程组-xxx组
 
 class ClassicContext : public ProcessorContext {
  public:
@@ -73,12 +73,12 @@ class ClassicContext : public ProcessorContext {
   std::chrono::steady_clock::time_point wake_time_;
   bool need_sleep_ = false;
 
-  MULTI_PRIO_QUEUE *multi_pri_rq_ = nullptr;
-  LOCK_QUEUE *lq_ = nullptr;
-  MutexWrapper *mtx_wrapper_ = nullptr;
-  CvWrapper *cw_ = nullptr;
+  MULTI_PRIO_QUEUE *multi_pri_rq_ = nullptr;//多优先级-协程队列（array<vector>）
+  LOCK_QUEUE *lq_ = nullptr;//多优先级-协程队列-锁（array）
+  MutexWrapper *mtx_wrapper_ = nullptr;//协程组-互斥量组
+  CvWrapper *cw_ = nullptr;//协程组-信号量组
 
-  std::string current_grp;
+  std::string current_grp;//协程组名
 };
 
 }  // namespace scheduler

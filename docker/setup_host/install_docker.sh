@@ -21,10 +21,10 @@ source ${TOP_DIR}/scripts/apollo.bashrc
 ARCH="$(uname -m)"
 
 function install_filesystem_support() {
-  local kernel_version="$(uname -r)"
+  local kernel_version="$(uname -r)" # 输出内核发行号
   if [ "$kernel_version" == "4.4.32-apollo-2-RT" ]; then
     info "Apollo realtime kernel ${kernel_version} found."
-    sudo modprobe overlay
+    sudo modprobe overlay # docker的overlay存储驱动可以构建以及管理镜像和容器的磁盘结构
   else
     local kernel_version_major=${kernel_version:0:1}
     local overlay_ko_path="/lib/modules/$kernel_version/kernel/fs/overlayfs/overlay.ko"
@@ -87,10 +87,10 @@ function post_install_settings() {
 
 function install_docker() {
   # Architecture support, currently: x86_64, aarch64
-  install_filesystem_support
-  install_prereq_packages
-  setup_docker_repo_and_install
-  post_install_settings
+  install_filesystem_support # 安装文件系统支持
+  install_prereq_packages # 安装依赖包
+  setup_docker_repo_and_install # 安装docker
+  post_install_settings # 后续步骤
 }
 
 function uninstall_docker() {

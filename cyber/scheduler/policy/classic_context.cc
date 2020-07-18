@@ -41,6 +41,7 @@ ClassicContext::ClassicContext(const std::string& group_name) {
 }
 
 void ClassicContext::InitGroup(const std::string& group_name) {
+  //初始化数据结构指针及变量
   multi_pri_rq_ = &cr_group_[group_name];
   lq_ = &rq_locks_[group_name];
   mtx_wrapper_ = &mtx_wq_[group_name];
@@ -53,29 +54,30 @@ std::shared_ptr<CRoutine> ClassicContext::NextRoutine() {
   if (cyber_unlikely(stop_.load())) {
     return nullptr;
   }
-
+  
+  //从最高优先级队列开始遍历
   for (int i = MAX_PRIO - 1; i >= 0; --i) {
-    ReadLockGuard<AtomicRWLock> lk(lq_->at(i));
-    for (auto& cr : multi_pri_rq_->at(i)) {
-      if (!cr->Acquire()) {
+    ReadLockGuard<AtomicRWLock> lk(lq_->at(i));//获取多优先级队列的第i个队列锁
+    for (auto& cr : multi_pri_rq_->at(i)) {//遍历地第i个队列中的协程
+      if (!cr->Acquire()) {//如果获取协程失败则遍历下一个
         continue;
       }
 
-      if (cr->UpdateState() == RoutineState::READY) {
+      if (cr->UpdateState() == RoutineState::READY) {//获取到了协程且状态为ready，则返回
         return cr;
       }
 
-      cr->Release();
+      cr->Release();//获取到协程不为ready则释放，并继续遍历下一个
     }
   }
 
-  return nullptr;
+  return nullptr;//无可执行协程则返回空
 }
 
 void ClassicContext::Wait() {
-  std::unique_lock<std::mutex> lk(mtx_wrapper_->Mutex());
+  std::unique_lock<std::mutex> lk(mtx_wrapper_->Mutex());//协程组-互斥量组
   cw_->Cv().wait_for(lk, std::chrono::milliseconds(1000),
-                     [&]() { return notify_grp_[current_grp] > 0; });
+                     [&]() { return notify_grp_[current_grp] > 0; });//协程组-信号量组
   if (notify_grp_[current_grp] > 0) {
     notify_grp_[current_grp]--;
   }
@@ -86,23 +88,23 @@ void ClassicContext::Shutdown() {
   mtx_wrapper_->Mutex().lock();
   notify_grp_[current_grp] = UCHAR_MAX;
   mtx_wrapper_->Mutex().unlock();
-  cw_->Cv().notify_all();
+  cw_->Cv().notify_all();//唤醒所有等待线程
 }
 
 void ClassicContext::Notify(const std::string& group_name) {
   (&mtx_wq_[group_name])->Mutex().lock();
   notify_grp_[group_name]++;
   (&mtx_wq_[group_name])->Mutex().unlock();
-  cv_wq_[group_name].Cv().notify_one();
+  cv_wq_[group_name].Cv().notify_one();//唤醒一个等待线程
 }
 
 bool ClassicContext::RemoveCRoutine(const std::shared_ptr<CRoutine>& cr) {
   auto grp = cr->group_name();
   auto prio = cr->priority();
   auto crid = cr->id();
-  WriteLockGuard<AtomicRWLock> lk(ClassicContext::rq_locks_[grp].at(prio));
-  auto& croutines = ClassicContext::cr_group_[grp].at(prio);
-  for (auto it = croutines.begin(); it != croutines.end(); ++it) {
+  WriteLockGuard<AtomicRWLock> lk(ClassicContext::rq_locks_[grp].at(prio));//获取多优先级协程队列中对应优先级队列的锁
+  auto& croutines = ClassicContext::cr_group_[grp].at(prio);//获取协程队列
+  for (auto it = croutines.begin(); it != croutines.end(); ++it) {//遍历队列
     if ((*it)->id() == crid) {
       auto cr = *it;
       cr->Stop();
@@ -110,7 +112,7 @@ bool ClassicContext::RemoveCRoutine(const std::shared_ptr<CRoutine>& cr) {
         std::this_thread::sleep_for(std::chrono::microseconds(1));
         AINFO_EVERY(1000) << "waiting for task " << cr->name() << " completion";
       }
-      croutines.erase(it);
+      croutines.erase(it);//vector容器删除元素
       cr->Release();
       return true;
     }
