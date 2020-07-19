@@ -47,12 +47,12 @@ SchedulerChoreography::SchedulerChoreography() {
 
   apollo::cyber::proto::CyberConfig cfg;
   if (PathExists(cfg_file) && GetProtoFromFile(cfg_file, &cfg)) {
-    for (auto& thr : cfg.scheduler_conf().threads()) {
+    for (auto& thr : cfg.scheduler_conf().threads()) {//thread配置
       inner_thr_confs_[thr.name()] = thr;
     }
 
     if (cfg.scheduler_conf().has_process_level_cpuset()) {
-      process_level_cpuset_ = cfg.scheduler_conf().process_level_cpuset();
+      process_level_cpuset_ = cfg.scheduler_conf().process_level_cpuset();//cpu集合
       ProcessLevelResourceControl();
     }
 
@@ -92,16 +92,16 @@ SchedulerChoreography::SchedulerChoreography() {
   CreateProcessor();
 }
 
-void SchedulerChoreography::CreateProcessor() {
-  for (uint32_t i = 0; i < proc_num_; i++) {
+void SchedulerChoreography::CreateProcessor() {//分两步生成，一类是对应编排任务，一类对应classic任务
+  for (uint32_t i = 0; i < proc_num_; i++) {//按照proc_num_生成processor
     auto proc = std::make_shared<Processor>();
     auto ctx = std::make_shared<ChoreographyContext>();
 
-    proc->BindContext(ctx);
+    proc->BindContext(ctx);//绑定processor上下文
     SetSchedAffinity(proc->Thread(), choreography_cpuset_,
-                     choreography_affinity_, i);
+                     choreography_affinity_, i);//设置cpu
     SetSchedPolicy(proc->Thread(), choreography_processor_policy_,
-                   choreography_processor_prio_, proc->Tid());
+                   choreography_processor_prio_, proc->Tid());//设置调度
     pctxs_.emplace_back(ctx);
     processors_.emplace_back(proc);
   }
@@ -120,6 +120,7 @@ void SchedulerChoreography::CreateProcessor() {
 }
 
 bool SchedulerChoreography::DispatchTask(const std::shared_ptr<CRoutine>& cr) {
+  //分发协程任务，首先要根据协程对应的task的相关配置对到来协程进行配置，然后再将协程放入合适位置等待执行
   // we use multi-key mutex to prevent race condition
   // when del && add cr with same crid
   MutexWrapper* wrapper = nullptr;
@@ -137,10 +138,10 @@ bool SchedulerChoreography::DispatchTask(const std::shared_ptr<CRoutine>& cr) {
   // Assign sched cfg to tasks according to configuration.
   if (cr_confs_.find(cr->name()) != cr_confs_.end()) {
     ChoreographyTask taskconf = cr_confs_[cr->name()];
-    cr->set_priority(taskconf.prio());
+    cr->set_priority(taskconf.prio());//根据task配置设置协程优先级
 
     if (taskconf.has_processor()) {
-      cr->set_processor_id(taskconf.processor());
+      cr->set_processor_id(taskconf.processor());//根据task配置设置协程processor
     }
   }
 
@@ -154,10 +155,10 @@ bool SchedulerChoreography::DispatchTask(const std::shared_ptr<CRoutine>& cr) {
 
   // Enqueue task.
   uint32_t pid = cr->processor_id();
-  if (pid < proc_num_) {
+  if (pid < proc_num_) {//如果任务是编排型，则将任务放入编排processor对应的任务队列
     // Enqueue task to Choreo Policy.
     static_cast<ChoreographyContext*>(pctxs_[pid].get())->Enqueue(cr);
-  } else {
+  } else {//否则，放入classic processor对应的队列
     // Check if task prio is reasonable.
     if (cr->priority() >= MAX_PRIO) {
       AWARN << cr->name() << " prio great than MAX_PRIO.";
@@ -239,7 +240,7 @@ bool SchedulerChoreography::NotifyProcessor(uint64_t crid) {
     ReadLockGuard<AtomicRWLock> lk(id_cr_lock_);
     auto it = id_cr_.find(crid);
     if (it != id_cr_.end()) {
-      cr = it->second;
+      cr = it->second;//找到该协程和对应的processor
       pid = cr->processor_id();
       if (cr->state() == RoutineState::DATA_WAIT ||
           cr->state() == RoutineState::IO_WAIT) {

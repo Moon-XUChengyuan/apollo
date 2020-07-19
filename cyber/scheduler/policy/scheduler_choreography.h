@@ -46,16 +46,16 @@ class SchedulerChoreography : public Scheduler {
   void CreateProcessor();
   bool NotifyProcessor(uint64_t crid) override;
 
-  std::unordered_map<std::string, ChoreographyTask> cr_confs_;
+  std::unordered_map<std::string, ChoreographyTask> cr_confs_;//编排任务配置
 
-  int32_t choreography_processor_prio_;
-  int32_t pool_processor_prio_;
+  int32_t choreography_processor_prio_;//编排任务processor优先级
+  int32_t pool_processor_prio_;//classic任务processor优先级
 
-  std::string choreography_affinity_;
-  std::string pool_affinity_;
+  std::string choreography_affinity_;//编排任务cpu亲和性
+  std::string pool_affinity_;//classic任务cpu亲和性
 
-  std::string choreography_processor_policy_;
-  std::string pool_processor_policy_;
+  std::string choreography_processor_policy_;//编排任务processor调度策略
+  std::string pool_processor_policy_;//classic任务调度策略
 
   std::vector<int> choreography_cpuset_;
   std::vector<int> pool_cpuset_;
