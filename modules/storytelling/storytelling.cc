@@ -43,6 +43,8 @@ bool Storytelling::Init() {
 }
 
 bool Storytelling::Proc() {
+     
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   frame_manager_->StartFrame();
 
   // Query all tellers.
@@ -55,6 +57,7 @@ bool Storytelling::Proc() {
   story_writer_->Write(stories_);
 
   frame_manager_->EndFrame();
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

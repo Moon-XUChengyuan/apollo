@@ -28,10 +28,14 @@ bool LidarOutputComponent::Init() {
 
 bool LidarOutputComponent::Proc(
     const std::shared_ptr<SensorFrameMessage>& message) {
+
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   std::shared_ptr<PerceptionObstacles> out_message(new PerceptionObstacles);
 
   if (message->frame_ == nullptr) {
     AERROR << "Failed to get frame in message.";
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
 
@@ -39,12 +43,13 @@ bool LidarOutputComponent::Proc(
           message->timestamp_, message->lidar_timestamp_, message->seq_num_,
           message->frame_->objects, message->error_code_, out_message.get())) {
     AERROR << "Failed to serialize PerceptionObstacles object.";
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
 
   writer_->Write(out_message);
   // Send("/apollo/perception/obstacles", out_message);
-
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

@@ -64,6 +64,8 @@ bool PreprocessorSubmodule::Init() {
 }
 
 bool PreprocessorSubmodule::Proc(const std::shared_ptr<LocalView> &local_view) {
+     
+  AINFO<<"Module "<< MODULE_NAME<<"Proc start, itr: "<< ++calledTimes;
   ADEBUG << "Preprocessor started ....";
   const auto start_time = Clock::Now();
 
@@ -114,7 +116,7 @@ bool PreprocessorSubmodule::Proc(const std::shared_ptr<LocalView> &local_view) {
 
   preprocessor_writer_->Write(control_preprocessor);
   ADEBUG << "Preprocessor finished.";
-
+  AINFO<<"Module "<< MODULE_NAME<<"Proc end, itr: "<< calledTimes;
   return true;
 }
 

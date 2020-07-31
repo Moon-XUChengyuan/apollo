@@ -47,6 +47,7 @@ class MSFLocalizationComponent final
   bool Proc(const std::shared_ptr<drivers::gnss::Imu>& imu_msg) override;
 
  private:
+  int calledTimes=0;
   bool InitConfig();
   bool InitIO();
 

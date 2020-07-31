@@ -100,6 +100,8 @@ class FusionCameraDetectionComponent : public apollo::cyber::Component<> {
       apollo::perception::camera::CameraDebug* camera_debug_msg);
 
  private:
+  int calledTimes_OnReceiveImage=0;
+  int calledTimes_OnMotionService=0;
   std::mutex mutex_;
   uint32_t seq_num_;
 

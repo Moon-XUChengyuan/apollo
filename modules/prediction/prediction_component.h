@@ -71,6 +71,7 @@ class PredictionComponent
   void OfflineProcessFeatureProtoFile(const std::string& features_proto_file);
 
  private:
+  int calledTimes=0;
   bool ContainerSubmoduleProcess(
       const std::shared_ptr<perception::PerceptionObstacles>&);
 

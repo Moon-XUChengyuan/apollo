@@ -67,6 +67,7 @@ class ContiRadarCanbusComponent : public apollo::cyber::Component<> {
   bool Start();
   void Stop();
 
+  int calledTimes_PoseCallback=0;
   ContiRadarConf conti_radar_conf_;
   std::shared_ptr<apollo::drivers::canbus::CanClient> can_client_;
   apollo::drivers::canbus::CanReceiver<ContiRadar> can_receiver_;

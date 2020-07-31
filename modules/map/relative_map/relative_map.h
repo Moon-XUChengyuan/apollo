@@ -75,6 +75,10 @@ class RelativeMap {
 
  private:
   bool CreateMapFromNavigationLane(MapMsg* map_msg);
+  int calledTimes_OnPerception=0;
+  int calledTimes_OnChassis=0;
+  int calledTimes_OnLocalization=0;
+  int calledTimes_OnNavigationInfo=0;
   RelativeMapConfig config_;
   apollo::common::monitor::MonitorLogBuffer monitor_logger_buffer_;
 

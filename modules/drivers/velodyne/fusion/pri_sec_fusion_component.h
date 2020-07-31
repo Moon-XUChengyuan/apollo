@@ -42,6 +42,7 @@ class PriSecFusionComponent : public Component<PointCloud> {
   bool Proc(const std::shared_ptr<PointCloud>& point_cloud) override;
 
  private:
+  int calledTimes=0;
   bool Fusion(std::shared_ptr<PointCloud> target,
               std::shared_ptr<PointCloud> source);
   bool IsExpired(const std::shared_ptr<PointCloud>& target,

@@ -60,6 +60,7 @@ class PlanningComponent final
   bool CheckInput();
 
  private:
+  int calledTimes=0;
   std::shared_ptr<cyber::Reader<perception::TrafficLightDetection>>
       traffic_light_reader_;
   std::shared_ptr<cyber::Reader<routing::RoutingResponse>> routing_reader_;

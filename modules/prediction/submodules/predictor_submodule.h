@@ -64,6 +64,7 @@ class PredictorSubmodule
             const std::shared_ptr<SubmoduleOutput>&) override;
 
  private:
+  int calledTimes=0;
   std::shared_ptr<cyber::Writer<PredictionObstacles>> predictor_writer_;
 
   std::unique_ptr<PredictorManager> predictor_manager_;

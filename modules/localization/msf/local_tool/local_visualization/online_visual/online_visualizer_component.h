@@ -72,7 +72,11 @@ class OnlineVisualizerComponent final
       std::vector<Eigen::Vector3d> *pt3ds,
       std::vector<unsigned char> *intensities);
 
- private:
+ private: 
+  int calledTimes=0;
+  int calledTimes_OnLidarLocalization=0;
+  int calledTimes_OnGNSSLocalization=0;
+  int calledTimes_OnFusionLocalization=0;
   std::string lidar_extrinsic_file_;
   std::string map_folder_;
   std::string map_visual_folder_;

@@ -41,6 +41,7 @@ class CompensatorComponent : public Component<PointCloud> {
   bool Proc(const std::shared_ptr<PointCloud>& point_cloud) override;
 
  private:
+  int calledTimes=0;
   std::unique_ptr<Compensator> compensator_ = nullptr;
   int pool_size_ = 8;
   int seq_ = 0;

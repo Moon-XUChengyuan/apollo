@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-
+#include "modules/common/time/time.h"
 #include "modules/third_party_perception/third_party_perception_component.h"
 
 #include "modules/common/adapters/adapter_gflags.h"
@@ -55,11 +55,15 @@ bool ThirdPartyPerceptionComponent::Init() {
 }
 
 bool ThirdPartyPerceptionComponent::Proc() {
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   auto response = std::make_shared<apollo::perception::PerceptionObstacles>();
   if (!perception_->Process(response.get())) {
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
   writer_->Write(response);
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

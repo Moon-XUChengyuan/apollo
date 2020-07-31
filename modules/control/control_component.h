@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #pragma once
-
+#include "modules/common/time/time.h"
 #include <memory>
 #include <string>
 
@@ -59,6 +59,12 @@ class ControlComponent final : public apollo::cyber::TimerComponent {
   bool Proc() override;
 
  private:
+  int calledTimes_Proc=0;
+  int calledTimes_OnPad=0;
+  int calledTimes_OnChassis=0;
+  int calledTimes_OnPlanning=0;
+  int calledTimes_OnLocalization=0;
+  int calledTimes_OnMonitor=0;
   // Upon receiving pad message
   void OnPad(const std::shared_ptr<PadMessage> &pad);
 

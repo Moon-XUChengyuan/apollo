@@ -61,6 +61,9 @@ class NDTLocalizationComponent final
       const LocalizationStatus &localization_status);
 
  private:
+  int calledTimes=0;
+  int calledTimes_LidarCallback=0;
+  int calledTimes_OdometryStatusCallback=0;
   std::shared_ptr<cyber::Reader<drivers::PointCloud>> lidar_listener_ = nullptr;
 
   std::shared_ptr<cyber::Reader<drivers::gnss::InsStat>>

@@ -46,6 +46,7 @@ class DetectionComponent : public cyber::Component<drivers::PointCloud> {
       const std::shared_ptr<LidarFrameMessage>& out_message);
 
  private:
+  int calledTimes=0;
   static std::mutex s_mutex_;
   static uint32_t s_seq_num_;
   std::string sensor_name_;

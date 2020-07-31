@@ -54,6 +54,9 @@ bool DetectionComponent::Init() {
 
 bool DetectionComponent::Proc(
     const std::shared_ptr<drivers::PointCloud>& message) {
+
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   AINFO << std::setprecision(16)
         << "Enter detection component, message timestamp: "
         << message->measurement_time() << " current timestamp: "
@@ -67,6 +70,8 @@ bool DetectionComponent::Proc(
     writer_->Write(out_message);
     AINFO << "Send lidar detect output message.";
   }
+
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return status;
 }
 

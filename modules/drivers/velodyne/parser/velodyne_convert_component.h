@@ -45,6 +45,7 @@ class VelodyneConvertComponent : public Component<VelodyneScan> {
   bool Proc(const std::shared_ptr<VelodyneScan>& scan_msg) override;
 
  private:
+  int calledTimes=0;
   std::shared_ptr<Writer<PointCloud>> writer_;
   std::unique_ptr<Convert> conv_ = nullptr;
   std::shared_ptr<CCObjectPool<PointCloud>> point_cloud_pool_ = nullptr;

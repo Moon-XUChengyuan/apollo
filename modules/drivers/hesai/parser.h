@@ -54,6 +54,7 @@ class Parser {
   bool Init();
 
  private:
+  int calledTimes_Parse=0;
   std::thread online_calibration_thread_;
   void GetCalibrationThread();
   bool CheckIsEnd(bool is_end);

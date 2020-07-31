@@ -63,6 +63,8 @@ class RawStream {
   void GpsbinCallback(const std::shared_ptr<RawData const>& raw_data);
   void OnWheelVelocityTimer();
 
+  int calledTimes_DataSpin=0;
+  int calledTimes_RtkSpin=0;
   std::unique_ptr<cyber::Timer> wheel_velocity_timer_ = nullptr;
   std::shared_ptr<apollo::canbus::Chassis> chassis_ptr_ = nullptr;
   static constexpr size_t BUFFER_SIZE = 2048;

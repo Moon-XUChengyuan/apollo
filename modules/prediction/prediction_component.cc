@@ -112,6 +112,8 @@ bool PredictionComponent::Init() {
 
 bool PredictionComponent::Proc(
     const std::shared_ptr<PerceptionObstacles>& perception_obstacles) {
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   if (FLAGS_use_lego) {
     return ContainerSubmoduleProcess(perception_obstacles);
   }
@@ -170,6 +172,7 @@ bool PredictionComponent::ContainerSubmoduleProcess(
   container_writer_->Write(submodule_output);
   adc_container_writer_->Write(*adc_trajectory_container_ptr);
   perception_obstacles_writer_->Write(*perception_obstacles);
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 
@@ -272,6 +275,7 @@ bool PredictionComponent::PredictionEndToEndProc(
   // Publish output
   common::util::FillHeader(node_->Name(), &prediction_obstacles);
   prediction_writer_->Write(prediction_obstacles);
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

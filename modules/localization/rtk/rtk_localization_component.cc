@@ -84,6 +84,8 @@ bool RTKLocalizationComponent::InitIO() {
 
 bool RTKLocalizationComponent::Proc(
     const std::shared_ptr<localization::Gps>& gps_msg) {
+   
+  AINFO<<"Module "<< MODULE_NAME<<" start, itr: "<< ++calledTimes;
   localization_->GpsCallback(gps_msg);
 
   if (localization_->IsServiceStarted()) {
@@ -98,6 +100,7 @@ bool RTKLocalizationComponent::Proc(
     PublishLocalizationStatus(localization_status);
     ADEBUG << "[OnTimer]: Localization message publish success!";
   }
+    AINFO<<"Module "<< MODULE_NAME<<" end, itr: "<< calledTimes;
 
   return true;
 }

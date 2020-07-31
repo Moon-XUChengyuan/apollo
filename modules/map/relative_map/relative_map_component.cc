@@ -33,12 +33,18 @@ bool RelativeMapComponent::Init() {
 }
 
 bool RelativeMapComponent::Proc() {
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   auto map_msg = std::make_shared<MapMsg>();
   if (!relative_map_.Process(map_msg.get())) {
+
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
   common::util::FillHeader(node_->Name(), map_msg.get());
   relative_map_writer_->Write(map_msg);
+
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

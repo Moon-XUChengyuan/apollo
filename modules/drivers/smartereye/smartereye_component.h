@@ -57,6 +57,8 @@ class SmartereyeComponent : public Component<> {
                     int height, int frameFormat);
 
  private:
+  int calledTimes_Run=0;
+  int calledTimes_Callback=0;
   std::shared_ptr<Writer<Image>> writer_ = nullptr;
   std::shared_ptr<Writer<SmartereyeObstacles>> SmartereyeObstacles_writer_ =
       nullptr;

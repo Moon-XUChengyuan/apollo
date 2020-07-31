@@ -41,6 +41,7 @@ class ThirdPartyPerceptionComponent final
   bool Proc() override;
 
  private:
+  int calledTimes=0;
   std::shared_ptr<
       apollo::cyber::Writer<apollo::perception::PerceptionObstacles>>
       writer_ = nullptr;

@@ -131,6 +131,8 @@ bool OnlineVisualizerComponent::InitIO() {
 
 bool OnlineVisualizerComponent::Proc(
     const std::shared_ptr<drivers::PointCloud> &msg) {
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   LidarVisFrame lidar_vis_frame;
   lidar_vis_frame.timestamp = cyber::Time(msg->measurement_time()).ToSecond();
 
@@ -142,11 +144,13 @@ bool OnlineVisualizerComponent::Proc(
   VisualizationManager::GetInstance().AddLidarFrame(lidar_vis_frame);
 
   id++;
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 
 void OnlineVisualizerComponent::OnLidarLocalization(
     const std::shared_ptr<LocalizationEstimate> &msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnLidarLocalization start, itr: "<< ++calledTimes_OnLidarLocalization;
   LocalizationMsg lidar_loc_msg;
 
   lidar_loc_msg.timestamp = msg->measurement_time();
@@ -170,10 +174,12 @@ void OnlineVisualizerComponent::OnLidarLocalization(
   }
 
   VisualizationManager::GetInstance().AddLidarLocMessage(lidar_loc_msg);
+  AINFO<<"Module "<< MODULE_NAME<<" OnLidarLocalization end, itr: "<< calledTimes_OnLidarLocalization;
 }
 
 void OnlineVisualizerComponent::OnGNSSLocalization(
     const std::shared_ptr<LocalizationEstimate> &msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnGNSSLocalization start, itr: "<< ++calledTimes_OnGNSSLocalization;
   LocalizationMsg gnss_loc_msg;
 
   gnss_loc_msg.timestamp = msg->measurement_time();
@@ -197,10 +203,12 @@ void OnlineVisualizerComponent::OnGNSSLocalization(
   }
 
   VisualizationManager::GetInstance().AddGNSSLocMessage(gnss_loc_msg);
+  AINFO<<"Module "<< MODULE_NAME<<" OnGNSSLocalization end, itr: "<< calledTimes_OnGNSSLocalization;
 }
 
 void OnlineVisualizerComponent::OnFusionLocalization(
     const std::shared_ptr<LocalizationEstimate> &msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnFusionLocalization start, itr: "<< ++calledTimes_OnFusionLocalization;
   LocalizationMsg fusion_loc_msg;
 
   fusion_loc_msg.timestamp = msg->measurement_time();
@@ -224,6 +232,7 @@ void OnlineVisualizerComponent::OnFusionLocalization(
   }
 
   VisualizationManager::GetInstance().AddFusionLocMessage(fusion_loc_msg);
+  AINFO<<"Module "<< MODULE_NAME<<" OnFusionLocalization end, itr: "<< calledTimes_OnFusionLocalization;
 }
 
 void OnlineVisualizerComponent::ParsePointCloudMessage(

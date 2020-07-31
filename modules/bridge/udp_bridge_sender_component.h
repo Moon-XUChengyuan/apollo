@@ -55,6 +55,7 @@ class UDPBridgeSenderComponent final : public cyber::Component<T> {
   std::string Name() const { return FLAGS_bridge_module_name; }
 
  private:
+  int calledTimes=0;
   common::monitor::MonitorLogBuffer monitor_logger_buffer_;
   unsigned int remote_port_ = 0;
   std::string remote_ip_ = "";

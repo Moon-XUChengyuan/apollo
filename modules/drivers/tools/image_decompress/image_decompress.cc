@@ -38,6 +38,8 @@ bool ImageDecompressComponent::Init() {
 
 bool ImageDecompressComponent::Proc(
     const std::shared_ptr<apollo::drivers::CompressedImage>& compressed_image) {
+         
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   auto image = std::make_shared<Image>();
   image->mutable_header()->CopyFrom(compressed_image->header());
   if (compressed_image->has_measurement_time()) {
@@ -58,6 +60,7 @@ bool ImageDecompressComponent::Proc(
   auto size = mat_image.step * mat_image.rows;
   image->set_data(&(mat_image.data[0]), size);
   writer_->Write(image);
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

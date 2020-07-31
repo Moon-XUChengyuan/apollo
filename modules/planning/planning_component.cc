@@ -117,6 +117,10 @@ bool PlanningComponent::Proc(
     const std::shared_ptr<canbus::Chassis>& chassis,
     const std::shared_ptr<localization::LocalizationEstimate>&
         localization_estimate) {
+
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  
   ACHECK(prediction_obstacles != nullptr);
 
   // check and process possible rerouting request
@@ -151,6 +155,7 @@ bool PlanningComponent::Proc(
 
   if (!CheckInput()) {
     AERROR << "Input check failed";
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
 
@@ -179,7 +184,7 @@ bool PlanningComponent::Proc(
   // record in history
   auto* history = injector_->history();
   history->Add(adc_trajectory_pb);
-
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

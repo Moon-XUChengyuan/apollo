@@ -57,6 +57,8 @@ class MotionService : public apollo::cyber::Component<> {
   void ConvertVehicleMotionToMsgOut(
       base::VehicleStatus vs, apollo::perception::VehicleStatus *v_status_msg);
 
+  int calledTimes_OnLocalization=0;
+  int calledTimes_OnReceiveImage=0;
   PlaneMotion *vehicle_planemotion_ = nullptr;
   std::string device_id_;
   double pre_azimuth = 0;  // a invalid value

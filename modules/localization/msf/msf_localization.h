@@ -85,6 +85,12 @@ class MSFLocalization {
   void CompensateImuVehicleExtrinsic(LocalizationEstimate *local_result);
 
  private:
+  int calledTimes_OnPointCloud=0;
+  int calledTimes_OnRawImu=0;
+  int calledTimes_OnGnssRtkObs=0;
+  int calledTimes_OnGnssRtkEph=0;
+  int calledTimes_OnGnssBestPose=0;
+  int calledTimes_OnGnssHeading=0;
   apollo::common::monitor::MonitorLogBuffer monitor_logger_;
   msf::LocalizationInteg localization_integ_;
   msf::LocalizationIntegParam localization_param_;

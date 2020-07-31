@@ -51,7 +51,10 @@ bool FusionComponent::Init() {
 }
 
 bool FusionComponent::Proc(const std::shared_ptr<SensorFrameMessage>& message) {
+     
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   if (message->process_stage_ == ProcessStage::SENSOR_FUSION) {
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
   std::shared_ptr<PerceptionObstacles> out_message(new (std::nothrow)
@@ -75,6 +78,7 @@ bool FusionComponent::Proc(const std::shared_ptr<SensorFrameMessage>& message) {
       }
     }
   }
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return status;
 }
 

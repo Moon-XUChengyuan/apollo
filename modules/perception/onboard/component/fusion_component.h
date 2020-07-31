@@ -45,6 +45,7 @@ class FusionComponent : public cyber::Component<SensorFrameMessage> {
                     std::shared_ptr<SensorFrameMessage> viz_message);
 
  private:
+  int calledTimes=0;
   static std::mutex s_mutex_;
   static uint32_t s_seq_num_;
 

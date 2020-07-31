@@ -30,6 +30,7 @@ using apollo::cyber::common::GlobalData;
 template <typename F, typename... Args>
 static auto Async(F&& f, Args&&... args)
     -> std::future<typename std::result_of<F(Args...)>::type> {
+  //如果为真实模式，则采用"TaskManager"的方法生成协程任务，如果是仿真模式则创建线程。
   return GlobalData::Instance()->IsRealityMode()
              ? TaskManager::Instance()->Enqueue(std::forward<F>(f),
                                                 std::forward<Args>(args)...)

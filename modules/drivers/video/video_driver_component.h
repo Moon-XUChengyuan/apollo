@@ -47,6 +47,7 @@ class CompCameraH265Compressed : public Component<> {
  private:
   void VideoPoll();
 
+  int calledTimes=0;
   std::shared_ptr<apollo::cyber::Writer<CompressedImage>> writer_;
   std::shared_ptr<std::thread> video_thread_;
   volatile bool runing_;

@@ -38,6 +38,7 @@ class Storytelling final : public apollo::cyber::TimerComponent {
   bool Proc() override;
 
  private:
+  int calledTimes=0;
   std::vector<std::unique_ptr<BaseTeller>> story_tellers_;
   Stories stories_;
   StorytellingConfig config_;

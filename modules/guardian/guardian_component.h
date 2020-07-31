@@ -45,6 +45,7 @@ class GuardianComponent : public apollo::cyber::TimerComponent {
   bool Proc() override;
 
  private:
+  int calledTimes=0;
   void PassThroughControlCommand();
   void TriggerSafetyMode();
 

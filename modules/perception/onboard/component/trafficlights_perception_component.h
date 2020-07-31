@@ -54,6 +54,8 @@ class TrafficLightsPerceptionComponent : public apollo::cyber::Component<> {
   bool Init() override;
 
  private:
+  int calledTimes_OnReceiveImage=0;
+  int calledTimes_OnReceiveV2XMsg=0;
   int InitConfig();
   int InitAlgorithmPlugin();
   int InitCameraListeners();

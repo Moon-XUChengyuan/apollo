@@ -187,8 +187,10 @@ void MSFLocalization::InitParams() {
 
 void MSFLocalization::OnPointCloud(
     const std::shared_ptr<drivers::PointCloud> &message) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnPointCloud start, itr: "<< ++calledTimes_OnPointCloud;
   ++pcd_msg_index_;
   if (pcd_msg_index_ % FLAGS_point_cloud_step != 0) {
+    AINFO<<"Module "<< MODULE_NAME<<" OnPointCloud end, fail, itr: "<< calledTimes_OnPointCloud;
     return;
   }
 
@@ -201,10 +203,12 @@ void MSFLocalization::OnPointCloud(
     // publish lidar message to debug
     publisher_->PublishLocalizationMsfLidar(result.localization());
   }
+  AINFO<<"Module "<< MODULE_NAME<<" OnPointCloud end, itr: "<< calledTimes_OnPointCloud;
 }
 
 void MSFLocalization::OnRawImu(
     const std::shared_ptr<drivers::gnss::Imu> &imu_msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnRawImu start, itr: "<< ++calledTimes_OnRawImu;
   if (FLAGS_imu_coord_rfu) {
     localization_integ_.RawImuProcessRfu(*imu_msg);
   } else {
@@ -235,13 +239,16 @@ void MSFLocalization::OnRawImu(
   }
 
   localization_state_ = result.state();
+  AINFO<<"Module "<< MODULE_NAME<<" OnRawImu end, itr: "<< calledTimes_OnRawImu;
 }
 
 void MSFLocalization::OnGnssBestPose(
     const std::shared_ptr<drivers::gnss::GnssBestPose> &bestgnsspos_msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssBestPose start, itr: "<< ++calledTimes_OnGnssBestPose;
   if ((localization_state_ == msf::LocalizationMeasureState::OK ||
        localization_state_ == msf::LocalizationMeasureState::VALID) &&
       FLAGS_gnss_only_init) {
+    AINFO<<"Module "<< MODULE_NAME<<" OnGnssBestPose end, fail, itr: "<< calledTimes_OnGnssBestPose;
     return;
   }
 
@@ -253,13 +260,16 @@ void MSFLocalization::OnGnssBestPose(
       result.state() == msf::LocalizationMeasureState::VALID) {
     publisher_->PublishLocalizationMsfGnss(result.localization());
   }
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssBestPose end, itr: "<< calledTimes_OnGnssBestPose;
 }
 
 void MSFLocalization::OnGnssRtkObs(
     const std::shared_ptr<drivers::gnss::EpochObservation> &raw_obs_msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssRtkObs start, itr: "<< ++calledTimes_OnGnssRtkObs;
   if ((localization_state_ == msf::LocalizationMeasureState::OK ||
        localization_state_ == msf::LocalizationMeasureState::VALID) &&
       FLAGS_gnss_only_init) {
+    AINFO<<"Module "<< MODULE_NAME<<" OnGnssRtkObs end, fail, itr: "<< calledTimes_OnGnssRtkObs;
     return;
   }
 
@@ -271,27 +281,34 @@ void MSFLocalization::OnGnssRtkObs(
       result.state() == msf::LocalizationMeasureState::VALID) {
     publisher_->PublishLocalizationMsfGnss(result.localization());
   }
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssRtkObs end, itr: "<< calledTimes_OnGnssRtkObs;
 }
 
 void MSFLocalization::OnGnssRtkEph(
     const std::shared_ptr<drivers::gnss::GnssEphemeris> &gnss_orbit_msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssRtkEph start, itr: "<< ++calledTimes_OnGnssRtkEph;
   if ((localization_state_ == msf::LocalizationMeasureState::OK ||
        localization_state_ == msf::LocalizationMeasureState::VALID) &&
       FLAGS_gnss_only_init) {
+    AINFO<<"Module "<< MODULE_NAME<<" OnGnssRtkEph end, fail, itr: "<< calledTimes_OnGnssRtkEph;
     return;
   }
 
   localization_integ_.RawEphemerisProcess(*gnss_orbit_msg);
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssRtkEph end, itr: "<< calledTimes_OnGnssRtkEph;
 }
 
 void MSFLocalization::OnGnssHeading(
     const std::shared_ptr<drivers::gnss::Heading> &gnss_heading_msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssHeading start, itr: "<< ++calledTimes_OnGnssHeading;
   if ((localization_state_ == msf::LocalizationMeasureState::OK ||
        localization_state_ == msf::LocalizationMeasureState::VALID) &&
       FLAGS_gnss_only_init) {
+    AINFO<<"Module "<< MODULE_NAME<<" OnGnssHeading end, fail, itr: "<< calledTimes_OnGnssHeading;
     return;
   }
   localization_integ_.GnssHeadingProcess(*gnss_heading_msg);
+  AINFO<<"Module "<< MODULE_NAME<<" OnGnssHeading end, itr: "<< calledTimes_OnGnssHeading;
 }
 
 void MSFLocalization::SetPublisher(

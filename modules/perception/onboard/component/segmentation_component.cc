@@ -54,6 +54,8 @@ bool SegmentationComponent::Init() {
 
 bool SegmentationComponent::Proc(
     const std::shared_ptr<drivers::PointCloud>& message) {
+         
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   AINFO << std::setprecision(16)
         << "Enter segmentation component, message timestamp: "
         << message->measurement_time() << " current timestamp: "
@@ -67,6 +69,8 @@ bool SegmentationComponent::Proc(
     writer_->Write(out_message);
     AINFO << "Send lidar segment output message.";
   }
+
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return status;
 }
 

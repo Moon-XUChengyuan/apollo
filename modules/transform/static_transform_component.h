@@ -36,6 +36,7 @@ class StaticTransformComponent final : public apollo::cyber::Component<> {
   bool Init() override;
 
  private:
+  int calledTimes=0;
   void SendTransforms();
   void SendTransform(const std::vector<TransformStamped>& msgtf);
   bool ParseFromYaml(const std::string& file_path, TransformStamped* transform);

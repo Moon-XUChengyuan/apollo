@@ -59,6 +59,7 @@ class ManualTrafficLight final : public apollo::cyber::TimerComponent {
   }
 
   bool Proc() {
+    AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
     std::vector<SignalInfoConstPtr> signals;
     bool result = false;
     if (FLAGS_all_lights) {
@@ -111,6 +112,7 @@ class ManualTrafficLight final : public apollo::cyber::TimerComponent {
     }
     CreateTrafficLightDetection(signals, color, &traffic_light_detection);
     traffic_light_detection_writer_->Write(traffic_light_detection);
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
 
@@ -222,11 +224,15 @@ class ManualTrafficLight final : public apollo::cyber::TimerComponent {
 
   void OnLocalization(
       const std::shared_ptr<LocalizationEstimate> &localization) {
+    AINFO<<"Module "<< MODULE_NAME<<" OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
     localization_ = *localization;
     has_localization_ = true;
+    AINFO<<"Module "<< MODULE_NAME<<" OnLocalization end, itr: "<< calledTimes_OnLocalization;
   }
 
  private:
+  int calledTimes=0;
+  int calledTimes_OnLocalization=0;
   bool is_green_ = false;
   bool updated_ = true;
   bool has_localization_ = false;

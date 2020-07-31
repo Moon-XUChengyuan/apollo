@@ -59,6 +59,7 @@ class EvaluatorSubmodule : public cyber::Component<SubmoduleOutput> {
   bool Proc(const std::shared_ptr<SubmoduleOutput>&) override;
 
  private:
+  int calledTimes=0;
   std::shared_ptr<cyber::Writer<SubmoduleOutput>> evaluator_writer_;
 
   std::unique_ptr<EvaluatorManager> evaluator_manager_;

@@ -34,7 +34,7 @@ class RelativeMapComponent final : public ::apollo::cyber::TimerComponent {
 
  private:
   bool InitReaders();
-
+  int calledTimes=0;
   std::shared_ptr<::apollo::cyber::Writer<MapMsg>> relative_map_writer_ =
       nullptr;
   std::shared_ptr<cyber::Reader<perception::PerceptionObstacles>>

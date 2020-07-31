@@ -33,6 +33,7 @@ class LidarOutputComponent : public cyber::Component<SensorFrameMessage> {
   bool Proc(const std::shared_ptr<SensorFrameMessage>& message) override;
 
  private:
+  int calledTimes=0;
   std::shared_ptr<apollo::cyber::Writer<PerceptionObstacles>> writer_;
 };  // class LidarOutputComponent
 

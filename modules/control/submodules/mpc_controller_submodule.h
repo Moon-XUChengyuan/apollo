@@ -15,7 +15,7 @@
  *****************************************************************************/
 
 #pragma once
-
+#include "modules/common/time/time.h"
 #include <memory>
 #include <string>
 
@@ -75,6 +75,7 @@ class MPCControllerSubmodule final : public cyber::Component<Preprocessor> {
       const LocalView& local_view, ControlCommand* control_core_command);
 
  private:
+  int calledTimes=0;
   bool estop_ = false;
 
   common::monitor::MonitorLogBuffer monitor_logger_buffer_;

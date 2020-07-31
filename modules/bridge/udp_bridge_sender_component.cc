@@ -47,13 +47,17 @@ bool UDPBridgeSenderComponent<T>::Init() {
 
 template <typename T>
 bool UDPBridgeSenderComponent<T>::Proc(const std::shared_ptr<T> &pb_msg) {
+     
+  AINFO<<"Module "<< MODULE_NAME<<" start, itr: "<< ++calledTimes;
   if (remote_port_ == 0 || remote_ip_.empty()) {
     AERROR << "remote info is invalid!";
+    AINFO<<"Module "<< MODULE_NAME<<" end, itr: "<< calledTimes;
     return false;
   }
 
   if (pb_msg == nullptr) {
     AERROR << "proto msg is not ready!";
+    AINFO<<"Module "<< MODULE_NAME<<" end, itr: "<< calledTimes;
     return false;
   }
 
@@ -67,6 +71,7 @@ bool UDPBridgeSenderComponent<T>::Proc(const std::shared_ptr<T> &pb_msg) {
       connect(sock_fd, (struct sockaddr *)&server_addr, sizeof(server_addr));
   if (res < 0) {
     close(sock_fd);
+    AINFO<<"Module "<< MODULE_NAME<<" end, itr: "<< calledTimes;
     return false;
   }
 
@@ -80,7 +85,7 @@ bool UDPBridgeSenderComponent<T>::Proc(const std::shared_ptr<T> &pb_msg) {
     }
   }
   close(sock_fd);
-
+  AINFO<<"Module "<< MODULE_NAME<<" end, itr: "<< calledTimes;
   return true;
 }
 

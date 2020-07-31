@@ -63,7 +63,9 @@ bool SmartereyeComponent::Init() {
 void SmartereyeComponent::run() {
   running_.exchange(true);
   while (!cyber::IsShutdown()) {
+    AINFO<<"Module "<< MODULE_NAME<<" Run start, itr: "<< ++calledTimes_Run;
     camera_device_->poll();
+    AINFO<<"Module "<< MODULE_NAME<<" Run end, itr: "<< calledTimes_Run;
     cyber::SleepFor(std::chrono::microseconds(spin_rate_));
   }
 }
@@ -77,6 +79,7 @@ bool SmartereyeComponent::SetCallback() {
 }
 
 bool SmartereyeComponent::Callback(RawImageFrame *rawFrame) {
+  AINFO<<"Module "<< MODULE_NAME<<" Callback start, itr: "<< ++calledTimes_Callback;
   if (rawFrame->frameId == FrameId::Compound ||
       rawFrame->frameId == FrameId::LaneExt) {
     processFrame(rawFrame->frameId,
@@ -90,7 +93,7 @@ bool SmartereyeComponent::Callback(RawImageFrame *rawFrame) {
                  rawFrame->dataSize, rawFrame->width, rawFrame->height,
                  rawFrame->format);
   }
-
+  AINFO<<"Module "<< MODULE_NAME<<" Callback end, fail, itr: "<< calledTimes_Callback;
   return true;
 }
 

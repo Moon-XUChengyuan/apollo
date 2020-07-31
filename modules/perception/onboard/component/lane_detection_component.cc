@@ -231,6 +231,7 @@ bool LaneDetectionComponent::Init() {
 // On receiving motion service input, convert it to motion_buff_
 void LaneDetectionComponent::OnMotionService(
     const MotionServiceMsgType &message) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnMotionService start, itr: "<< ++calledTimes_OnMotionService;
   // Comment: use the circular buff to do it smartly, only push the latest
   // circular_buff only saves only the incremental motion between frames.
   // motion_service is now hard-coded for camera front 6mm
@@ -265,13 +266,14 @@ void LaneDetectionComponent::OnMotionService(
   vehicledata.motion = motion_2d;
 
   mot_buffer_->push_back(vehicledata);
-
+  AINFO<<"Module "<< MODULE_NAME<<" OnMotionService end, itr: "<< calledTimes_OnMotionService;
   // TODO(@yg13): output motion in text file
 }
 
 void LaneDetectionComponent::OnReceiveImage(
     const std::shared_ptr<apollo::drivers::Image> &message,
     const std::string &camera_name) {
+  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
   std::lock_guard<std::mutex> lock(mutex_);
   const double msg_timestamp = message->measurement_time() + timestamp_offset_;
   AINFO << "Enter LaneDetectionComponent::Proc(), camera_name: " << camera_name
@@ -281,6 +283,7 @@ void LaneDetectionComponent::OnReceiveImage(
     AINFO << "Received an old message. Last ts is " << std::setprecision(19)
           << last_timestamp_ << " current ts is " << msg_timestamp
           << " last - current is " << last_timestamp_ - msg_timestamp;
+    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
   last_timestamp_ = msg_timestamp;
@@ -307,6 +310,7 @@ void LaneDetectionComponent::OnReceiveImage(
   if (InternalProc(message, camera_name, &error_code, prefused_message.get(),
                    out_message.get()) != cyber::SUCC) {
     AERROR << "InternalProc failed, error_code: " << error_code;
+    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
 
@@ -320,6 +324,7 @@ void LaneDetectionComponent::OnReceiveImage(
           << GLOG_TIMESTAMP(end_timestamp) << "]:cur_latency[" << end_latency
           << "]";
   }
+  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
 }
 
 int LaneDetectionComponent::InitConfig() {

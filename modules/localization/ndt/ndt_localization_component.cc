@@ -93,6 +93,8 @@ bool NDTLocalizationComponent::InitIO() {
 
 bool NDTLocalizationComponent::Proc(
     const std::shared_ptr<localization::Gps>& gps_msg) {
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   localization_->OdometryCallback(gps_msg);
 
   if (localization_->IsServiceStarted()) {
@@ -109,11 +111,13 @@ bool NDTLocalizationComponent::Proc(
     ADEBUG << "[OnTimer]: Localization message publish success!";
   }
 
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 
 void NDTLocalizationComponent::LidarCallback(
     const std::shared_ptr<drivers::PointCloud>& lidar_msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" LidarCallback start, itr: "<< ++calledTimes_LidarCallback;
   localization_->LidarCallback(lidar_msg);
   // for test to output lidar pose
   if (localization_->IsServiceStarted()) {
@@ -122,11 +126,14 @@ void NDTLocalizationComponent::LidarCallback(
     // publish localization messages
     PublishLidarPoseBroadcastTopic(localization);
   }
+  AINFO<<"Module "<< MODULE_NAME<<" LidarCallback end, itr: "<< calledTimes_LidarCallback;
 }
 
 void NDTLocalizationComponent::OdometryStatusCallback(
     const std::shared_ptr<drivers::gnss::InsStat>& status_msg) {
+  AINFO<<"Module "<< MODULE_NAME<<" OdometryStatusCallback start, itr: "<< ++calledTimes_OdometryStatusCallback;
   localization_->OdometryStatusCallback(status_msg);
+  AINFO<<"Module "<< MODULE_NAME<<" OdometryStatusCallback end, itr: "<< calledTimes_OdometryStatusCallback;
 }
 
 void NDTLocalizationComponent::PublishPoseBroadcastTF(

@@ -102,7 +102,10 @@ bool MSFLocalizationComponent::InitIO() {
 
 bool MSFLocalizationComponent::Proc(
     const std::shared_ptr<drivers::gnss::Imu>& imu_msg) {
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   localization_.OnRawImu(imu_msg);
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

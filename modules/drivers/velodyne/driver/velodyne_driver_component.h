@@ -44,6 +44,7 @@ class VelodyneDriverComponent : public Component<> {
   bool Init() override;
 
  private:
+  int calledTimes_device_poll=0;
   void device_poll();
   volatile bool runing_;  ///< device thread is running
   uint32_t seq_ = 0;

@@ -67,6 +67,7 @@ class RadarDetectionComponent : public cyber::Component<ContiRadar> {
   RadarDetectionComponent& operator=(const RadarDetectionComponent&) = delete;
 
  private:
+  int calledTimes=0;
   std::mutex _mutex;
   uint32_t seq_num_;
 

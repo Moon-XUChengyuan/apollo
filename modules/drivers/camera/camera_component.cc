@@ -84,14 +84,17 @@ bool CameraComponent::Init() {
 void CameraComponent::run() {
   running_.exchange(true);
   while (!cyber::IsShutdown()) {
+    AINFO<<"Module "<< MODULE_NAME<<" Run start, itr: "<< ++calledTimes_Run;
     if (!camera_device_->wait_for_device()) {
       // sleep for next check
+      AINFO<<"Module "<< MODULE_NAME<<" Run end, fail, itr: "<< calledTimes_Run;
       cyber::SleepFor(std::chrono::milliseconds(device_wait_));
       continue;
     }
 
     if (!camera_device_->poll(raw_image_)) {
       AERROR << "camera device poll failed";
+      AINFO<<"Module "<< MODULE_NAME<<" Run end, fail, itr: "<< calledTimes_Run;
       continue;
     }
 
@@ -106,6 +109,7 @@ void CameraComponent::run() {
     pb_image->set_data(raw_image_->image, raw_image_->image_size);
     writer_->Write(pb_image);
 
+    AINFO<<"Module "<< MODULE_NAME<<" Run end, itr: "<< calledTimes_Run;
     cyber::SleepFor(std::chrono::microseconds(spin_rate_));
   }
 }

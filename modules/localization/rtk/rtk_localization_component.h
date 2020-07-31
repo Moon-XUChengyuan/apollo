@@ -54,6 +54,7 @@ class RTKLocalizationComponent final
   void PublishLocalizationStatus(const LocalizationStatus &localization_status);
 
  private:
+  int calledTimes=0;
   std::shared_ptr<cyber::Reader<localization::CorrectedImu>>
       corrected_imu_listener_ = nullptr;
   std::shared_ptr<cyber::Reader<drivers::gnss::InsStat>> gps_status_listener_ =

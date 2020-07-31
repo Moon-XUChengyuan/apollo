@@ -33,6 +33,7 @@ class ImageDecompressComponent final
       const std::shared_ptr<apollo::drivers::CompressedImage>& image) override;
 
  private:
+  int calledTimes=0;
   std::shared_ptr<cyber::Writer<apollo::drivers::Image>> writer_;
   Config config_;
 };

@@ -39,6 +39,7 @@ class RecognitionComponent : public cyber::Component<LidarFrameMessage> {
   bool Proc(const std::shared_ptr<LidarFrameMessage>& message) override;
 
  private:
+  int calledTimes=0;
   bool InitAlgorithmPlugin();
   bool InternalProc(const std::shared_ptr<const LidarFrameMessage>& in_message,
                     const std::shared_ptr<SensorFrameMessage>& out_message);

@@ -478,11 +478,13 @@ void RawStream::DataSpin() {
   common::util::FillHeader("gnss", &stream_status_);
   stream_writer_->Write(stream_status_);
   while (cyber::OK()) {
+    AINFO<<"Module "<< MODULE_NAME<<" DataSpin start, itr: "<< ++calledTimes_DataSpin;
     size_t length = data_stream_->read(buffer_, BUFFER_SIZE);
     if (length > 0) {
       std::shared_ptr<RawData> msg_pub = std::make_shared<RawData>();
       if (!msg_pub) {
         AERROR << "New data sting msg failed.";
+        AINFO<<"Module "<< MODULE_NAME<<" DataSpin end, fail, itr: "<< calledTimes_DataSpin;
         continue;
       }
       msg_pub->set_data(reinterpret_cast<const char *>(buffer_), length);
@@ -493,6 +495,7 @@ void RawStream::DataSpin() {
       }
     }
     StreamStatusCheck();
+    AINFO<<"Module "<< MODULE_NAME<<" DataSpin end, itr: "<< calledTimes_DataSpin;
   }
 }
 
@@ -501,6 +504,7 @@ void RawStream::RtkSpin() {
     return;
   }
   while (cyber::OK()) {
+    AINFO<<"Module "<< MODULE_NAME<<" RtkSpin start, itr: "<< ++calledTimes_RtkSpin;
     size_t length = in_rtk_stream_->read(buffer_rtk_, BUFFER_SIZE);
     if (length > 0) {
       if (rtk_software_solution_) {
@@ -508,6 +512,7 @@ void RawStream::RtkSpin() {
       } else {
         PublishRtkData(length);
         if (out_rtk_stream_ == nullptr) {
+          AINFO<<"Module "<< MODULE_NAME<<" RtkSpin end, fail, itr: "<< calledTimes_RtkSpin;
           continue;
         }
         size_t ret = out_rtk_stream_->write(buffer_rtk_, length);
@@ -517,6 +522,7 @@ void RawStream::RtkSpin() {
         }
       }
     }
+    AINFO<<"Module "<< MODULE_NAME<<" RtkSpin end, itr: "<< calledTimes_RtkSpin;
   }
 }
 

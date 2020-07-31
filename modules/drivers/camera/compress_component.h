@@ -39,6 +39,7 @@ class CompressComponent : public Component<Image> {
   bool Proc(const std::shared_ptr<Image>& image) override;
 
  private:
+  int calledTimes=0;
   std::shared_ptr<CCObjectPool<CompressedImage>> image_pool_;
   std::shared_ptr<Writer<CompressedImage>> writer_ = nullptr;
   Config config_;
