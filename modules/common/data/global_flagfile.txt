@@ -38,3 +38,5 @@
 --map_dir=/apollo/modules/map/data/san_francisco
 
 --map_dir=/apollo/modules/map/data/shalun
+
+--map_dir=/apollo/modules/map/data/san_francisco

@@ -305,7 +305,7 @@ int TrafficLightsPerceptionComponent::InitCameraFrame() {
 void TrafficLightsPerceptionComponent::OnReceiveImage(
     const std::shared_ptr<apollo::drivers::Image> msg,
     const std::string& camera_name) {
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
+  AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
   std::lock_guard<std::mutex> lck(mutex_);
   double receive_img_timestamp = apollo::common::time::Clock::NowInSeconds();
   double image_msg_ts = msg->measurement_time();
@@ -326,7 +326,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
   if (!CheckCameraImageStatus(image_msg_ts, check_image_status_interval_thresh_,
                               camera_name)) {
     AERROR << "CheckCameraImageStatus failed";
-    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
   const auto check_camera_status_time =
@@ -352,7 +352,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
           << " ,_last_proc_image_ts: " << last_proc_image_ts_
           << " , _proc_interval_seconds: " << proc_interval_seconds_;
     //    SendSimulationMsg();
-    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
   // sync image with cached projections
@@ -365,7 +365,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
     AINFO << "PreprocessComponent not publish image, ts:" << image_msg_ts
           << ", camera_name: " << camera_name;
     //    SendSimulationMsg();
-    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
 
@@ -425,7 +425,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
   if (!TransformOutputMessage(&frame_, camera_name, &out_msg)) {
     AERROR << "transform_output_message failed, msg_time: "
            << GLOG_TIMESTAMP(msg->measurement_time());
-    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
 
@@ -462,7 +462,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
           << GLOG_TIMESTAMP(end_timestamp) << "]:cur_latency[" << end_latency
           << "]";
   }
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+  AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
 }
 
 void TrafficLightsPerceptionComponent::OnReceiveV2XMsg(
