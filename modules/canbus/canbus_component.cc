@@ -200,7 +200,7 @@ bool CanbusComponent::Proc() {
 }
 
 void CanbusComponent::OnControlCommand(const ControlCommand &control_command) {
-  AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand start, itr: "<< ++calledTimes_OnControlCommand;
+  //AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand start, itr: "<< ++calledTimes_OnControlCommand;
   int64_t current_timestamp = absl::ToUnixMicros(Clock::Now());
   // if command coming too soon, just ignore it.
   if (current_timestamp - last_timestamp_ < FLAGS_min_cmd_interval * 1000) {
@@ -208,7 +208,7 @@ void CanbusComponent::OnControlCommand(const ControlCommand &control_command) {
               "FLAGS_min_cmd_interval["
            << FLAGS_min_cmd_interval << "], actual time interval["
            << current_timestamp - last_timestamp_ << "].";
-    AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand end, fail, itr: "<< calledTimes_OnControlCommand;
+    //AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand end, fail, itr: "<< calledTimes_OnControlCommand;
     return;
   }
 
@@ -223,11 +223,11 @@ void CanbusComponent::OnControlCommand(const ControlCommand &control_command) {
   if (vehicle_controller_->Update(control_command) != ErrorCode::OK) {
     AERROR << "Failed to process callback function OnControlCommand because "
               "vehicle_controller_->Update error.";
-    AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand end, fail, itr: "<< calledTimes_OnControlCommand;
+    //AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand end, fail, itr: "<< calledTimes_OnControlCommand;
     return;
   }
   can_sender_.Update();
-  AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand end, itr: "<< calledTimes_OnControlCommand;
+  //AINFO<<"Module "<< MODULE_NAME<<" OnControlCommand end, itr: "<< calledTimes_OnControlCommand;
 }
 
 void CanbusComponent::OnGuardianCommand(
