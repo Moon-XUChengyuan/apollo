@@ -33,14 +33,13 @@ bool ImageDecompressComponent::Init() {
   }
   AINFO << "Decompress config: \n" << config_.DebugString();
   writer_ = node_->CreateWriter<Image>(config_.channel_name());
-  component_id=++component_num;
   return true;
 }
 
 bool ImageDecompressComponent::Proc(
     const std::shared_ptr<apollo::drivers::CompressedImage>& compressed_image) {
          
-  AINFO<<"Module "<< MODULE_NAME<<" "<<component_id<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc start, itr: "<< ++calledTimes;
   auto image = std::make_shared<Image>();
   image->mutable_header()->CopyFrom(compressed_image->header());
   if (compressed_image->has_measurement_time()) {
@@ -61,7 +60,7 @@ bool ImageDecompressComponent::Proc(
   auto size = mat_image.step * mat_image.rows;
   image->set_data(&(mat_image.data[0]), size);
   writer_->Write(image);
-  AINFO<<"Module "<< MODULE_NAME<<" "<<component_id<<" Proc end, itr: "<< calledTimes;
+  AINFO<<"Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

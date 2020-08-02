@@ -31,11 +31,9 @@ class ImageDecompressComponent final
   bool Init() override;
   bool Proc(
       const std::shared_ptr<apollo::drivers::CompressedImage>& image) override;
-  static int component_num=0;
 
  private:
   int calledTimes=0;
-  int component_id;
   std::shared_ptr<cyber::Writer<apollo::drivers::Image>> writer_;
   Config config_;
 };
