@@ -32,11 +32,17 @@ PY_CALLBACK_TYPE = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_char_p)
 PY_CALLBACK_TYPE_T = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_char_p)
 
 # init vars
-wrapper_lib_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                '../internal'))
-sys.path.append(wrapper_lib_path)
+CYBER_PATH = os.environ.get('CYBER_PATH', '/apollo/cyber')
+CYBER_DIR = os.path.split(CYBER_PATH)[0]
+sys.path.append(CYBER_PATH + "/third_party/")
+sys.path.append(CYBER_PATH + "/lib/")
 
-_CYBER = importlib.import_module('_cyber_wrapper')
+sys.path.append(CYBER_PATH + "/lib/python/")
+
+sys.path.append(CYBER_DIR + "/python/")
+sys.path.append(CYBER_DIR + "/cyber/")
+
+_CYBER = importlib.import_module('_cyber_py3')
 
 
 ##

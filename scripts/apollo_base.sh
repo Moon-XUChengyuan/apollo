@@ -15,23 +15,55 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ###############################################################################
+
 TOP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P)"
 source ${TOP_DIR}/scripts/apollo.bashrc
 
-HOST_ARCH="$(uname -m)"
+function check_in_docker() {
+  if [ -f /.dockerenv ]; then
+    APOLLO_IN_DOCKER=true
+  else
+    APOLLO_IN_DOCKER=false
+  fi
+  export APOLLO_IN_DOCKER
+}
 
 function set_lib_path() {
-  local CYBER_SETUP="${APOLLO_ROOT_DIR}/cyber/setup.bash"
-  [[ -e "${CYBER_SETUP}" ]] && . "${CYBER_SETUP}"
+  export LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu
 
-  export LD_LIBRARY_PATH="/usr/local/lib:/usr/lib:/usr/lib/$(uname -m)-linux-gnu"
-  export LD_LIBRARY_PATH="/usr/local/qt5/lib:$LD_LIBRARY_PATH"
-  export LD_LIBRARY_PATH="/usr/local/fast-rtps/lib:$LD_LIBRARY_PATH"
-  export LD_LIBRARY_PATH="/usr/local/tf2/lib:$LD_LIBRARY_PATH"
-  # TODO(storypku):
-  # /apollo/bazel-genfiles/external/caffe/lib
-  # /usr/local/apollo/local_integ/lib
+  if [ "$RELEASE_DOCKER" == 1 ]; then
+    local CYBER_SETUP="/apollo/cyber/setup.bash"
+    if [ -e "${CYBER_SETUP}" ]; then
+      source "${CYBER_SETUP}"
+    fi
+    PY_LIB_PATH=/apollo/lib
+    PY_TOOLS_PATH=/apollo/modules/tools
+  else
+    local CYBER_SETUP="/apollo/cyber/setup.bash"
+    if [ -e "${CYBER_SETUP}" ]; then
+      source "${CYBER_SETUP}"
+    fi
+    PY_LIB_PATH=${APOLLO_ROOT_DIR}/py_proto
+    PY_TOOLS_PATH=${APOLLO_ROOT_DIR}/modules/tools
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/apollo/lib:/apollo/bazel-genfiles/external/caffe/lib
+  fi
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/apollo/lib:/usr/local/apollo/local_integ/lib
   export LD_LIBRARY_PATH=/usr/local/adolc/lib64:$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=/usr/local/Qt5.12.2/5.12.2/gcc_64/lib:$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=/usr/local/fast-rtps/lib:$LD_LIBRARY_PATH
+  if [ "$USE_GPU" != "1" ];then
+    export LD_LIBRARY_PATH=/usr/local/apollo/libtorch/lib:$LD_LIBRARY_PATH
+  else
+    export LD_LIBRARY_PATH=/usr/local/apollo/libtorch_gpu/lib:$LD_LIBRARY_PATH
+  fi
+  export LD_LIBRARY_PATH=/usr/local/apollo/boost/lib:$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=/usr/local/apollo/paddlepaddle_dep/mkldnn/lib/:$LD_LIBRARY_PATH
+  export PYTHONPATH=${PY_LIB_PATH}:${PY_TOOLS_PATH}:${PYTHONPATH}
+
+  # Set teleop paths
+  export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+  export PYTHONPATH=/apollo/modules/teleop/common:${PYTHONPATH}
+  add_to_path "/apollo/modules/teleop/common/scripts"
 
   if [ -e /usr/local/cuda/ ];then
     add_to_path "/usr/local/cuda/bin"
@@ -39,23 +71,16 @@ function set_lib_path() {
     export C_INCLUDE_PATH=/usr/local/cuda/include:$C_INCLUDE_PATH
     export CPLUS_INCLUDE_PATH=/usr/local/cuda/include:$CPLUS_INCLUDE_PATH
   fi
-
-  # TODO(storypku): Remove this!
-  if [ "$USE_GPU" != "1" ];then
-    export LD_LIBRARY_PATH=/usr/local/libtorch_cpu/lib:$LD_LIBRARY_PATH
-  else
-    export LD_LIBRARY_PATH=/usr/local/libtorch_gpu/lib:$LD_LIBRARY_PATH
-  fi
-
-  # FIXME(all): remove PYTHONPATH settings
-  export PYTHONPATH="${APOLLO_ROOT_DIR}/modules/tools:${PYTHONPATH}"
-  # Set teleop paths
-  export PYTHONPATH="${APOLLO_ROOT_DIR}/modules/teleop/common:${PYTHONPATH}"
-  add_to_path "/apollo/modules/teleop/common/scripts"
 }
 
 function create_data_dir() {
-  local DATA_DIR="${APOLLO_ROOT_DIR}/data"
+  local DATA_DIR=""
+  if [ "$RELEASE_DOCKER" != "1" ];then
+    DATA_DIR="${APOLLO_ROOT_DIR}/data"
+  else
+    DATA_DIR="${HOME}/data"
+  fi
+
   mkdir -p "${DATA_DIR}/log"
   mkdir -p "${DATA_DIR}/bag"
   mkdir -p "${DATA_DIR}/core"
@@ -84,20 +109,15 @@ function find_device() {
   fi
 }
 
-function setup_device_for_aarch64() {
-  local can_dev="/dev/can0"
-  if [ ! -e "${can_dev}" ]; then
-      warning "No CAN device named ${can_dev}. "
-      return
+function setup_device() {
+  if [ $(uname -s) != "Linux" ]; then
+    echo "Not on Linux, skip mapping devices."
+    return
   fi
 
-  sudo ip link set can0 type can bitrate 500000
-  sudo ip link set can0 up
-}
-
-function setup_device_for_amd64() {
   # setup CAN device
-  for INDEX in $(seq 0 3) ; do
+  for INDEX in `seq 0 3`
+  do
     # soft link if sensorbox exist
     if [ -e /dev/zynq_can${INDEX} ] &&  [ ! -e /dev/can${INDEX} ]; then
       sudo ln -s /dev/zynq_can${INDEX} /dev/can${INDEX}
@@ -107,37 +127,28 @@ function setup_device_for_amd64() {
     fi
   done
 
+  MACHINE_ARCH=$(uname -m)
+  if [ "$MACHINE_ARCH" == 'aarch64' ]; then
+    sudo ip link set can0 type can bitrate 500000
+    sudo ip link set can0 up
+  fi
+
   # setup nvidia device
   sudo /sbin/modprobe nvidia
   sudo /sbin/modprobe nvidia-uvm
   if [ ! -e /dev/nvidia0 ];then
-    info "mknod /dev/nvidia0"
     sudo mknod -m 666 /dev/nvidia0 c 195 0
   fi
   if [ ! -e /dev/nvidiactl ];then
-    info "mknod /dev/nvidiactl"
     sudo mknod -m 666 /dev/nvidiactl c 195 255
   fi
   if [ ! -e /dev/nvidia-uvm ];then
-    info "mknod /dev/nvidia-uvm"
     sudo mknod -m 666 /dev/nvidia-uvm c 243 0
   fi
   if [ ! -e /dev/nvidia-uvm-tools ];then
-    info "mknod /dev/nvidia-uvm-tools"
     sudo mknod -m 666 /dev/nvidia-uvm-tools c 243 1
   fi
-}
 
-function setup_device() {
-  if [ "$(uname -s)" != "Linux" ]; then
-    info "Not on Linux, skip mapping devices."
-    return
-  fi
-  if [[ "${HOST_ARCH}" == "x86_64" ]]; then
-      setup_device_for_amd64
-  else
-      setup_device_for_aarch64
-  fi
 }
 
 function decide_task_dir() {
@@ -185,7 +196,7 @@ function start_customized_path() {
 
   is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
   if [ $? -eq 1 ]; then
-    eval "nohup cyber_launch start ${APOLLO_ROOT_DIR}/modules/${MODULE_PATH}/launch/${MODULE}.launch &"
+    eval "nohup cyber_launch start /apollo/modules/${MODULE_PATH}/launch/${MODULE}.launch &"
     sleep 0.5
     is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
     if [ $? -eq 0 ]; then
@@ -253,7 +264,7 @@ function start_fe_customized_path() {
 
   is_stopped_customized_path "${MODULE_PATH}" "${MODULE}"
   if [ $? -eq 1 ]; then
-    eval "cyber_launch start ${APOLLO_ROOT_DIR}/modules/${MODULE_PATH}/launch/${MODULE}.launch"
+    eval "cyber_launch start /apollo/modules/${MODULE_PATH}/launch/${MODULE}.launch"
   else
     echo "Module ${MODULE} is already running - skipping."
     return 2
@@ -294,7 +305,7 @@ function stop_customized_path() {
     return
   fi
 
-  cyber_launch stop "${APOLLO_ROOT_DIR}/modules/${MODULE_PATH}/launch/${MODULE}.launch"
+  cyber_launch stop "/apollo/modules/${MODULE_PATH}/launch/${MODULE}.launch"
   if [ $? -eq 0 ]; then
     echo "Successfully stopped module ${MODULE}."
   else
@@ -378,15 +389,19 @@ function record_bag_env_log() {
 }
 
 # run command_name module_name
-function run_module() {
+function run() {
   local module=$1
   shift
   run_customized_path $module $module "$@"
 }
 
+check_in_docker
 unset OMP_NUM_THREADS
-
 if [ $APOLLO_IN_DOCKER = "true" ]; then
+  CYBER_SETUP="/apollo/cyber/setup.bash"
+  if [ -e "${CYBER_SETUP}" ]; then
+    source "${CYBER_SETUP}"
+  fi
   create_data_dir
   set_lib_path $1
   if [ -z $APOLLO_BASE_SOURCED ]; then

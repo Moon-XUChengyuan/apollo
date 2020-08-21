@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -39,7 +38,7 @@ cc_binary(
         "//modules/common/math",
         "//modules/map/pnc_map",
         "//modules/planning/common:planning_gflags",
-        "//modules/planning/proto:planner_open_space_config_cc_proto",
+        "//modules/planning/proto:planner_open_space_config_proto",
         "@eigen",
     ],
 )

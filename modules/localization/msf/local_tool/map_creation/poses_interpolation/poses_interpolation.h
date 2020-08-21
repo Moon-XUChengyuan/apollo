@@ -25,7 +25,7 @@
 #include <string>
 #include <vector>
 
-#include "modules/common/util/eigen_defs.h"
+#include "Eigen/Geometry"
 
 /**
  * @namespace apollo::localization
@@ -47,14 +47,13 @@ class PosesInterpolation {
  private:
   void LoadPCDTimestamp();
   void WritePCDPoses();
-  void PoseInterpolationByTime(
-      const ::apollo::common::EigenAffine3dVec &in_poses,
-      const std::vector<double> &in_timestamps,
-      const std::vector<double> &ref_timestamps,
-      const std::vector<unsigned int> &ref_indexes,
-      std::vector<unsigned int> *out_indexes,
-      std::vector<double> *out_timestamps,
-      ::apollo::common::EigenAffine3dVec *out_poses);
+  void PoseInterpolationByTime(const std::vector<Eigen::Affine3d> &in_poses,
+                               const std::vector<double> &in_timestamps,
+                               const std::vector<double> &ref_timestamps,
+                               const std::vector<unsigned int> &ref_indexes,
+                               std::vector<unsigned int> *out_indexes,
+                               std::vector<double> *out_timestamps,
+                               std::vector<Eigen::Affine3d> *out_poses);
 
  private:
   std::string input_poses_path_;
@@ -64,7 +63,7 @@ class PosesInterpolation {
 
   Eigen::Affine3d velodyne_extrinsic_;
 
-  ::apollo::common::EigenAffine3dVec input_poses_;
+  std::vector<Eigen::Affine3d> input_poses_;
   std::vector<double> input_poses_timestamps_;
 
   std::vector<double> ref_timestamps_;
@@ -72,7 +71,7 @@ class PosesInterpolation {
 
   std::vector<unsigned int> out_indexes_;
   std::vector<double> out_timestamps_;
-  ::apollo::common::EigenAffine3dVec out_poses_;
+  std::vector<Eigen::Affine3d> out_poses_;
 };
 
 }  // namespace msf

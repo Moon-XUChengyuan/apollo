@@ -22,9 +22,9 @@ import sys
 
 import matplotlib.pyplot as plt
 
-import modules.tools.common.proto_utils as proto_utils
+import common.proto_utils as proto_utils
 import modules.routing.proto.topo_graph_pb2 as topo_graph_pb2
-import modules.tools.routing.util as util
+import util
 
 
 color_iter = itertools.cycle(

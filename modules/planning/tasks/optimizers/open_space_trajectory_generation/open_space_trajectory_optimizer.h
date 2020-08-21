@@ -24,11 +24,6 @@
 #include <vector>
 
 #include "Eigen/Eigen"
-
-#ifdef ALIVE
-#undef ALIVE
-#endif
-
 #include "modules/common/configs/proto/vehicle_config.pb.h"
 #include "modules/common/math/vec2d.h"
 #include "modules/common/vehicle_state/proto/vehicle_state.pb.h"

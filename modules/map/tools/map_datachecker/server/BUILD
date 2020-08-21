@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -19,8 +18,8 @@ cc_library(
     deps = [
         ":common",
         "//cyber",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
-        "@boost",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
+        "//third_party:boost",
     ],
 )
 
@@ -30,8 +29,8 @@ cc_library(
     hdrs = ["channel_verify_agent.h"],
     deps = [
         ":channel_verify",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
-        "//modules/map/tools/map_datachecker/proto:collection_service_cc_grpc",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_grpc",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
@@ -42,7 +41,7 @@ cc_library(
     hdrs = ["common.h"],
     deps = [
         "//cyber",
-        "@boost",
+        "//third_party:boost",
     ],
 )
 
@@ -57,7 +56,7 @@ cc_library(
         ":common",
         ":worker_gflags",
         "//cyber",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
@@ -68,8 +67,8 @@ cc_library(
     hdrs = ["laps_checker.h"],
     deps = [
         ":common",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
-        "@boost",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
+        "//third_party:boost",
     ],
 )
 
@@ -80,7 +79,7 @@ cc_library(
     deps = [
         ":laps_checker",
         ":pose_collection_agent",
-        "//modules/map/tools/map_datachecker/proto:collection_service_cc_grpc",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_grpc",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
@@ -101,6 +100,9 @@ cc_library(
     hdrs = ["pose_collection.h"],
     deps = [
         ":common",
+        ":pj_transformer",
+        "//cyber",
+        "//modules/drivers/gnss/proto:gnss_proto",
     ],
 )
 
@@ -113,7 +115,7 @@ cc_library(
         ":pj_transformer",
         ":pose_collection",
         "//cyber",
-        "//modules/drivers/gnss/proto:gnss_best_pose_cc_proto",
+        "//modules/drivers/gnss/proto:gnss_proto",
     ],
 )
 
@@ -126,7 +128,7 @@ cc_library(
     ],
     deps = [
         ":common",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
     ],
 )
 
@@ -159,8 +161,8 @@ cc_library(
         ":loops_verify_agent",
         ":pose_collection",
         ":static_align",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
-        "//modules/map/tools/map_datachecker/proto:collection_service_cc_grpc",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_grpc",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
@@ -173,9 +175,9 @@ cc_library(
         ":worker_agent",
         ":worker_gflags",
         "//cyber",
-        "//modules/drivers/gnss/proto:gnss_best_pose_cc_proto",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
-        "//modules/map/tools/map_datachecker/proto:collection_service_cc_grpc",
+        "//modules/drivers/gnss/proto:gnss_proto",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_grpc",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
     ],
 )
 

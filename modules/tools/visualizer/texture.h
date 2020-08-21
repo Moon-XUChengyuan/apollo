@@ -18,7 +18,6 @@
 
 #include <QtGui/QImage>
 #include <QtGui/QOpenGLBuffer>
-#include <memory>
 
 #include "modules/drivers/proto/sensor_image.pb.h"
 

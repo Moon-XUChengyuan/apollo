@@ -1,101 +1,326 @@
 workspace(name = "apollo")
 
-load("//tools:workspace.bzl", "apollo_repositories")
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-apollo_repositories()
-
-http_archive(
-    name = "bazel_skylib",
-    sha256 = "1dde365491125a3db70731e25658dfdd3bc5dbdfd11b840b3e987ecf043c7ca0",
-    urls = ["https://github.com/bazelbuild/bazel-skylib/releases/download/0.9.0/bazel_skylib-0.9.0.tar.gz"],
+# googletest (GTest and GMock)
+new_http_archive(
+    name = "com_google_googletest",
+    build_file = "third_party/gtest.BUILD",
+    sha256 = "58a6f4277ca2bc8565222b3bbd58a177609e9c488e8a72649359ba51450db7d8",
+    strip_prefix = "googletest-release-1.8.0",
+    url = "file:///home/tmp/googletest-release-1.8.0.tar.gz",
 )
 
-load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
-bazel_skylib_workspace()
-
-http_archive(
-    name = "rules_proto",
-    sha256 = "602e7161d9195e50246177e7c55b2f39950a9cf7366f74ed5f22fd45750cd208",
-    strip_prefix = "rules_proto-97d8af4dc474595af3900dd85cb3a29ad28cc313",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
-        "https://github.com/bazelbuild/rules_proto/archive/97d8af4dc474595af3900dd85cb3a29ad28cc313.tar.gz",
-    ],
+# TODO(xiaoxq): Alias to help migrate legacy code in other repos. Will remove
+# very soon.
+new_local_repository(
+    name = "gtest",
+    build_file_content = """
+package(default_visibility = ["//visibility:public"])
+cc_library(name = "gtest", deps = ["@com_google_googletest//:gtest"])
+cc_library(name = "main", deps = ["@com_google_googletest//:gtest_main"])
+    """,
+    path = "/home/tmp",
 )
 
-load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-
-rules_proto_dependencies()
-
-rules_proto_toolchains()
-
-http_archive(
-    name = "rules_python",
-    sha256 = "b5668cde8bb6e3515057ef465a35ad712214962f0b3a314e551204266c7be90c",
-    strip_prefix = "rules_python-0.0.2",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.0.2/rules_python-0.0.2.tar.gz",
+# gflags
+new_local_repository(
+    name = "com_github_gflags_gflags",
+    build_file = "third_party/gflags.BUILD",
+    path = "/usr/local/include/gflags",
 )
 
-load("@rules_python//python:repositories.bzl", "py_repositories")
+# glog
+new_local_repository(
+    name = "com_google_glog",
+    build_file = "third_party/glog.BUILD",
+    path = "/usr/local/include/glog",
+)
 
-py_repositories()
+# Google Benchmark
+new_http_archive(
+    name = "benchmark",
+    build_file = "third_party/benchmark.BUILD",
+    sha256 = "e7334dd254434c6668e33a54c8f839194c7c61840d52f4b6258eee28e9f3b20e",
+    strip_prefix = "benchmark-1.1.0",
+    url = "file:///home/tmp/benchmark-1.1.0.tar.gz",
+)
 
-# Only needed if using the packaging rules.
-# load("@rules_python//python:pip.bzl", "pip_repositories")
-# pip_repositories()
+# cpplint from google style guide
+new_local_repository(
+    name = "google_styleguide",
+    build_file = "third_party/google_styleguide.BUILD",
+    path = "/home/tmp/google_styleguide",
+)
 
-# load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
-# See https://github.com/bazelbuild/bazel/issues/11406
-# maybe(
-#    http_archive,
-#    name = "boringssl",
-#    sha256 = "fb236ae74676dba515e1230aef4cc69ab265af72fc08784a6755a319dd013ca6",
-#    urls = ["https://apollo-platform-system.bj.bcebos.com/archive/6.0/boringssl-83da28a68f32023fd3b95a8ae94991a07b1f6c62.tar.gz"],
-# )
+# ad-rss-lib
+new_http_archive(
+    name = "ad_rss_lib",
+    build_file = "third_party/rss_lib.BUILD",
+    strip_prefix = "ad-rss-lib-1.1.0",
+    url = "file:///home/tmp/ad_rss_lib-1.1.0.tar.gz",
+)
+
+# eigen
+new_http_archive(
+    name = "eigen",
+    build_file = "third_party/eigen.BUILD",
+    sha256 = "ba4f95f9082ce99012d5ff320472a0e9fd0be921a20f11912f0bf7e6ca93f240",
+    strip_prefix = "eigen-git-mirror-3.2.10",
+    url = "file:///home/tmp/eigen-3.2.10.tar.gz",
+)
+
+# CivetWeb (web server)
+new_http_archive(
+    name = "civetweb",
+    build_file = "third_party/civetweb.BUILD",
+    sha256 = "de7d5e7a2d9551d325898c71e41d437d5f7b51e754b242af897f7be96e713a42",
+    strip_prefix = "civetweb-1.11",
+    url = "file:///home/tmp/v1.11.tar.gz",
+)
+
+#ros
+new_local_repository(
+    name = "ros",
+    build_file = "third_party/ros.BUILD",
+    path = "/home/tmp/ros",
+)
+
+# PCL 1.9
+new_local_repository(
+    name = "pcl",
+    build_file = "third_party/pcl.BUILD",
+    path = "/usr/local/include/pcl-1.9",
+)
+
+new_local_repository(
+    name = "glew",
+    build_file = "third_party/glew.BUILD",
+    path = "/usr/include",
+)
+
+new_local_repository(
+    name = "qt",
+    build_file = "third_party/qt.BUILD",
+    path = "/usr/local/qt5/include",
+)
+
+new_local_repository(
+    name = "opengl",
+    build_file = "third_party/opengl.BUILD",
+    path = "/usr/include",
+)
+
+new_local_repository(
+    name = "glfw",
+    build_file = "third_party/glfw.BUILD",
+    path = "/usr/include",
+)
+
+http_archive(
+    name = "com_google_absl",
+    sha256 = "794d483dd9a19c43dc1fbbe284ce8956eb7f2600ef350dac4c602f9b4eb26e90",
+    strip_prefix = "abseil-cpp-20180600",
+    # url = "https://github.com/abseil/abseil-cpp/archive/20180600.tar.gz",
+    url = "file:///home/tmp/abseil-cpp-20180600.tar.gz",
+)
+
+new_local_repository(
+    name = "vtk",
+    build_file = "third_party/vtk.BUILD",
+    path = "/usr/include/vtk-7.1",
+)
+
+# Caffe
+new_local_repository(
+    name = "caffe",
+    build_file = "third_party/caffe.BUILD",
+    path = "/usr/include/caffe",
+)
+
+## tensorrt
+new_local_repository(
+    name = "tensorrt",
+    build_file = "third_party/tensorrt.BUILD",
+    path = "/usr/include/tensorrt",
+)
+
+# YAML-CPP
+new_http_archive(
+    name = "com_github_jbeder_yaml_cpp",
+    build_file = "third_party/yaml_cpp.BUILD",
+    strip_prefix = "yaml-cpp-yaml-cpp-0.5.3",
+    url = "file:///home/tmp/yaml-cpp-0.5.3.zip",
+)
+
+new_http_archive(
+    name = "qpOASES",
+    build_file = "third_party/qpOASES.BUILD",
+    sha256 = "e70b49586b58b8f5fd348e951f3c3094ed0ad371a96097a499f343a7aeec7dbe",
+    strip_prefix = "qp-oases-3.2.1-1",
+    url = "file:///home/tmp/qp-oases-3.2.1-1.zip",
+)
+
+# OSQP
+new_local_repository(
+    name = "osqp",
+    build_file = "third_party/osqp.BUILD",
+    path = "/usr/local/include/osqp/include",
+)
+
+# IpOpt
+new_local_repository(
+    name = "ipopt",
+    build_file = "third_party/ipopt.BUILD",
+    path = "/usr/local/ipopt/include",
+)
+
+# ADOL-C
+new_local_repository(
+    name = "adolc",
+    build_file = "third_party/adolc.BUILD",
+    path = "/usr/local/adolc/include",
+)
+
+# Cuda
+new_local_repository(
+    name = "cuda",
+    build_file = "third_party/cuda.BUILD",
+    path = "/usr/local/cuda",
+)
+
+# Local-integ
+new_local_repository(
+    name = "local_integ",
+    build_file = "third_party/local_integ.BUILD",
+    path = "/usr/local/apollo/local_integ",
+)
+
+# paddlepaddle
+new_local_repository(
+    name = "paddlepaddle",
+    build_file = "third_party/paddlepaddle.BUILD",
+    path = "/usr/local/apollo/paddlepaddle",
+)
+
+# mkldnn
+new_local_repository(
+    name = "mkldnn",
+    build_file = "third_party/mkldnn.BUILD",
+    path = "/usr/local/apollo/local_third_party/mkldnn",
+)
+
+# mklml
+new_local_repository(
+    name = "mklml",
+    build_file = "third_party/mklml.BUILD",
+    path = "/usr/local/apollo/local_third_party/mklml",
+)
+
+# Proj.4
+new_http_archive(
+    name = "proj4",
+    build_file = "third_party/proj4.BUILD",
+    strip_prefix = "proj.4-4.9.3",
+    url = "file:///home/tmp/proj.4-4.9.3.zip",
+)
+
+# tinyxml2
+new_http_archive(
+    name = "tinyxml2",
+    build_file = "third_party/tinyxml2.BUILD",
+    strip_prefix = "tinyxml2-5.0.1",
+    url = "file:///home/tmp/tinyxml2-5.0.1.zip",
+)
+
+#protobuf 3.3
+http_archive(
+    name = "com_google_protobuf",
+    strip_prefix = "protobuf-3.3.0",
+    url = "file:///home/tmp/protobuf-3.3.0.tar.gz",
+)
+
+#jsoncpp .so for adv_plat
+new_local_repository(
+    name = "jsoncpp",
+    build_file = "third_party/jsoncpp.BUILD",
+    path = "/usr/local/apollo/jsoncpp/",
+)
+
+#xxhash
+new_local_repository(
+    name = "xxhash",
+    build_file = "third_party/xxhash.BUILD",
+    path = "/usr/local/apollo/paddlepaddle_dep/xxhash",
+)
+
+#snappystream
+new_local_repository(
+    name = "snappystream",
+    build_file = "third_party/snappystream.BUILD",
+    path = "/usr/local/apollo/paddlepaddle_dep/snappystream",
+)
+
+#adv_plat
+new_http_archive(
+    name = "adv_plat",
+    build_file = "third_party/adv_plat.BUILD",
+    sha256 = "0a58dadab924b520d5b5a58ef82fc0f76c2aa4feaaabd49ec9873228c125d513",
+    url = "https://github.com/ApolloAuto/apollo-contrib/releases/download/v3.0.0/plat-sw-3.0.0.1.zip",
+)
+
+new_local_repository(
+    name = "fastrtps",
+    build_file = "third_party/fastrtps.BUILD",
+    path = "/usr/local/fast-rtps",
+)
+
 # grpc
 http_archive(
     name = "com_github_grpc_grpc",
-    sha256 = "419dba362eaf8f1d36849ceee17c3e2ff8ff12ac666b42d3ff02a164ebe090e9",
-    strip_prefix = "grpc-1.30.0",
-    urls = ["https://github.com/grpc/grpc/archive/v1.30.0.tar.gz"],
+    strip_prefix = "grpc-1.14.2",
+    url = "file:///home/tmp/v1.14.2.tar.gz",
 )
 
 load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
 
 grpc_deps()
 
-load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
+# python
+new_local_repository(
+    name = "python27",
+    build_file = "third_party/python27.BUILD",
+    path = "/usr",
+)
 
-grpc_extra_deps()
+# PyTorch
+new_local_repository(
+    name = "pytorch",
+    build_file = "third_party/pytorch.BUILD",
+    path = "/usr/local/apollo/libtorch",
+)
 
-#new_local_repository(
-#    name = "opengl",
-#    build_file = "third_party/opengl.BUILD",
-#    path = "/usr/include",
-#)
-#new_local_repository(
-#    name = "glfw",
-#    build_file = "third_party/glfw.BUILD",
-#    path = "/usr/include",
-#)
-# Caffe
-# new_local_repository(
-#    name = "caffe",
-#    build_file = "third_party/caffe.BUILD",
-#    path = "/opt/apollo/pkgs/caffe/include",
-# )
+# PyTorch GPU
+new_local_repository(
+    name = "pytorch_gpu",
+    build_file = "third_party/pytorch_gpu.BUILD",
+    path = "/usr/local/apollo/libtorch_gpu",
+)
 
-#new_local_repository(
-#    name = "mkldnn",
-#    build_file = "third_party/mkldnn.BUILD",
-#    path = "/usr/local/apollo/local_third_party/mkldnn",
-#)
-#
-# mklml
-# new_local_repository(
-#    name = "mklml",
-#    build_file = "third_party/mklml.BUILD",
-#    path = "/usr/local/apollo/local_third_party/mklml",
-# )
+# ffmpeg
+new_local_repository(
+    name = "ffmpeg",
+    build_file = "third_party/ffmpeg.BUILD",
+    path = "/usr/local/apollo/ffmpeg",
+)
+
+# boost
+new_local_repository(
+    name = "boost",
+    build_file = "third_party/boost.BUILD",
+    path = "/usr/local/apollo/boost/include",
+)
+
+new_local_repository(
+    name = "opencv",
+    build_file = "third_party/opencv.BUILD",
+    path = "/usr/include",
+)

@@ -24,6 +24,7 @@
 
 #include "modules/planning/proto/planning_internal.pb.h"
 #include "modules/planning/proto/task_config.pb.h"
+
 #include "modules/planning/tasks/optimizers/speed_optimizer.h"
 
 namespace apollo {

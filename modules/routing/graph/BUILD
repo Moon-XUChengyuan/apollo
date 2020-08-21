@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -58,8 +57,7 @@ cc_library(
         ":routing_topo_range",
         "//cyber",
         "//modules/common/util:map_util",
-        "//modules/routing/proto:routing_cc_proto",
-        "//modules/routing/proto:topo_graph_cc_proto",
+        "//modules/routing/proto:routing_proto",
     ],
 )
 

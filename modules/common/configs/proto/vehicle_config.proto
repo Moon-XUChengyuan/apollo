@@ -34,7 +34,6 @@ enum VehicleBrand {
   WEY = 5;
   ZHONGYUN = 6;
   CH = 7;
-  DKIT = 8;
 }
 
 message VehicleID {

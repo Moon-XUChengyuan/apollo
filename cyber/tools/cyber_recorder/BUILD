@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -6,7 +5,6 @@ package(default_visibility = ["//visibility:public"])
 cc_binary(
     name = "cyber_recorder",
     srcs = ["main.cc"],
-    linkopts = ["-pthread"],
     deps = [
         ":info",
         ":player",
@@ -16,6 +14,7 @@ cc_binary(
         "//cyber:init",
         "//cyber/common:file",
         "//cyber/common:time_conversion",
+        "//third_party:pthread",
     ],
 )
 

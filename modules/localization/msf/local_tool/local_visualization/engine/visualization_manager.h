@@ -28,7 +28,6 @@
 #include <utility>
 #include <vector>
 
-#include "modules/common/util/eigen_defs.h"
 #include "modules/localization/msf/local_tool/local_visualization/engine/visualization_engine.h"
 
 namespace apollo {
@@ -41,7 +40,7 @@ struct LidarVisFrame {
   /**@brief The time stamp. */
   double timestamp;
   /**@brief The 3D point cloud in this frame. */
-  ::apollo::common::EigenVector3dVec pt3ds;
+  std::vector<Eigen::Vector3d> pt3ds;
 };
 
 struct LocalizationMsg {

@@ -1,11 +1,10 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
 
 cc_binary(
     name = "libvelodyne_driver_component.so",
-    linkshared = True,
+    linkopts = ["-shared"],
     linkstatic = False,
     deps = [":velodyne_driver_component_lib"],
 )
@@ -36,10 +35,14 @@ cc_library(
         "socket_input.h",
     ],
     copts = ['-DMODULE_NAME=\\"velodyne\\"'],
+    linkopts = [
+        "-lpcap",
+    ],
     deps = [
         "//cyber",
         "//modules/common/util",
-        "//modules/drivers/velodyne/proto:config_cc_proto",
+        "//modules/drivers/velodyne/proto:velodyne_proto",
+        "@pcl",
     ],
 )
 

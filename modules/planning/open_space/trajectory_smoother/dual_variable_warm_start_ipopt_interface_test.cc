@@ -21,6 +21,7 @@
 
 #include "cyber/common/file.h"
 #include "gtest/gtest.h"
+
 #include "modules/planning/common/planning_gflags.h"
 
 namespace apollo {

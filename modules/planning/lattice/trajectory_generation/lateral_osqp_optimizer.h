@@ -23,9 +23,10 @@
 #include <utility>
 #include <vector>
 
+#include "osqp/include/osqp.h"
+
 #include "modules/planning/common/trajectory1d/piecewise_jerk_trajectory1d.h"
 #include "modules/planning/lattice/trajectory_generation/lateral_qp_optimizer.h"
-#include "osqp/osqp.h"
 
 namespace apollo {
 namespace planning {

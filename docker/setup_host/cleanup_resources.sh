@@ -16,34 +16,18 @@
 # limitations under the License.
 ###############################################################################
 
-if [ -f /.dockerenv ]; then
-  echo "Oops, this script is expected to run on host rather than from within container."
+if [ ! -z ${DOCKER_IMG} ]; then
+  echo "This script is expected to be run on host instead of the container."
+  echo "Please exit."
   exit 1
 fi
 
 # Credit to https://gist.github.com/bastman/5b57ddb3c11942094f8d0a97d461b430
-exited_containers="$(docker ps -qa --no-trunc --filter "status=exited")"
-if [ -z "${exited_containers}" ]; then
-    echo "Congrats, no exited docker containers found."
-else
-    echo "Exited containers found, cleanup ..."
-    docker rm ${exited_containers}
-fi
+echo "Cleanup containers..."
+docker rm $(docker ps -qa --no-trunc --filter "status=exited")
 
-dangling_images="$(docker images --filter "dangling=true" -q --no-trunc)"
-if [ -z "${dangling_images}" ]; then
-    echo "Congrats, no dangling docker images found."
-else
-    echo "Dangling images found, cleanup ..."
-    docker rmi ${dangling_images}
-fi
+echo "Cleanup images..."
+docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
 
-dangling_volumes="$(docker volume ls -qf dangling=true)"
-if [ -z "${dangling_volumes}" ]; then
-    echo "Congrats, no dangling docker volumes found."
-else
-    echo "Dangling volumes found, cleanup ..."
-    docker volume rm ${dangling_volumes}
-fi
-
-echo "Docker cleaning up finished."
+echo "Cleanup volumes..."
+docker volume rm $(docker volume ls -qf dangling=true)

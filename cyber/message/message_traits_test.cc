@@ -17,9 +17,9 @@
 #include "cyber/message/message_traits.h"
 
 #include <string>
+#include "gtest/gtest.h"
 
 #include "cyber/proto/unit_test.pb.h"
-#include "gtest/gtest.h"
 
 namespace apollo {
 namespace cyber {
@@ -34,11 +34,10 @@ class Message {
  public:
   std::string content;
 
-  std::size_t ByteSizeLong() const { return content.size(); }
+  int ByteSize() const { return static_cast<int>(content.size()); }
 
   bool SerializeToArray(void* data, int size) const {
-    if (data == nullptr || size < 0 ||
-        static_cast<size_t>(size) < ByteSizeLong()) {
+    if (data == nullptr || size < ByteSize()) {
       return false;
     }
 

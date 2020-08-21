@@ -21,8 +21,8 @@ import sys
 
 import matplotlib.pyplot as plt
 
-import modules.tools.common.proto_utils as proto_utils
-import modules.tools.routing.util as util
+import common.proto_utils as proto_utils
+import util
 
 
 g_color = [

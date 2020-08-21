@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -67,7 +66,6 @@ cc_library(
         "//modules/perception/base:object",
         "//modules/perception/base:object_pool_types",
         "//modules/perception/common/sensor_manager",
-        "@com_google_googletest//:gtest_main",
         "@eigen",
     ],
 )

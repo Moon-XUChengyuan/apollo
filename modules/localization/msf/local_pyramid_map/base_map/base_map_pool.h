@@ -15,10 +15,9 @@
  *****************************************************************************/
 #pragma once
 
+#include <boost/thread.hpp>
 #include <list>
 #include <set>
-
-#include <boost/thread.hpp>
 
 #include "Eigen/Core"
 

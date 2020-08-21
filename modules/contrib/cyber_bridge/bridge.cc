@@ -4,10 +4,9 @@
  * This software contains code licensed as described in LICENSE.
  *
  */
+#include <gflags/gflags.h>
 
 #include <memory>
-
-#include <gflags/gflags.h>
 
 #include "cyber/common/log.h"
 #include "cyber/init.h"

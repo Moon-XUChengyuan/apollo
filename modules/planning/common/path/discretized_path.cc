@@ -21,7 +21,6 @@
 #include "modules/planning/common/path/discretized_path.h"
 
 #include <algorithm>
-
 #include "cyber/common/log.h"
 #include "modules/common/math/linear_interpolation.h"
 

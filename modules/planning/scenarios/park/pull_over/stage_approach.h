@@ -23,6 +23,7 @@
 #include <memory>
 
 #include "modules/planning/proto/planning_config.pb.h"
+
 #include "modules/planning/scenarios/park/pull_over/pull_over_scenario.h"
 #include "modules/planning/scenarios/stage.h"
 

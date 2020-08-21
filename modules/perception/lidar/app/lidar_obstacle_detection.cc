@@ -20,6 +20,7 @@
 #include "modules/perception/lib/utils/perf.h"
 #include "modules/perception/lidar/app/proto/lidar_obstacle_detection_config.pb.h"
 #include "modules/perception/lidar/common/lidar_log.h"
+#include "modules/perception/lidar/lib/scene_manager/scene_manager.h"
 
 namespace apollo {
 namespace perception {
@@ -38,16 +39,31 @@ bool LidarObstacleDetection::Init(
   ACHECK(model_config->get_value("root_path", &root_path));
   config_file = cyber::common::GetAbsolutePath(work_root, root_path);
   config_file = cyber::common::GetAbsolutePath(config_file, sensor_name);
-  config_file = cyber::common::GetAbsolutePath(config_file,
-                                               "lidar_obstacle_detection.conf");
+  config_file = cyber::common::GetAbsolutePath(
+      config_file, "lidar_obstacle_detection.conf");
 
   LidarObstacleDetectionConfig config;
   ACHECK(cyber::common::GetProtoFromFile(config_file, &config));
   detector_name_ = config.detector();
+  use_map_manager_ = config.use_map_manager();
+  use_object_filter_bank_ = config.use_object_filter_bank();
+
+  use_map_manager_ = use_map_manager_ && options.enable_hdmap_input;
+
+  SceneManagerInitOptions scene_manager_init_options;
+  ACHECK(SceneManager::Instance().Init(scene_manager_init_options));
 
   PointCloudPreprocessorInitOptions preprocessor_init_options;
   preprocessor_init_options.sensor_name = sensor_name;
   ACHECK(cloud_preprocessor_.Init(preprocessor_init_options));
+
+  if (use_map_manager_) {
+    MapManagerInitOptions map_manager_init_options;
+    if (!map_manager_.Init(map_manager_init_options)) {
+      AINFO << "Failed to init map manager.";
+      use_map_manager_ = false;
+    }
+  }
 
   detector_.reset(new PointPillarsDetection);
   // detector_.reset(
@@ -97,6 +113,15 @@ LidarProcessResult LidarObstacleDetection::ProcessCommon(
   const auto& sensor_name = options.sensor_name;
 
   PERCEPTION_PERF_BLOCK_START();
+  if (use_map_manager_) {
+    MapManagerOptions map_manager_options;
+    if (!map_manager_.Update(map_manager_options, frame)) {
+      return LidarProcessResult(LidarErrorCode::MapManagerError,
+                                "Failed to update map structure.");
+    }
+  }
+  PERCEPTION_PERF_BLOCK_END_WITH_INDICATOR(sensor_name, "map_manager");
+
   DetectionOptions detection_options;
   if (!detector_->Detect(detection_options, frame)) {
     return LidarProcessResult(LidarErrorCode::DetectionError,

@@ -44,11 +44,11 @@ class SceneCameraDialog : public QDialog {
   void pitchValueChanged(double);
   void rollValueChanged(double);
 
- public slots:  // NOLINT
+ public slots:
   void updateCameraAttitude(const QVector3D &);
   void updateCameraPos(const QVector3D &);
 
- private slots:  // NOLINT
+ private slots:
   void OnStepSlideChanged(int v);
   void onCameraTypeChanged(int);
 

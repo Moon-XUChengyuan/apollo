@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -26,9 +25,9 @@ cc_library(
         ":config_gflags",
         "//cyber/common:file",
         "//cyber/common:macros",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/math:geometry",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/configs/proto:vehicle_config_proto",
+        "//modules/common/util",
+        "@com_google_glog//:glog",
     ],
 )
 

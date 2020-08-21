@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -13,9 +12,9 @@ cc_library(
         "//modules/common/util:message_util",
         "//modules/third_party_perception/tools:third_party_perception_filter",
         "//modules/third_party_perception/tools:third_party_perception_fusion",
-        "//modules/third_party_perception/tools:third_party_perception_mobileye_conversion",
         "//modules/third_party_perception/tools:third_party_perception_radar_conversion",
         "//modules/third_party_perception/tools:third_party_perception_smartereye_conversion",
+        "//modules/third_party_perception/tools:third_party_perception_mobileye_conversion",               
     ],
 )
 
@@ -30,9 +29,9 @@ cc_library(
         "//modules/common/util:message_util",
         "//modules/third_party_perception/tools:third_party_perception_filter",
         "//modules/third_party_perception/tools:third_party_perception_fusion",
-        "//modules/third_party_perception/tools:third_party_perception_mobileye_conversion",
         "//modules/third_party_perception/tools:third_party_perception_radar_conversion",
         "//modules/third_party_perception/tools:third_party_perception_smartereye_conversion",
+        "//modules/third_party_perception/tools:third_party_perception_mobileye_conversion",
     ],
 )
 
@@ -47,9 +46,9 @@ cc_library(
         "//modules/common/util:message_util",
         "//modules/third_party_perception/tools:third_party_perception_filter",
         "//modules/third_party_perception/tools:third_party_perception_fusion",
-        "//modules/third_party_perception/tools:third_party_perception_mobileye_conversion",
         "//modules/third_party_perception/tools:third_party_perception_radar_conversion",
         "//modules/third_party_perception/tools:third_party_perception_smartereye_conversion",
+        "//modules/third_party_perception/tools:third_party_perception_mobileye_conversion",
     ],
 )
 

@@ -20,6 +20,7 @@
 #include <string>
 
 #include "Eigen/Geometry"
+
 #include "modules/drivers/gnss/proto/ins.pb.h"
 #include "modules/drivers/proto/pointcloud.pb.h"
 #include "modules/localization/ndt/localization_pose_buffer.h"
@@ -44,9 +45,6 @@ struct TimeStampPose {
 };
 
 class NDTLocalization {
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
  public:
   NDTLocalization() {}
   ~NDTLocalization() { tf_buffer_ = nullptr; }

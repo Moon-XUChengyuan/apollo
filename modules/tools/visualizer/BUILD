@@ -1,5 +1,5 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
-load("//third_party/qt5:qt.bzl", "qt_cc_library")
+load("//tools:cpplint.bzl", "cpplint")
+load("//tools:qt.bzl", "qt_cc_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -12,12 +12,16 @@ cc_binary(
         ".",
     ],
     linkopts = [
-        "-pthread",
+        "-lconsole_bridge",
+        "-lGL",
+        "-lQt5Core",
+        "-lQt5Widgets",
+        "-lQt5Gui",
+        "-lQt5OpenGL",
     ],
     deps = [
         ":visualizer_lib",
-        "//third_party:console_bridge",
-        "//third_party:glvnd",
+        "//third_party:pthread",
         "@fastrtps",
         "@qt//:qt_core",
         "@qt//:qt_gui",
@@ -26,7 +30,6 @@ cc_binary(
     ],
 )
 
-# TODO(all): Extract the large library to thin pieces.
 # name, src, hdr, uis = [], res = [], normal_hdrs = [], deps = None
 qt_cc_library(
     name = "visualizer_lib",
@@ -36,7 +39,6 @@ qt_cc_library(
     copts = [
         "-Imodules/drivers/proto",
         "-Iexternal/qt",
-        "-fPIC",
     ],
     hdr = glob([
         "*.h",
@@ -53,9 +55,7 @@ qt_cc_library(
     ]),
     deps = [
         "//cyber",
-        "//modules/drivers/proto:pointcloud_cc_proto",
-        "//modules/drivers/proto:radar_cc_proto",
-        "//modules/drivers/proto:sensor_image_cc_proto",
+        "//modules/drivers/proto:sensor_proto",
         "@qt//:qt_core",
         "@qt//:qt_gui",
         "@qt//:qt_opengl",
@@ -63,7 +63,4 @@ qt_cc_library(
     ],
 )
 
-# TODO(all): Disable linter temporarily as the generated ui files should be
-# excluded from check. But we should also check the .h and .cc files, if they
-# are extracted to their own cc_libraries. See the TODO above.
-# cpplint()
+cpplint()

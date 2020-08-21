@@ -20,10 +20,10 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/shared_mutex.hpp>
+#include <memory>
+#include <string>
 
 #include "cyber/common/log.h"
 #include "cyber/cyber.h"

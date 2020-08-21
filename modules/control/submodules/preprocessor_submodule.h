@@ -82,7 +82,7 @@ class PreprocessorSubmodule final : public cyber::Component<LocalView> {
   common::Status ProducePreprocessorStatus(Preprocessor *preprocessor_status);
 
  private:
-  int calledTimes=0;
+   int calledTimes=0;
   double init_time_ = 0.0;
 
   bool estop_ = false;

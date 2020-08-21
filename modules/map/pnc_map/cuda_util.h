@@ -14,9 +14,8 @@
  * limitations under the License.
  *****************************************************************************/
 
-#include <vector>
-
 #include <cublas_v2.h>
+#include <vector>
 
 #include "modules/common/math/line_segment2d.h"
 #include "modules/common/math/vec2d.h"

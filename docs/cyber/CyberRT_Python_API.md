@@ -120,7 +120,7 @@ class RecordReader(object):
 	def reset(self):
         """
         return reset.
-        """
+        ""
         return _CYBER_RECORD.PyRecordReader_Reset(self.record_reader)
 
     def get_channellist(self):
@@ -220,114 +220,112 @@ class Timer(object):
 
 ## 4. Examples
 
-### 4.1 Read from Channel (in cyber/python/cyber_py3/examples/listener.py)
+### 4.1 Read from Channel (in cyber/python/examples/listener.py)
 
 ```python
-from cyber_py3 import cyber
-from cyber.proto.unit_test_pb2 import ChatterBenchmark
-
+import sys
+sys.path.append("../")
+from cyber_py import cyber
+from modules.common.util.testdata.simple_pb2 import SimpleMessage
 
 def callback(data):
-    """
-    Reader message callback.
-    """
-    print("=" * 80)
-    print("py:reader callback msg->:")
-    print(data)
-    print("=" * 80)
 
+    """
+    reader message callback.
+    """
+    print "="*80
+    print "py:reader callback msg->:"
+    print data
+    print "="*80
 
 def test_listener_class():
     """
-    Reader message.
+    reader message.
     """
-    print("=" * 120)
+    print "=" * 120
     test_node = cyber.Node("listener")
-    test_node.create_reader("channel/chatter", ChatterBenchmark, callback)
+    test_node.create_reader("channel/chatter",
+            SimpleMessage, callback)
     test_node.spin()
 
-
 if __name__ == '__main__':
+
     cyber.init()
     test_listener_class()
     cyber.shutdown()
+
+
  ```
 
-### 4.2 Write to Channel(in cyber/python/cyber_py3/examples/talker.py)
+### 4.2 Write to Channel(in cyber/python/examples/talker.py)
 
  ```python
+from modules.common.util.testdata.simple_pb2 import SimpleMessage
+from cyber_py import cyber
+"""Module for example of talker."""
 import time
-
-from cyber_py3 import cyber
-from cyber.proto.unit_test_pb2 import ChatterBenchmark
-
+import sys
+sys.path.append("../")
 
 def test_talker_class():
     """
-    Test talker.
+    test talker.
     """
-    msg = ChatterBenchmark()
-    msg.content = "py:talker:send Alex!"
-    msg.stamp = 9999
-    msg.seq = 0
-    print(msg)
+    msg = SimpleMessage()
+    msg.text = "talker:send Alex!"
+    msg.integer = 0
     test_node = cyber.Node("node_name1")
     g_count = 1
-
-    writer = test_node.create_writer("channel/chatter", ChatterBenchmark, 6)
+    writer = test_node.create_writer("channel/chatter",
+                                     SimpleMessage, 6)
     while not cyber.is_shutdown():
         time.sleep(1)
         g_count = g_count + 1
-        msg.seq = g_count
-        msg.content = "I am python talker."
-        print("=" * 80)
-        print("write msg -> %s" % msg)
+        msg.integer = g_count
+        print "="*80
+        print "write msg -> %s" % msg
         writer.write(msg)
 
-
 if __name__ == '__main__':
-    cyber.init("talker_sample")
+    cyber.init()
     test_talker_class()
     cyber.shutdown()
 
 ```
 
-### 4.3 Read and Write Messages from/to Record File(in cyber/python/cyber_py3/examples/record.py)
+### 4.3 Read and Write Messages from/to Record File(in cyber/python/examples/record.py)
 
 ```python
-"""
-Module for example of record.
-Run with:
-    bazel run //cyber/python/cyber_py3/examples:record
-"""
+"""Module for example of record."""
 
 import time
+import sys
 
+sys.path.append("../")
+from cyber_py import cyber
+from cyber_py import record
 from google.protobuf.descriptor_pb2 import FileDescriptorProto
-
-from cyber.proto.unit_test_pb2 import Chatter
-from cyber.python.cyber_py3 import record
 from modules.common.util.testdata.simple_pb2 import SimpleMessage
 
-
+TEST_RECORD_FILE = "test02.record"
+CHAN_1 = "channel/chatter"
+CHAN_2 = "/test2"
 MSG_TYPE = "apollo.common.util.test.SimpleMessage"
-MSG_TYPE_CHATTER = "apollo.cyber.proto.Chatter"
-
+STR_10B = "1234567890"
+TEST_FILE = "test.record"
 
 def test_record_writer(writer_path):
     """
-    Record writer.
+    record writer.
     """
     fwriter = record.RecordWriter()
-    fwriter.set_size_fileseg(0)
-    fwriter.set_intervaltime_fileseg(0)
-
     if not fwriter.open(writer_path):
-        print('Failed to open record writer!')
+        print "writer open failed!"
         return
-    print('+++ Begin to writer +++')
+    print "+++ begin to writer..."
+    fwriter.write_channel(CHAN_1, MSG_TYPE, STR_10B)
+    fwriter.write_message(CHAN_1, STR_10B, 1000)
 
-    # Writer 2 SimpleMessage
     msg = SimpleMessage()
     msg.text = "AAAAAA"
 
@@ -336,67 +334,36 @@ def test_record_writer(writer_path):
     file_desc.CopyToProto(proto)
     proto.name = file_desc.name
     desc_str = proto.SerializeToString()
-    print(msg.DESCRIPTOR.full_name)
-    fwriter.write_channel(
-        'simplemsg_channel', msg.DESCRIPTOR.full_name, desc_str)
-    fwriter.write_message('simplemsg_channel', msg, 990, False)
-    fwriter.write_message('simplemsg_channel', msg.SerializeToString(), 991)
 
-    # Writer 2 Chatter
-    msg = Chatter()
-    msg.timestamp = 99999
-    msg.lidar_timestamp = 100
-    msg.seq = 1
-
-    file_desc = msg.DESCRIPTOR.file
-    proto = FileDescriptorProto()
-    file_desc.CopyToProto(proto)
-    proto.name = file_desc.name
-    desc_str = proto.SerializeToString()
-    print(msg.DESCRIPTOR.full_name)
     fwriter.write_channel('chatter_a', msg.DESCRIPTOR.full_name, desc_str)
-    fwriter.write_message('chatter_a', msg, 992, False)
-    msg.seq = 2
-    fwriter.write_message("chatter_a", msg.SerializeToString(), 993)
+    fwriter.write_message('chatter_a', msg, 998, False)
+    fwriter.write_message("chatter_a", msg.SerializeToString(), 999)
 
     fwriter.close()
 
-
 def test_record_reader(reader_path):
     """
-    Record reader.
+    record reader.
     """
     freader = record.RecordReader(reader_path)
     time.sleep(1)
-    print('+' * 80)
-    print('+++ Begin to read +++')
-    count = 0
-    for channel_name, msg, datatype, timestamp in freader.read_messages():
-        count += 1
-        print('=' * 80)
-        print('read [%d] messages' % count)
-        print('channel_name -> %s' % channel_name)
-        print('msgtime -> %d' % timestamp)
-        print('msgnum -> %d' % freader.get_messagenumber(channel_name))
-        print('msgtype -> %s' % datatype)
-        print('message is -> %s' % msg)
-        print('***After parse(if needed),the message is ->')
-        if datatype == MSG_TYPE:
-            msg_new = SimpleMessage()
-            msg_new.ParseFromString(msg)
-            print(msg_new)
-        elif datatype == MSG_TYPE_CHATTER:
-            msg_new = Chatter()
-            msg_new.ParseFromString(msg)
-            print(msg_new)
-
+    print "+"*80
+    print "+++begin to read..."
+    count = 1
+    for channelname, msg, datatype, timestamp in freader.read_messages():
+        print "="*80
+        print "read [%d] msg" % count
+        print "chnanel_name -> %s" % channelname
+        print "msg -> %s" % msg
+        print "msgtime -> %d" % timestamp
+        print "msgnum -> %d" % freader.get_messagenumber(channelname)
+        print "msgtype -> %s" % datatype
+        count = count + 1
 
 if __name__ == '__main__':
-    test_record_file = "/tmp/test_writer.record"
+    cyber.init()
+    test_record_writer(TEST_RECORD_FILE)
+    test_record_reader(TEST_RECORD_FILE)
+    cyber.shutdown()
 
-    print('Begin to write record file: {}'.format(test_record_file))
-    test_record_writer(test_record_file)
-
-    print('Begin to read record file: {}'.format(test_record_file))
-    test_record_reader(test_record_file)
 ```

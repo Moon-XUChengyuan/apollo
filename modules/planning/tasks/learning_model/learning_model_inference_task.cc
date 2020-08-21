@@ -36,10 +36,8 @@ using apollo::common::ErrorCode;
 using apollo::common::Status;
 using apollo::common::TrajectoryPoint;
 
-LearningModelInferenceTask::LearningModelInferenceTask(
-    const TaskConfig& config,
-    const std::shared_ptr<DependencyInjector>& injector)
-    : Task(config, injector) {
+LearningModelInferenceTask::LearningModelInferenceTask(const TaskConfig& config)
+    : Task(config) {
   ACHECK(config.has_learning_model_inference_task_config());
   trajectory_imitation_inference_ =
       std::make_unique<TrajectoryImitationLibtorchInference>(
@@ -56,18 +54,12 @@ Status LearningModelInferenceTask::Execute(
 
 Status LearningModelInferenceTask::Process(Frame* frame) {
   CHECK_NOTNULL(frame);
-  const auto& config = config_.learning_model_inference_task_config();
 
-  if (!injector_->learning_based_data() ||
-      !injector_->learning_based_data()->GetLatestLearningDataFrame()) {
-    const std::string msg = "learning_data_frame empty";
-    AERROR << msg;
-    return Status(ErrorCode::PLANNING_ERROR, msg);
-  }
+  const auto& config = config_.learning_model_inference_task_config();
 
   LearningDataFrame learning_data_frame;
   learning_data_frame.CopyFrom(
-      *(injector_->learning_based_data()->GetLatestLearningDataFrame()));
+      frame->learning_based_data().learning_data_frame());
 
   ADEBUG << "LearningModelInferenceTask: frame_num["
          << learning_data_frame.frame_num() << "] adc_trajectory_point_size["
@@ -81,11 +73,6 @@ Status LearningModelInferenceTask::Process(Frame* frame) {
         absl::StrCat("learning_data adc_trajectory_point empty. frame_num[",
                      learning_data_frame.frame_num(), "]");
     AERROR << msg;
-    // hybrid model will use rule based planning when learning model output is
-    // not ready
-    if (config.allow_empty_output_trajectory()) {
-      return Status::OK();
-    }
     return Status(ErrorCode::PLANNING_ERROR, msg);
   }
 
@@ -190,9 +177,8 @@ Status LearningModelInferenceTask::Process(Frame* frame) {
   //   AERROR << "FUTURE After: " << t.relative_time();
   // }
 
-  injector_->learning_based_data()
-           ->set_learning_data_adc_future_trajectory_points(
-               adc_future_trajectory);
+  frame->mutable_learning_based_data()
+       ->set_learning_data_adc_future_trajectory_points(adc_future_trajectory);
 
   return Status::OK();
 }

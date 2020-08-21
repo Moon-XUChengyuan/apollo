@@ -39,7 +39,8 @@ namespace planning {
  */
 class OnLanePlanning : public PlanningBase {
  public:
-  explicit OnLanePlanning(const std::shared_ptr<DependencyInjector>& injector)
+  explicit OnLanePlanning(
+      const std::shared_ptr<DependencyInjector>& injector)
       : PlanningBase(injector) {
     planner_dispatcher_ = std::make_unique<OnLanePlannerDispatcher>();
   }

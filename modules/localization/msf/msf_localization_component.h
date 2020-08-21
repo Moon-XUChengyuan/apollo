@@ -47,11 +47,12 @@ class MSFLocalizationComponent final
   bool Proc(const std::shared_ptr<drivers::gnss::Imu>& imu_msg) override;
 
  private:
-  int calledTimes=0;
   bool InitConfig();
   bool InitIO();
 
  private:
+  int calledTimes=0;
+
   std::shared_ptr<cyber::Reader<drivers::PointCloud>> lidar_listener_ = nullptr;
   std::string lidar_topic_ = "";
 
@@ -66,8 +67,6 @@ class MSFLocalizationComponent final
  private:
   std::shared_ptr<LocalizationMsgPublisher> publisher_;
   MSFLocalization localization_;
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 CYBER_REGISTER_COMPONENT(MSFLocalizationComponent);
@@ -109,6 +108,7 @@ class LocalizationMsgPublisher {
   std::string localization_status_topic_ = "";
   std::shared_ptr<cyber::Writer<LocalizationStatus>>
       localization_status_talker_ = nullptr;
+  double pre_system_time_ = 0.0;
 };
 
 }  // namespace localization

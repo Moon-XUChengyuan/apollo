@@ -26,10 +26,10 @@ import os
 import sys
 import time
 
-from cyber.python.cyber_py3 import cyber
+from cyber_py3 import cyber
 from gflags import FLAGS
 
-from modules.tools.common.logger import Logger
+from common.logger import Logger
 from modules.canbus.proto import chassis_pb2
 from modules.localization.proto import localization_pb2
 

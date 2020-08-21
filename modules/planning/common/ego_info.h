@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "cyber/common/macros.h"
+
 #include "modules/common/configs/proto/vehicle_config.pb.h"
 #include "modules/common/vehicle_state/proto/vehicle_state.pb.h"
 #include "modules/planning/common/obstacle.h"

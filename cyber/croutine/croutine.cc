@@ -32,8 +32,8 @@ thread_local CRoutine *CRoutine::current_routine_ = nullptr;
 thread_local char *CRoutine::main_stack_ = nullptr;
 
 namespace {
-std::shared_ptr<base::CCObjectPool<RoutineContext>> context_pool = nullptr;//协程context环境池
-std::once_flag pool_init_flag;//单例标志位
+std::shared_ptr<base::CCObjectPool<RoutineContext>> context_pool = nullptr;
+std::once_flag pool_init_flag;
 
 void CRoutineEntry(void *arg) {
   CRoutine *r = static_cast<CRoutine *>(arg);
@@ -42,12 +42,10 @@ void CRoutineEntry(void *arg) {
 }
 }  // namespace
 
-//协程初始化
 CRoutine::CRoutine(const std::function<void()> &func) : func_(func) {
-  //绑定协程context池（按照协程数进行初始化）
   std::call_once(pool_init_flag, [&]() {
-    uint32_t routine_num = common::GlobalData::Instance()->ComponentNums();//协程个数
-    auto &global_conf = common::GlobalData::Instance()->Config();//全局配置
+    uint32_t routine_num = common::GlobalData::Instance()->ComponentNums();
+    auto &global_conf = common::GlobalData::Instance()->Config();
     if (global_conf.has_scheduler_conf() &&
         global_conf.scheduler_conf().has_routine_num()) {
       routine_num =
@@ -55,16 +53,15 @@ CRoutine::CRoutine(const std::function<void()> &func) : func_(func) {
     }
     context_pool.reset(new base::CCObjectPool<RoutineContext>(routine_num));
   });
-  //获取本协程context
+
   context_ = context_pool->GetObject();
   if (context_ == nullptr) {
     AWARN << "Maximum routine context number exceeded! Please check "
              "[routine_num] in config file.";
     context_.reset(new RoutineContext());
   }
-  //生成协程context
+
   MakeContext(CRoutineEntry, this, context_.get());
-  //协程状态置为ready
   state_ = RoutineState::READY;
   updated_.test_and_set(std::memory_order_release);
 }
@@ -72,8 +69,7 @@ CRoutine::CRoutine(const std::function<void()> &func) : func_(func) {
 CRoutine::~CRoutine() { context_ = nullptr; }
 
 RoutineState CRoutine::Resume() {
-  //协程恢复
-  if (cyber_unlikely(force_stop_)) {//如果被迫停止，状态置为finish
+  if (cyber_unlikely(force_stop_)) {
     state_ = RoutineState::FINISHED;
     return state_;
   }
@@ -83,8 +79,8 @@ RoutineState CRoutine::Resume() {
     return state_;
   }
 
-  current_routine_ = this;//processor当前协程置为本协程
-  SwapContext(GetMainStack(), GetStack());//主栈转为本协程栈
+  current_routine_ = this;
+  SwapContext(GetMainStack(), GetStack());
   current_routine_ = nullptr;
   return state_;
 }

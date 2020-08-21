@@ -35,7 +35,6 @@ namespace scheduler {
 
 using croutine::CRoutine;
 
-//结构体-快照：执行开始时间，process_id，协程名
 struct Snapshot {
   std::atomic<uint64_t> execute_start_time = {0};
   std::atomic<pid_t> processor_id = {0};
@@ -56,15 +55,15 @@ class Processor {
   std::shared_ptr<Snapshot> ProcSnapshot() { return snap_shot_; }
 
  private:
-  std::shared_ptr<ProcessorContext> context_;//process绑定的上下文
+  std::shared_ptr<ProcessorContext> context_;
 
-  std::condition_variable cv_ctx_;//条件变量
-  std::once_flag thread_flag_;//单例模式辅助变量
-  std::mutex mtx_ctx_;//互斥锁
-  std::thread thread_;//process对应的thread
+  std::condition_variable cv_ctx_;
+  std::once_flag thread_flag_;
+  std::mutex mtx_ctx_;
+  std::thread thread_;
 
-  std::atomic<pid_t> tid_{-1};//原子类型：thread对应的tid
-  std::atomic<bool> running_{false};//原子类型，针对原子类型的操作要么完成要么不做
+  std::atomic<pid_t> tid_{-1};
+  std::atomic<bool> running_{false};
 
   std::shared_ptr<Snapshot> snap_shot_ = std::make_shared<Snapshot>();
 };

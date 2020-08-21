@@ -15,11 +15,10 @@
  *****************************************************************************/
 #pragma once
 
+#include <boost/circular_buffer.hpp>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include <boost/circular_buffer.hpp>
 
 #include "modules/perception/base/box.h"
 #include "modules/perception/base/object_types.h"
@@ -202,8 +201,6 @@ typedef std::shared_ptr<MotionBuffer> MotionBufferPtr;
 typedef std::shared_ptr<const MotionBuffer> MotionBufferConstPtr;
 
 struct alignas(16) Vehicle3DStatus {
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
   float yaw_delta;  // azimuth angle change
   float pitch_delta;
   float roll_delta;

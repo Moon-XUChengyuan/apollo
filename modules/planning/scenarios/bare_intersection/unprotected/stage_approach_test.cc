@@ -16,9 +16,10 @@
 
 #include "modules/planning/scenarios/bare_intersection/unprotected/stage_approach.h"
 
+#include "gtest/gtest.h"
+
 #include "cyber/common/file.h"
 #include "cyber/common/log.h"
-#include "gtest/gtest.h"
 
 namespace apollo {
 namespace planning {

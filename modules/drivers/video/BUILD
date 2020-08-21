@@ -1,11 +1,10 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
 
 cc_binary(
     name = "libvideo_driver_component.so",
-    linkshared = True,
+    linkopts = ["-shared"],
     linkstatic = False,
     deps = [":video_driver_component_lib"],
 )
@@ -32,8 +31,9 @@ cc_library(
     ],
     deps = [
         "//cyber",
-        "//modules/drivers/proto:sensor_image_cc_proto",
-        "//modules/drivers/video/proto:video_h265cfg_cc_proto",
+        "//modules/common/util",
+        "//modules/drivers/proto:sensor_proto",
+        "//modules/drivers/video/proto:video_proto",
     ],
 )
 
@@ -46,10 +46,8 @@ cc_library(
     ],
     deps = [
         "//cyber",
-        "//modules/common/proto:error_code_cc_proto",
-        "//modules/common/proto:header_cc_proto",
         "//modules/common/util",
-        "//modules/drivers/proto:sensor_image_cc_proto",
+        "//modules/drivers/proto:sensor_proto",
     ],
 )
 

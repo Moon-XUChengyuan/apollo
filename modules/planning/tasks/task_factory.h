@@ -23,8 +23,9 @@
 #include <memory>
 #include <unordered_map>
 
-#include "modules/common/util/factory.h"
 #include "modules/planning/proto/planning_config.pb.h"
+
+#include "modules/common/util/factory.h"
 #include "modules/planning/tasks/task.h"
 
 namespace apollo {

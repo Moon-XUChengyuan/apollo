@@ -24,11 +24,12 @@
 #include <string>
 #include <unordered_map>
 
+#include "modules/planning/proto/planning_config.pb.h"
+
 #include "modules/common/status/status.h"
 #include "modules/common/util/factory.h"
 #include "modules/planning/common/frame.h"
 #include "modules/planning/common/planning_context.h"
-#include "modules/planning/proto/planning_config.pb.h"
 #include "modules/planning/scenarios/stage.h"
 #include "modules/planning/tasks/task.h"
 
@@ -46,7 +47,8 @@ class Scenario {
     STATUS_DONE = 2,
   };
 
-  Scenario(const ScenarioConfig& config, const ScenarioContext* context,
+  Scenario(const ScenarioConfig& config,
+           const ScenarioContext* context,
            const std::shared_ptr<DependencyInjector>& injector);
 
   static bool LoadConfig(const std::string& config_file,

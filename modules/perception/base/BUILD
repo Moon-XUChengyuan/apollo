@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -46,7 +45,6 @@ cc_library(
         ":common",
         ":syncedmem",
         "//cyber",
-        "@local_config_cuda//cuda:cuda_headers",
     ],
 )
 
@@ -58,7 +56,7 @@ cc_test(
         ":blob",
         "//modules/perception/base/test:test_helper",
         "@com_google_googletest//:gtest_main",
-        "@local_config_cuda//cuda:cudart",
+        "@cuda",
     ],
 )
 
@@ -106,7 +104,7 @@ cc_library(
     name = "common",
     hdrs = ["common.h"],
     deps = [
-        "@local_config_cuda//cuda:cudart",
+        "@cuda",
     ],
 )
 
@@ -117,7 +115,6 @@ cc_test(
     deps = [
         ":common",
         "@com_google_googletest//:gtest_main",
-        "@local_config_cuda//cuda:cuda_headers",
     ],
 )
 
@@ -207,20 +204,9 @@ cc_library(
         "vehicle_struct.h",
     ],
     deps = [
+        "//modules/prediction/proto:feature_proto",
         ":box",
         ":point_cloud",
-        "//modules/common/proto:error_code_cc_proto",
-        "//modules/common/proto:geometry_cc_proto",
-        "//modules/common/proto:header_cc_proto",
-        "//modules/common/proto:pnc_point_cc_proto",
-        "//modules/map/proto:map_geometry_cc_proto",
-        "//modules/map/proto:map_id_cc_proto",
-        "//modules/map/proto:map_lane_cc_proto",
-        "//modules/perception/proto:perception_obstacle_cc_proto",
-        "//modules/prediction/proto:feature_cc_proto",
-        "//modules/prediction/proto:lane_graph_cc_proto",
-        "//modules/prediction/proto:prediction_point_cc_proto",
-        "@boost",
         "@eigen",
     ],
 )
@@ -259,6 +245,7 @@ cc_test(
         ":point_cloud",
         "//cyber",
         "@com_google_googletest//:gtest_main",
+        "@eigen",
     ],
 )
 
@@ -272,6 +259,7 @@ cc_library(
         ":object_pool",
         ":point_cloud",
         "//cyber",
+        "@eigen",
     ],
 )
 
@@ -313,11 +301,14 @@ cc_library(
     name = "point_cloud_util",
     srcs = ["point_cloud_util.cc"],
     hdrs = ["point_cloud_util.h"],
+    linkopts = [
+        "-lopencv_core",
+        "-lopencv_highgui",
+    ],
     deps = [
         ":point_cloud",
         "//cyber",
         "@eigen",
-        "@opencv",
     ],
 )
 
@@ -325,7 +316,6 @@ cc_test(
     name = "point_cloud_test",
     size = "small",
     srcs = ["point_cloud_test.cc"],
-    linkopts = ["-lm"],
     deps = [
         ":point_cloud",
         "@com_google_googletest//:gtest_main",
@@ -355,7 +345,6 @@ cc_library(
     deps = [
         ":common",
         "//cyber",
-        "@local_config_cuda//cuda:cuda_headers",
     ],
 )
 
@@ -367,7 +356,7 @@ cc_test(
         ":syncedmem",
         "//modules/perception/base/test:test_helper",
         "@com_google_googletest//:gtest_main",
-        "@local_config_cuda//cuda:cudart",
+        "@cuda",
     ],
 )
 

@@ -21,6 +21,7 @@
 #include "modules/planning/common/reference_line_info.h"
 
 #include "gtest/gtest.h"
+
 #include "modules/planning/proto/planning.pb.h"
 
 namespace apollo {

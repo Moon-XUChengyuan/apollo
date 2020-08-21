@@ -28,8 +28,6 @@ namespace perception {
 namespace lidar {
 
 struct MlfPredict {
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
   Eigen::VectorXf state;
   base::PolygonDType polygon;
   base::PointDCloud cloud;
@@ -45,8 +43,6 @@ struct MlfPredict {
 
 class MlfTrackData : public TrackData {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
   MlfTrackData() = default;
   ~MlfTrackData() = default;
 

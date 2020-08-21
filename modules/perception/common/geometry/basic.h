@@ -19,6 +19,7 @@
 #include <limits>
 
 #include "Eigen/Core"
+
 #include "modules/perception/base/point_cloud.h"
 
 namespace apollo {

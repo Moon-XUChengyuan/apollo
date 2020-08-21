@@ -21,6 +21,7 @@
 #include "modules/planning/scenarios/scenario.h"
 
 #include "cyber/common/file.h"
+
 #include "modules/planning/common/frame.h"
 
 namespace apollo {
@@ -98,7 +99,8 @@ Scenario::ScenarioStatus Scenario::Process(
           scenario_status_ = STATUS_UNKNOWN;
           return scenario_status_;
         }
-        current_stage_ = CreateStage(*stage_config_map_[next_stage], injector_);
+        current_stage_ =
+            CreateStage(*stage_config_map_[next_stage], injector_);
         if (current_stage_ == nullptr) {
           AWARN << "Current stage is a null pointer.";
           return STATUS_UNKNOWN;

@@ -35,30 +35,30 @@ using apollo::cyber::common::GlobalData;
 
 bool Scheduler::CreateTask(const RoutineFactory& factory,
                            const std::string& name) {
-  return CreateTask(factory.create_routine(), name, factory.GetDataVisitor());//调用重载
+  return CreateTask(factory.create_routine(), name, factory.GetDataVisitor());
 }
 
 bool Scheduler::CreateTask(std::function<void()>&& func,
                            const std::string& name,
                            std::shared_ptr<DataVisitorBase> visitor) {
-  if (cyber_unlikely(stop_.load())) {//如果调度器已停止
+  if (cyber_unlikely(stop_.load())) {
     ADEBUG << "scheduler is stoped, cannot create task!";
     return false;
   }
 
-  auto task_id = GlobalData::RegisterTaskName(name);//给出该task的id
+  auto task_id = GlobalData::RegisterTaskName(name);
 
-  auto cr = std::make_shared<CRoutine>(func);//生成协程来执行该task，并设置其id与name
+  auto cr = std::make_shared<CRoutine>(func);
   cr->set_id(task_id);
   cr->set_name(name);
   AINFO << "create croutine: " << name;
 
-  if (!DispatchTask(cr)) {//派发该协程，如果不成功则返回false
+  if (!DispatchTask(cr)) {
     return false;
   }
 
-  if (visitor != nullptr) {//派发该协程成功，则返回true
-    visitor->RegisterNotifyCallback([this, task_id]() {//注册数据（对应channel）的回调函数为本调度器唤醒本协程对应的processor
+  if (visitor != nullptr) {
+    visitor->RegisterNotifyCallback([this, task_id]() {
       if (cyber_unlikely(stop_.load())) {
         return;
       }
@@ -68,7 +68,7 @@ bool Scheduler::CreateTask(std::function<void()>&& func,
   return true;
 }
 
-bool Scheduler::NotifyTask(uint64_t crid) {//唤醒协程
+bool Scheduler::NotifyTask(uint64_t crid) {
   if (cyber_unlikely(stop_.load())) {
     return true;
   }
@@ -77,41 +77,40 @@ bool Scheduler::NotifyTask(uint64_t crid) {//唤醒协程
 
 void Scheduler::ProcessLevelResourceControl() {
   std::vector<int> cpus;
-  ParseCpuset(process_level_cpuset_, &cpus);//从配置文件解析相应字符串，获取cpus
+  ParseCpuset(process_level_cpuset_, &cpus);
   cpu_set_t set;
   CPU_ZERO(&set);
   for (const auto cpu : cpus) {
     CPU_SET(cpu, &set);
   }
   pthread_setaffinity_np(pthread_self(), sizeof(set), &set);
-  //pthread_self返回的是同一个进程中各个线程之间的标识号，对于这个进程内是唯一的，而不同进程中，每个线程返回的pthread_self可能返回的是一样的
 }
 
-void Scheduler::SetInnerThreadAttr(const std::string& name, std::thread* thr) {//设置配置文件中的thread
+void Scheduler::SetInnerThreadAttr(const std::string& name, std::thread* thr) {
   if (thr != nullptr && inner_thr_confs_.find(name) != inner_thr_confs_.end()) {
     auto th_conf = inner_thr_confs_[name];
     auto cpuset = th_conf.cpuset();
 
     std::vector<int> cpus;
     ParseCpuset(cpuset, &cpus);
-    SetSchedAffinity(thr, cpus, "range");//设置cpu亲和性，且只能为range
-    SetSchedPolicy(thr, th_conf.policy(), th_conf.prio());//设置调度策略及优先级
+    SetSchedAffinity(thr, cpus, "range");
+    SetSchedPolicy(thr, th_conf.policy(), th_conf.prio());
   }
 }
 
-void Scheduler::CheckSchedStatus() {//检查调度状态（调度器快照）
+void Scheduler::CheckSchedStatus() {
   std::string snap_info;
   auto now = Time::Now().ToNanosecond();
-  for (auto processor : processors_) {//对于每一个processor，获取并记录其快照
+  for (auto processor : processors_) {
     auto snap = processor->ProcSnapshot();
-    if (snap->execute_start_time.load()) {//若有协程正在执行，则记录 —— processor_id : routine_name : execute_time : timestamp : {now}
+    if (snap->execute_start_time.load()) {
       auto execute_time = (now - snap->execute_start_time.load()) / 1000000;
       snap_info.append(std::to_string(snap->processor_id.load()))
           .append(":")
           .append(snap->routine_name)
           .append(":")
           .append(std::to_string(execute_time));
-    } else {//若无协程正在执行，则记录 —— processor_id : idle : timestamp : {now}
+    } else {
       snap_info.append(std::to_string(snap->processor_id.load()))
           .append(":idle");
     }
@@ -123,11 +122,11 @@ void Scheduler::CheckSchedStatus() {//检查调度状态（调度器快照）
 }
 
 void Scheduler::Shutdown() {
-  if (cyber_unlikely(stop_.exchange(true))) {//调度器状态切换
+  if (cyber_unlikely(stop_.exchange(true))) {
     return;
   }
 
-  for (auto& ctx : pctxs_) {//processor上下文停止
+  for (auto& ctx : pctxs_) {
     ctx->Shutdown();
   }
 
@@ -139,15 +138,15 @@ void Scheduler::Shutdown() {
     }
   }
 
-  for (auto& id : cr_list) {//移除协程
+  for (auto& id : cr_list) {
     RemoveCRoutine(id);
   }
 
-  for (auto& processor : processors_) {//processor停止
+  for (auto& processor : processors_) {
     processor->Stop();
   }
 
-  processors_.clear();//清除processor及其上下文
+  processors_.clear();
   pctxs_.clear();
 }
 }  // namespace scheduler

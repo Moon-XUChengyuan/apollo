@@ -50,9 +50,6 @@ struct VehicleGnssAntExtrinsic {
   int ant_num;
   TransformD transform_1;
   TransformD transform_2;
-
- public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 /**

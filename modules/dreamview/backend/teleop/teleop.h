@@ -20,9 +20,9 @@
 #include <boost/thread/shared_mutex.hpp>
 
 #include "cyber/cyber.h"
-#include "nlohmann/json.hpp"
+#include "third_party/json/json.hpp"
 
-#if WITH_TELEOP == 1
+#ifdef TELEOP
 #include "modules/planning/proto/pad_msg.pb.h"
 #include "modules/planning/proto/planning.pb.h"
 #include "modules/teleop/daemon/proto/daemon_cmd.pb.h"
@@ -45,7 +45,7 @@ class TeleopService {
   void RegisterMessageHandlers();
   void SendStatus(WebSocketHandler::Connection *conn);
 
-#if WITH_TELEOP == 1
+#ifdef TELEOP
   // send a command to the remote daemon to start or stop
   // video encoders and voip encoders
   void SendAudioStreamCmd(bool start_stop);
@@ -64,7 +64,7 @@ class TeleopService {
 
   WebSocketHandler *websocket_;
 
-#if WITH_TELEOP == 1
+#ifdef TELEOP
   // modem info readers and callback
   std::shared_ptr<cyber::Reader<modules::teleop::modem::ModemInfo>>
       modem0_info_reader_;

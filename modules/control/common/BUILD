@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -48,8 +47,8 @@ cc_library(
     hdrs = ["leadlag_controller.h"],
     copts = ['-DMODULE_NAME=\\"control\\"'],
     deps = [
-        "//cyber/common:log",
-        "//modules/control/proto:leadlag_conf_cc_proto",
+        "//cyber",
+        "//modules/control/proto:control_proto",
     ],
 )
 
@@ -60,12 +59,9 @@ cc_library(
     copts = ['-DMODULE_NAME=\\"control\\"'],
     deps = [
         "//cyber",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/math:matrix_operations",
         "//modules/common/status",
         "//modules/common/util",
-        "//modules/control/proto:mrac_conf_cc_proto",
-        "@com_google_absl//absl/strings",
+        "//modules/control/proto:control_proto",
         "@eigen",
     ],
 )
@@ -76,8 +72,8 @@ cc_library(
     hdrs = ["pid_controller.h"],
     copts = ['-DMODULE_NAME=\\"control\\"'],
     deps = [
-        "//cyber/common:log",
-        "//modules/control/proto:pid_conf_cc_proto",
+        "//cyber",
+        "//modules/control/proto:control_proto",
     ],
 )
 
@@ -90,6 +86,7 @@ cc_library(
         ":pid_controller",
         "//cyber",
         "//modules/common/math",
+        "//modules/control/proto:control_proto",
     ],
 )
 
@@ -102,6 +99,7 @@ cc_library(
         ":pid_controller",
         "//cyber",
         "//modules/common/math",
+        "//modules/control/proto:control_proto",
     ],
 )
 
@@ -112,12 +110,12 @@ cc_library(
     copts = ['-DMODULE_NAME=\\"control\\"'],
     deps = [
         ":control_gflags",
-        "//cyber/common:log",
+        "//cyber",
         "//modules/common/math:linear_interpolation",
         "//modules/common/math:search",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
         "//modules/common/vehicle_state:vehicle_state_provider",
-        "//modules/planning/proto:planning_cc_proto",
+        "//modules/planning/proto:planning_proto",
     ],
 )
 
@@ -154,16 +152,7 @@ cc_test(
         ":interpolation_1d",
         "//cyber",
         "//modules/common/util",
-        "//modules/control/proto:calibration_table_cc_proto",
-        "//modules/control/proto:control_cmd_cc_proto",
-        "//modules/control/proto:control_conf_cc_proto",
-        "//modules/control/proto:gain_scheduler_conf_cc_proto",
-        "//modules/control/proto:lat_controller_conf_cc_proto",
-        "//modules/control/proto:leadlag_conf_cc_proto",
-        "//modules/control/proto:lon_controller_conf_cc_proto",
-        "//modules/control/proto:mpc_controller_conf_cc_proto",
-        "//modules/control/proto:mrac_conf_cc_proto",
-        "//modules/control/proto:pid_conf_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -177,7 +166,7 @@ cc_test(
         ":interpolation_2d",
         "//cyber",
         "//modules/common/util",
-        "//modules/control/proto:control_conf_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -189,23 +178,8 @@ cc_test(
     data = ["//modules/control/testdata:control_testdata"],
     deps = [
         ":leadlag_controller",
-        "//cyber/common:file",
-        "//modules/canbus/proto:chassis_cc_proto",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/proto:drive_state_cc_proto",
-        "//modules/common/proto:error_code_cc_proto",
-        "//modules/common/proto:header_cc_proto",
-        "//modules/common/proto:vehicle_signal_cc_proto",
         "//modules/common/util",
-        "//modules/control/proto:calibration_table_cc_proto",
-        "//modules/control/proto:control_conf_cc_proto",
-        "//modules/control/proto:gain_scheduler_conf_cc_proto",
-        "//modules/control/proto:lat_controller_conf_cc_proto",
-        "//modules/control/proto:leadlag_conf_cc_proto",
-        "//modules/control/proto:lon_controller_conf_cc_proto",
-        "//modules/control/proto:mpc_controller_conf_cc_proto",
-        "//modules/control/proto:mrac_conf_cc_proto",
-        "//modules/control/proto:pad_msg_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -217,19 +191,8 @@ cc_test(
     data = ["//modules/control/testdata:control_testdata"],
     deps = [
         ":mrac_controller",
-        "//modules/canbus/proto:chassis_cc_proto",
-        "//modules/common/proto:drive_state_cc_proto",
-        "//modules/common/proto:vehicle_signal_cc_proto",
         "//modules/common/util",
-        "//modules/control/proto:calibration_table_cc_proto",
-        "//modules/control/proto:control_conf_cc_proto",
-        "//modules/control/proto:gain_scheduler_conf_cc_proto",
-        "//modules/control/proto:lat_controller_conf_cc_proto",
-        "//modules/control/proto:leadlag_conf_cc_proto",
-        "//modules/control/proto:lon_controller_conf_cc_proto",
-        "//modules/control/proto:mpc_controller_conf_cc_proto",
-        "//modules/control/proto:pad_msg_cc_proto",
-        "//modules/control/proto:pid_conf_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -241,23 +204,8 @@ cc_test(
     data = ["//modules/control/testdata:control_testdata"],
     deps = [
         ":pid_controller",
-        "//cyber/common:file",
-        "//modules/canbus/proto:chassis_cc_proto",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/proto:drive_state_cc_proto",
-        "//modules/common/proto:error_code_cc_proto",
-        "//modules/common/proto:header_cc_proto",
-        "//modules/common/proto:vehicle_signal_cc_proto",
         "//modules/common/util",
-        "//modules/control/proto:calibration_table_cc_proto",
-        "//modules/control/proto:control_conf_cc_proto",
-        "//modules/control/proto:gain_scheduler_conf_cc_proto",
-        "//modules/control/proto:lat_controller_conf_cc_proto",
-        "//modules/control/proto:leadlag_conf_cc_proto",
-        "//modules/control/proto:lon_controller_conf_cc_proto",
-        "//modules/control/proto:mpc_controller_conf_cc_proto",
-        "//modules/control/proto:mrac_conf_cc_proto",
-        "//modules/control/proto:pad_msg_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -269,22 +217,8 @@ cc_test(
     data = ["//modules/control/testdata:control_testdata"],
     deps = [
         ":pid_BC_controller",
-        "//modules/canbus/proto:chassis_cc_proto",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/proto:drive_state_cc_proto",
-        "//modules/common/proto:error_code_cc_proto",
-        "//modules/common/proto:header_cc_proto",
-        "//modules/common/proto:vehicle_signal_cc_proto",
         "//modules/common/util",
-        "//modules/control/proto:calibration_table_cc_proto",
-        "//modules/control/proto:control_conf_cc_proto",
-        "//modules/control/proto:gain_scheduler_conf_cc_proto",
-        "//modules/control/proto:lat_controller_conf_cc_proto",
-        "//modules/control/proto:leadlag_conf_cc_proto",
-        "//modules/control/proto:lon_controller_conf_cc_proto",
-        "//modules/control/proto:mpc_controller_conf_cc_proto",
-        "//modules/control/proto:mrac_conf_cc_proto",
-        "//modules/control/proto:pad_msg_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -296,22 +230,8 @@ cc_test(
     data = ["//modules/control/testdata:control_testdata"],
     deps = [
         ":pid_IC_controller",
-        "//modules/canbus/proto:chassis_cc_proto",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/proto:drive_state_cc_proto",
-        "//modules/common/proto:error_code_cc_proto",
-        "//modules/common/proto:header_cc_proto",
-        "//modules/common/proto:vehicle_signal_cc_proto",
         "//modules/common/util",
-        "//modules/control/proto:calibration_table_cc_proto",
-        "//modules/control/proto:control_conf_cc_proto",
-        "//modules/control/proto:gain_scheduler_conf_cc_proto",
-        "//modules/control/proto:lat_controller_conf_cc_proto",
-        "//modules/control/proto:leadlag_conf_cc_proto",
-        "//modules/control/proto:lon_controller_conf_cc_proto",
-        "//modules/control/proto:mpc_controller_conf_cc_proto",
-        "//modules/control/proto:mrac_conf_cc_proto",
-        "//modules/control/proto:pad_msg_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -331,7 +251,7 @@ cc_library(
     name = "dependency_injector",
     hdrs = ["dependency_injector.h"],
     deps = [
-        "//modules/common/vehicle_state:vehicle_state_provider",
+       "//modules/common/vehicle_state:vehicle_state_provider"
     ],
 )
 

@@ -20,14 +20,14 @@
 
 #pragma once
 
+#include <boost/thread/shared_mutex.hpp>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <boost/thread/shared_mutex.hpp>
 
 #include "gtest/gtest_prod.h"
-#include "nlohmann/json.hpp"
+#include "third_party/json/json.hpp"
 
 #include "cyber/cyber.h"
 #include "modules/canbus/proto/chassis.pb.h"

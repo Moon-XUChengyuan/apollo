@@ -19,6 +19,7 @@
 #include "gtest/gtest.h"
 #include "gtest/gtest_prod.h"
 
+#include "modules/perception/inference/inference_factory.h"
 #include "modules/perception/inference/utils/util.h"
 
 namespace apollo {

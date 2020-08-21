@@ -24,6 +24,8 @@
 #include <utility>
 #include <vector>
 
+#include "modules/planning/proto/lattice_structure.pb.h"
+
 #include "modules/planning/lattice/behavior/path_time_graph.h"
 #include "modules/planning/lattice/behavior/prediction_querier.h"
 #include "modules/planning/lattice/trajectory_generation/end_condition_sampler.h"
@@ -31,7 +33,6 @@
 #include "modules/planning/math/curve1d/curve1d.h"
 #include "modules/planning/math/curve1d/quartic_polynomial_curve1d.h"
 #include "modules/planning/math/curve1d/quintic_polynomial_curve1d.h"
-#include "modules/planning/proto/lattice_structure.pb.h"
 
 namespace apollo {
 namespace planning {

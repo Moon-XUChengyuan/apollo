@@ -17,7 +17,6 @@
 #pragma once
 
 #include <QtWidgets/QOpenGLWidget>
-#include <memory>
 
 #include "modules/tools/visualizer/free_camera.h"
 #include "modules/tools/visualizer/plane.h"

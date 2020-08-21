@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -13,7 +12,7 @@ cc_library(
     deps = [
         "//modules/prediction/common:prediction_map",
         "//modules/prediction/container",
-        "//modules/storytelling/proto:story_cc_proto",
+        "//modules/storytelling/proto:story_proto",
     ],
 )
 

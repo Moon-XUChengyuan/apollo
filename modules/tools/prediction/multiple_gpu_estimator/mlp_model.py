@@ -33,7 +33,7 @@
 
 import tensorflow as tf
 
-import modules.tools.prediction.multiple_gpu_estimator.model_base
+import model_base
 
 
 dim_input = 62

@@ -69,7 +69,6 @@ TEST_F(PyramidMapPoolTestSuite, pyramid_map_pool_fixed) {
   // Release
   pool->Release();
   EXPECT_EQ(pool->GetPoolSize(), 0);
-  pool.reset();
 }
 
 TEST_F(PyramidMapPoolTestSuite, pyramid_map_pool_not_fixed) {
@@ -97,7 +96,6 @@ TEST_F(PyramidMapPoolTestSuite, pyramid_map_pool_not_fixed) {
   // Release
   pool->Release();
   EXPECT_EQ(pool->GetPoolSize(), 0);
-  pool.reset();
 }
 
 }  // namespace pyramid_map
