@@ -51,7 +51,7 @@ class ChoreographyContext : public ProcessorContext {
   int notify = 0;
 
   AtomicRWLock rq_lk_;
-  std::multimap<uint32_t, std::shared_ptr<CRoutine>, std::greater<uint32_t>>
+  std::multimap<uint32_t, std::shared_ptr<CRoutine>, std::greater<uint32_t>>//processor对应的多优先级map-从大到小排序
       cr_queue_;
 };
 

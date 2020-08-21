@@ -75,9 +75,14 @@ const int PointPillars::kNumThreads = Params::kNumThreads;
 const int PointPillars::kNumBoxCorners = Params::kNumBoxCorners;
 const std::vector<int> PointPillars::kAnchorStrides = Params::AnchorStrides();
 const std::vector<int> PointPillars::kAnchorRanges{
-    0, kGridXSize, 0, kGridYSize,
-    static_cast<int>(kGridXSize * 0.1), static_cast<int>(kGridXSize * 0.9),
-    static_cast<int>(kGridYSize * 0.1), static_cast<int>(kGridYSize * 0.9)};
+    0,
+    kGridXSize,
+    0,
+    kGridYSize,
+    static_cast<int>(kGridXSize * 0.1),
+    static_cast<int>(kGridXSize * 0.9),
+    static_cast<int>(kGridYSize * 0.1),
+    static_cast<int>(kGridYSize * 0.9)};
 const std::vector<int> PointPillars::kNumAnchorSets = Params::NumAnchorSets();
 const std::vector<std::vector<float>> PointPillars::kAnchorDxSizes =
     Params::AnchorDxSizes();
@@ -483,9 +488,8 @@ void PointPillars::OnnxToTRTModel(
   int verbosity = static_cast<int>(nvinfer1::ILogger::Severity::kWARNING);
 
   // create the builder
-  // TODO(chenjiahao): assign value from constant param 'kBatchSize'
   const auto explicit_batch =
-      1U << static_cast<uint32_t>(
+      static_cast<uint32_t>(kBatchSize) << static_cast<uint32_t>(
           nvinfer1::NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
   nvinfer1::IBuilder* builder = nvinfer1::createInferBuilder(g_logger_);
   nvinfer1::INetworkDefinition* network =

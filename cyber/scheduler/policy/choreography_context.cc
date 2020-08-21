@@ -37,14 +37,14 @@ std::shared_ptr<CRoutine> ChoreographyContext::NextRoutine() {
     return nullptr;
   }
 
-  ReadLockGuard<AtomicRWLock> lock(rq_lk_);
+  ReadLockGuard<AtomicRWLock> lock(rq_lk_);//获取多优先级队列锁
   for (auto it : cr_queue_) {
     auto cr = it.second;
-    if (!cr->Acquire()) {
+    if (!cr->Acquire()) {//获取不到则继续遍历下一个协程
       continue;
     }
 
-    if (cr->UpdateState() == RoutineState::READY) {
+    if (cr->UpdateState() == RoutineState::READY) {//获取到且状态为ready并返回
       return cr;
     }
     cr->Release();
@@ -54,11 +54,11 @@ std::shared_ptr<CRoutine> ChoreographyContext::NextRoutine() {
 
 bool ChoreographyContext::Enqueue(const std::shared_ptr<CRoutine>& cr) {
   WriteLockGuard<AtomicRWLock> lock(rq_lk_);
-  cr_queue_.emplace(cr->priority(), cr);
+  cr_queue_.emplace(cr->priority(), cr);//在对应优先级队列中插入新的协程
   return true;
 }
 
-void ChoreographyContext::Notify() {
+void ChoreographyContext::Notify() {//唤醒一个等待线程
   mtx_wq_.lock();
   notify++;
   mtx_wq_.unlock();
@@ -68,7 +68,8 @@ void ChoreographyContext::Notify() {
 void ChoreographyContext::Wait() {
   std::unique_lock<std::mutex> lk(mtx_wq_);
   cv_wq_.wait_for(lk, std::chrono::milliseconds(1000),
-                  [&]() { return notify > 0; });
+                  [&]() { return notify > 0; });//一旦超时或者收到了其他线程的唤醒通知，wait_for返回；
+                  //只有当最后一个条件为 false 时调用 wait_for 才会阻塞当前线程，并且在收到其他线程的通知后只有当其为 true 时才会被解除阻塞
   if (notify > 0) {
     notify--;
   }

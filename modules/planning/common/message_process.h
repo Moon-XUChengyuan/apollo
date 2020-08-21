@@ -21,21 +21,23 @@
 #pragma once
 
 #include <chrono>
-#include <list>
 #include <fstream>
+#include <list>
+#include <memory>
 #include <string>
-#include <vector>
-#include <utility>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "modules/canbus/proto/chassis.pb.h"
 #include "modules/dreamview/proto/hmi_status.pb.h"
-#include "modules/map/hdmap/hdmap_common.h"
 #include "modules/localization/proto/localization.pb.h"
+#include "modules/map/hdmap/hdmap_common.h"
 #include "modules/perception/proto/traffic_light_detection.pb.h"
-#include "modules/prediction/proto/prediction_obstacle.pb.h"
+#include "modules/planning/common/dependency_injector.h"
 #include "modules/planning/proto/learning_data.pb.h"
 #include "modules/planning/proto/planning_config.pb.h"
+#include "modules/prediction/proto/prediction_obstacle.pb.h"
 #include "modules/routing/proto/routing.pb.h"
 #include "modules/storytelling/proto/story.pb.h"
 
@@ -45,6 +47,9 @@ namespace planning {
 class MessageProcess {
  public:
   bool Init(const PlanningConfig& planning_config);
+  bool Init(const PlanningConfig& planning_config,
+            const std::shared_ptr<DependencyInjector>& injector);
+
   void Close();
 
   void OnChassis(const apollo::canbus::Chassis& chassis);
@@ -64,7 +69,7 @@ class MessageProcess {
   void OnTrafficLightDetection(
       const apollo::perception::TrafficLightDetection& traffic_light_detection);
 
-  void ProcessOfflineData(const std::string &record_file);
+  void ProcessOfflineData(const std::string& record_file);
 
  private:
   struct ADCCurrentInfo {
@@ -74,22 +79,19 @@ class MessageProcess {
     double adc_cur_heading_;
   };
 
-    apollo::hdmap::LaneInfoConstPtr GetCurrentLane(
+  apollo::hdmap::LaneInfoConstPtr GetCurrentLane(
       const apollo::common::PointENU& position);
   bool GetADCCurrentRoutingIndex(int* road_index, double* road_s);
 
   int GetADCCurrentInfo(ADCCurrentInfo* adc_curr_info);
 
-  void GenerateObstacleTrajectory(
-      const int frame_num,
-      const int obstacle_id,
-      const ADCCurrentInfo& adc_curr_info,
-      ObstacleFeature* obstacle_feature);
+  void GenerateObstacleTrajectory(const int frame_num, const int obstacle_id,
+                                  const ADCCurrentInfo& adc_curr_info,
+                                  ObstacleFeature* obstacle_feature);
 
   void GenerateObstaclePrediction(
       const apollo::prediction::PredictionObstacle& prediction_obstacle,
-      const ADCCurrentInfo& adc_curr_info,
-      ObstacleFeature* obstacle_feature);
+      const ADCCurrentInfo& adc_curr_info, ObstacleFeature* obstacle_feature);
 
   void GenerateObstacleFeature(LearningDataFrame* learning_data_frame);
 
@@ -111,6 +113,7 @@ class MessageProcess {
   void GenerateLearningDataFrame(LearningDataFrame* learning_data_frame);
 
  private:
+  std::shared_ptr<DependencyInjector> injector_;
   PlanningConfig planning_config_;
   std::chrono::time_point<std::chrono::system_clock> start_time_;
   std::ofstream log_file_;

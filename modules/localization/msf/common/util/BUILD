@@ -1,3 +1,4 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -8,7 +9,7 @@ cc_library(
     hdrs = ["compression.h"],
     deps = [
         "//cyber",
-        "//third_party:boost",
+        "@boost",
         "@eigen",
     ],
 )
@@ -19,7 +20,7 @@ cc_library(
     hdrs = ["file_utility.h"],
     deps = [
         "//cyber/common:log",
-        "//third_party:boost",
+        "@boost",
         "@com_google_glog//:glog",
         "@eigen",
         "@fastrtps",
@@ -32,7 +33,7 @@ cc_library(
     hdrs = ["system_utility.h"],
     deps = [
         "//cyber",
-        "//third_party:boost",
+        "@boost",
         "@eigen",
     ],
 )
@@ -59,7 +60,7 @@ cc_library(
     ],
     deps = [
         "//cyber",
-        "//third_party:boost",
+        "@boost",
         "@eigen",
     ],
 )
@@ -99,7 +100,7 @@ cc_test(
     data = ["localization_msf_common_test_data"],
     deps = [
         "//modules/localization/msf/common/util:localization_msf_common_util_system_utility",
-        "//third_party:boost",
+        "@boost",
         "@com_google_googletest//:gtest_main",
     ],
 )

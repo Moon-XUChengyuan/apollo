@@ -1,3 +1,4 @@
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -18,7 +19,7 @@ cc_library(
     srcs = ["zhongyun_message_manager.cc"],
     hdrs = ["zhongyun_message_manager.h"],
     deps = [
-        "//modules/canbus/proto:canbus_proto",
+        "//modules/canbus/proto:chassis_detail_cc_proto",
         "//modules/canbus/vehicle/zhongyun/protocol:canbus_zhongyun_protocol",
         "//modules/drivers/canbus/can_comm:message_manager_base",
         "//modules/drivers/canbus/common:canbus_common",
@@ -31,7 +32,7 @@ cc_library(
     hdrs = ["zhongyun_controller.h"],
     deps = [
         ":zhongyun_message_manager",
-        "//modules/canbus/proto:canbus_proto",
+        "//modules/canbus/proto:chassis_detail_cc_proto",
         "//modules/canbus/vehicle:vehicle_controller_base",
         "//modules/canbus/vehicle/zhongyun/protocol:canbus_zhongyun_protocol",
         "//modules/drivers/canbus/can_comm:can_sender",
