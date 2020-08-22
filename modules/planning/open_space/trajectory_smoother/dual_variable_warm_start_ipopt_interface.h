@@ -20,13 +20,14 @@
 
 #pragma once
 
-#include <adolc/adolc.h>
-#include <adolc/adolc_sparse.h>
-#include <coin/IpTNLP.hpp>
-#include <coin/IpTypes.hpp>
-
 #include <limits>
 #include <vector>
+
+#include <adolc/adolc.h>
+#include <adolc/adolc_sparse.h>
+
+#include <coin/IpTNLP.hpp>
+#include <coin/IpTypes.hpp>
 
 #include "Eigen/Dense"
 

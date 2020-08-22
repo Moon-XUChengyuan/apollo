@@ -38,7 +38,7 @@ using apollo::cyber::common::PathExists;
 using apollo::cyber::common::WorkRoot;
 using apollo::cyber::croutine::RoutineState;
 
-SchedulerClassic::SchedulerClassic() {
+SchedulerClassic::SchedulerClassic() {//初始化classic调度器 —— 解析配置文件并生成相应processor
   std::string conf("conf/");
   conf.append(GlobalData::Instance()->ProcessGroup()).append(".conf");
   auto cfg_file = GetAbsolutePath(WorkRoot(), conf);
@@ -46,7 +46,7 @@ SchedulerClassic::SchedulerClassic() {
   apollo::cyber::proto::CyberConfig cfg;
   if (PathExists(cfg_file) && GetProtoFromFile(cfg_file, &cfg)) {
     for (auto& thr : cfg.scheduler_conf().threads()) {
-      inner_thr_confs_[thr.name()] = thr;
+      inner_thr_confs_[thr.name()] = thr;//获取thread配置
     }
 
     if (cfg.scheduler_conf().has_process_level_cpuset()) {
@@ -100,10 +100,10 @@ void SchedulerClassic::CreateProcessor() {
       pctxs_.emplace_back(ctx);
 
       auto proc = std::make_shared<Processor>();
-      proc->BindContext(ctx);
+      proc->BindContext(ctx);//processor绑定classic类型的上下文
       SetSchedAffinity(proc->Thread(), cpuset, affinity, i);
       SetSchedPolicy(proc->Thread(), processor_policy, processor_prio,
-                     proc->Tid());
+                     proc->Tid());//设定processor对应的线程cpu亲和性、调度策略以及优先级（同组的所有processor是一样的）
       processors_.emplace_back(proc);
     }
   }
@@ -112,7 +112,7 @@ void SchedulerClassic::CreateProcessor() {
 bool SchedulerClassic::DispatchTask(const std::shared_ptr<CRoutine>& cr) {
   // we use multi-key mutex to prevent race condition
   // when del && add cr with same crid
-  MutexWrapper* wrapper = nullptr;
+  MutexWrapper* wrapper = nullptr; //各种的锁。。。
   if (!id_map_mutex_.Get(cr->id(), &wrapper)) {
     {
       std::lock_guard<std::mutex> wl_lg(cr_wl_mtx_);
@@ -133,12 +133,12 @@ bool SchedulerClassic::DispatchTask(const std::shared_ptr<CRoutine>& cr) {
   }
 
   if (cr_confs_.find(cr->name()) != cr_confs_.end()) {
-    ClassicTask task = cr_confs_[cr->name()];
+    ClassicTask task = cr_confs_[cr->name()];//设置协程的名字、优先级及组名
     cr->set_priority(task.prio());
     cr->set_group_name(task.group_name());
   } else {
     // croutine that not exist in conf
-    cr->set_group_name(classic_conf_.groups(0).name());
+    cr->set_group_name(classic_conf_.groups(0).name());//若配置文件中为显式指明，则放入第一个组
   }
 
   if (cr->priority() >= MAX_PRIO) {
@@ -153,10 +153,10 @@ bool SchedulerClassic::DispatchTask(const std::shared_ptr<CRoutine>& cr) {
         ClassicContext::rq_locks_[cr->group_name()].at(cr->priority()));
     ClassicContext::cr_group_[cr->group_name()]
         .at(cr->priority())
-        .emplace_back(cr);
+        .emplace_back(cr);//获取对应组名及优先级的协程队列，将协程加入队列
   }
 
-  ClassicContext::Notify(cr->group_name());
+  ClassicContext::Notify(cr->group_name());//唤醒对应协程组，等待/唤醒操作在classiccontext类中通过对信号量等控制实现
   return true;
 }
 

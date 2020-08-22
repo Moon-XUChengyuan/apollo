@@ -122,40 +122,51 @@ bool ControlComponent::Init() {
 }
 
 void ControlComponent::OnPad(const std::shared_ptr<PadMessage> &pad) {
+  //AINFO<<"Module "<< MODULE_NAME<<"OnPad start, itr: "<< ++calledTimes_OnPad;
   std::lock_guard<std::mutex> lock(mutex_);
   pad_msg_.CopyFrom(*pad);
   ADEBUG << "Received Pad Msg:" << pad_msg_.DebugString();
   AERROR_IF(!pad_msg_.has_action()) << "pad message check failed!";
+  //AINFO<<"Module "<< MODULE_NAME<<"OnPad end, itr: "<< calledTimes_OnPad;
 }
 
 void ControlComponent::OnChassis(const std::shared_ptr<Chassis> &chassis) {
+  //AINFO<<"Module "<< MODULE_NAME<<"OnChassis start, itr: "<< ++calledTimes_OnChassis;
   ADEBUG << "Received chassis data: run chassis callback.";
   std::lock_guard<std::mutex> lock(mutex_);
   latest_chassis_.CopyFrom(*chassis);
+  //AINFO<<"Module "<< MODULE_NAME<<"OnChassis end, itr: "<< calledTimes_OnChassis;
 }
 
 void ControlComponent::OnPlanning(
     const std::shared_ptr<ADCTrajectory> &trajectory) {
+  //AINFO<<"Module "<< MODULE_NAME<<"OnPlanning start, itr: "<< ++calledTimes_OnPlanning;
   ADEBUG << "Received chassis data: run trajectory callback.";
   std::lock_guard<std::mutex> lock(mutex_);
   latest_trajectory_.CopyFrom(*trajectory);
+  //AINFO<<"Module "<< MODULE_NAME<<"OnPlanning end, itr: "<< calledTimes_OnPlanning;
 }
 
 void ControlComponent::OnLocalization(
     const std::shared_ptr<LocalizationEstimate> &localization) {
+  //AINFO<<"Module "<< MODULE_NAME<<"OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
   ADEBUG << "Received control data: run localization message callback.";
   std::lock_guard<std::mutex> lock(mutex_);
   latest_localization_.CopyFrom(*localization);
+  //AINFO<<"Module "<< MODULE_NAME<<"OnLocalization end, itr: "<< calledTimes_OnLocalization;
 }
 
 void ControlComponent::OnMonitor(
     const common::monitor::MonitorMessage &monitor_message) {
+  //AINFO<<"Module "<< MODULE_NAME<<"OnMonitor start, itr: "<< ++calledTimes_OnMonitor;
   for (const auto &item : monitor_message.item()) {
     if (item.log_level() == common::monitor::MonitorMessageItem::FATAL) {
       estop_ = true;
+      //AINFO<<"Module "<< MODULE_NAME<<"OnMonitor end, itr: "<< calledTimes_OnMonitor;
       return;
     }
   }
+  //AINFO<<"Module "<< MODULE_NAME<<"OnMonitor end, fail, itr: "<< calledTimes_OnMonitor;
 }
 
 Status ControlComponent::ProduceControlCommand(
@@ -277,8 +288,8 @@ Status ControlComponent::ProduceControlCommand(
 }
 
 bool ControlComponent::Proc() {
+   
   AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes_Proc;
-
   const auto start_time =
       FLAGS_use_system_time_in_control ? absl::Now() : Clock::Now();
 
@@ -286,8 +297,7 @@ bool ControlComponent::Proc() {
   const auto &chassis_msg = chassis_reader_->GetLatestObserved();
   if (chassis_msg == nullptr) {
     AERROR << "Chassis msg is not ready!";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
-
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
     return false;
   }
 
@@ -297,8 +307,7 @@ bool ControlComponent::Proc() {
   const auto &trajectory_msg = trajectory_reader_->GetLatestObserved();
   if (trajectory_msg == nullptr) {
     AERROR << "planning msg is not ready!";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
-
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
     return false;
   }
   OnPlanning(trajectory_msg);
@@ -307,8 +316,7 @@ bool ControlComponent::Proc() {
   const auto &localization_msg = localization_reader_->GetLatestObserved();
   if (localization_msg == nullptr) {
     AERROR << "localization msg is not ready!";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
-
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
     return false;
   }
   OnLocalization(localization_msg);
@@ -350,8 +358,7 @@ bool ControlComponent::Proc() {
         end_time);
 
     local_view_writer_->Write(local_view_);
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
-
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
     return true;
   }
 
@@ -370,8 +377,7 @@ bool ControlComponent::Proc() {
       absl::ToDoubleSeconds(start_time - init_time_) >
           control_conf_.control_test_duration()) {
     AERROR << "Control finished testing. exit";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
-
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
     return false;
   }
 
@@ -404,8 +410,7 @@ bool ControlComponent::Proc() {
   ADEBUG << control_command.ShortDebugString();
   if (control_conf_.is_control_test_mode()) {
     ADEBUG << "Skip publish control command in test mode";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
-
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
     return true;
   }
 
@@ -431,8 +436,7 @@ bool ControlComponent::Proc() {
   }
 
   control_cmd_writer_->Write(control_command);
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
-
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
   return true;
 }
 

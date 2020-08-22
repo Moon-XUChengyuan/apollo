@@ -62,7 +62,7 @@ class PostprocessorSubmodule final : public cyber::Component<ControlCommand> {
   bool Proc(const std::shared_ptr<ControlCommand>& control_command) override;
 
  private:
-   int calledTimes=0;
+  int calledTimes=0;
   std::shared_ptr<cyber::Writer<ControlCommand>> postprocessor_writer_;
   ControlCommonConf control_common_conf_;
 };

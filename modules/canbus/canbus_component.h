@@ -19,7 +19,7 @@
  */
 
 #pragma once
-
+#include "modules/common/time/time.h"
 #include <memory>
 #include <string>
 #include <utility>
@@ -66,8 +66,8 @@ class CanbusComponent final : public apollo::cyber::TimerComponent {
   std::string Name() const;
 
  private:
-   int calledTimes_Proc=0;
-   int calledTimes_OnControlCommand=0;
+  int calledTimes_Proc=0;
+  int calledTimes_OnControlCommand=0;
   /**
    * @brief module initialization function
    * @return initialization status

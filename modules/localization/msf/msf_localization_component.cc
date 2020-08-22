@@ -16,9 +16,10 @@
 
 #include "modules/localization/msf/msf_localization_component.h"
 
-#include "modules/common/adapters/adapter_gflags.h"
 #include "modules/common/math/quaternion.h"
 #include "modules/common/time/time.h"
+
+#include "modules/common/adapters/adapter_gflags.h"
 #include "modules/localization/common/localization_gflags.h"
 
 namespace apollo {
@@ -101,10 +102,10 @@ bool MSFLocalizationComponent::InitIO() {
 
 bool MSFLocalizationComponent::Proc(
     const std::shared_ptr<drivers::gnss::Imu>& imu_msg) {
-  AINFO << "Module " << MODULE_NAME << " Proc start, itr: " << ++calledTimes;
+   
+  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   localization_.OnRawImu(imu_msg);
-  AINFO << "Module " << MODULE_NAME << " Proc end, itr: " << calledTimes;
-
+  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 
@@ -164,23 +165,6 @@ void LocalizationMsgPublisher::PublishPoseBroadcastTF(
 
 void LocalizationMsgPublisher::PublishPoseBroadcastTopic(
     const LocalizationEstimate& localization) {
-  double cur_system_time = localization.header().timestamp_sec();
-  if (pre_system_time_ > 0.0 && cur_system_time - pre_system_time_ > 0.02) {
-    AERROR << std::setprecision(16)
-           << "the localization processing time enlonged more than 2 times "
-              "according to system time, "
-           << "the pre system time and current system time: "
-           << pre_system_time_ << " " << cur_system_time;
-  } else if (pre_system_time_ > 0.0 &&
-             cur_system_time - pre_system_time_ < 0.0) {
-    AERROR << std::setprecision(16)
-           << "published localization message's time is eary than last imu "
-              "message "
-              "according to system time, "
-           << "the pre system time and current system time: "
-           << pre_system_time_ << " " << cur_system_time;
-  }
-  pre_system_time_ = cur_system_time;
   localization_talker_->Write(localization);
 }
 

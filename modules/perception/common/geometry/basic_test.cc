@@ -16,7 +16,6 @@
 #include "modules/perception/common/geometry/basic.h"
 
 #include "gtest/gtest.h"
-
 #include "modules/perception/base/point_cloud.h"
 #include "modules/perception/common/geometry/common.h"
 
@@ -345,10 +344,11 @@ TEST(GeometryCommonTest, calculate_dist_and_dir_to_boundary) {
   EXPECT_NEAR(distance, 0.f, std::numeric_limits<float>::epsilon());
 }
 
-TEST(GeometryCommonTest, calculate_dist_and_dir_to_boundary_list) {
+TEST(GeometryCommonTest, calculate_dist_and_dir_to_boundary_lists) {
   Eigen::Vector3f pt(0.0, 0.0, 0.0);
   PointCloud<PointF> left, right;
-  std::vector<PointCloud<PointF>> left_list, right_list;
+  std::vector<PointCloud<PointF>, Eigen::aligned_allocator<PointCloud<PointF>>>
+      left_list, right_list;
   base::PointF temp;
   temp.x = 10.f;
   temp.y = 0.f;

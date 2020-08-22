@@ -48,7 +48,7 @@ using apollo::cyber::base::ReadLockGuard;
 using apollo::cyber::croutine::CRoutine;
 using apollo::cyber::croutine::RoutineFactory;
 using apollo::cyber::data::DataVisitorBase;
-using apollo::cyber::proto::InnerThread;
+using apollo::cyber::proto::InnerThread;//对应调度配置中的thread
 
 class Processor;
 class ProcessorContext;
@@ -58,25 +58,31 @@ class Scheduler {
   virtual ~Scheduler() {}
   static Scheduler* Instance();
 
-  bool CreateTask(const RoutineFactory& factory, const std::string& name);
+  bool CreateTask(const RoutineFactory& factory, const std::string& name);//两种创建task的方式：协程工厂，任务体 & data visitor
   bool CreateTask(std::function<void()>&& func, const std::string& name,
                   std::shared_ptr<DataVisitorBase> visitor = nullptr);
+
+  //唤醒task
   bool NotifyTask(uint64_t crid);
 
   void Shutdown();
   uint32_t TaskPoolSize() { return task_pool_size_; }
-
+  //移除task
   virtual bool RemoveTask(const std::string& name) = 0;
-
+  //线程级别资源控制
   void ProcessLevelResourceControl();
+  //对应配置文件中单独的thread
   void SetInnerThreadAttr(const std::string& name, std::thread* thr);
-
+  //分发任务
   virtual bool DispatchTask(const std::shared_ptr<CRoutine>&) = 0;
+
+  //唤醒processor
   virtual bool NotifyProcessor(uint64_t crid) = 0;
+  //移除协程
   virtual bool RemoveCRoutine(uint64_t crid) = 0;
-
+  //检查调度状态
   void CheckSchedStatus();
-
+  //设置内部线程配置
   void SetInnerThreadConfs(
       const std::unordered_map<std::string, InnerThread>& confs) {
     inner_thr_confs_ = confs;
@@ -89,11 +95,11 @@ class Scheduler {
   AtomicHashMap<uint64_t, MutexWrapper*> id_map_mutex_;
   std::mutex cr_wl_mtx_;
 
-  std::unordered_map<uint64_t, std::shared_ptr<CRoutine>> id_cr_;
-  std::vector<std::shared_ptr<ProcessorContext>> pctxs_;
-  std::vector<std::shared_ptr<Processor>> processors_;
+  std::unordered_map<uint64_t, std::shared_ptr<CRoutine>> id_cr_;//协程id-协程 map
+  std::vector<std::shared_ptr<ProcessorContext>> pctxs_;//processor context组（vector）
+  std::vector<std::shared_ptr<Processor>> processors_;//processor组（vector）
 
-  std::unordered_map<std::string, InnerThread> inner_thr_confs_;
+  std::unordered_map<std::string, InnerThread> inner_thr_confs_;//调度配置中单独的线程
 
   std::string process_level_cpuset_;
   uint32_t proc_num_ = 0;

@@ -142,6 +142,7 @@ void CanReceiver<SensorType>::RecvThreadFunc() {
   auto default_period = 10 * 1000;
 
   while (IsRunning()) {
+    AINFO << "Can client receiver works...";
     std::vector<CanFrame> buf;
     int32_t frame_num = MAX_CAN_RECV_FRAME_LEN;
     if (can_client_->Receive(&buf, &frame_num) !=
@@ -150,6 +151,7 @@ void CanReceiver<SensorType>::RecvThreadFunc() {
                      ERROR_COUNT_MAX)
           << "Received " << receive_error_count << " error messages.";
       cyber::USleep(default_period);
+      AINFO << "Can client receiver finishes work this time.";
       continue;
     }
     receive_error_count = 0;
@@ -165,6 +167,7 @@ void CanReceiver<SensorType>::RecvThreadFunc() {
                      ERROR_COUNT_MAX)
           << "Received " << receive_none_count << " empty messages.";
       cyber::USleep(default_period);
+      AINFO << "Can client receiver finishes work this time.";
       continue;
     }
     receive_none_count = 0;
@@ -178,6 +181,7 @@ void CanReceiver<SensorType>::RecvThreadFunc() {
         ADEBUG << "recv_can_frame#" << frame.CanFrameString();
       }
     }
+    AINFO << "Can client receiver finishes work this time.";
     cyber::Yield();
   }
   AINFO << "Can client receiver thread stopped.";

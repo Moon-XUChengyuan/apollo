@@ -1,42 +1,38 @@
 #! /usr/bin/env bash
-if [ -z "${APOLLO_ROOT_DIR}" ]; then
-    export APOLLO_ROOT_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P)"
-    source ${APOLLO_ROOT_DIR}/scripts/apollo.bashrc
-fi
+TOP_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P)"
+source ${TOP_DIR}/scripts/apollo.bashrc
 
 export CYBER_PATH="${APOLLO_ROOT_DIR}/cyber"
 
+# FIXME(all): preconfigured in /etc/profile.d/apollo.sh
 export QT5_PATH="/usr/local/qt5"
-export LD_LIBRARY_PATH=${QT5_PATH}/lib:$LD_LIBRARY_PATH
 export QT_QPA_PLATFORM_PLUGIN_PATH=${QT5_PATH}/plugins
 add_to_path "${QT5_PATH}/bin"
 
 bazel_bin_path="${APOLLO_ROOT_DIR}/bazel-bin"
-apollo_tool_path="${bazel_bin_path}/modules/tools"
-visualizer_path="${apollo_tool_path}/visualizer"
-
 cyber_bin_path="${bazel_bin_path}/cyber"
 cyber_tool_path="${bazel_bin_path}/cyber/tools"
 recorder_path="${cyber_tool_path}/cyber_recorder"
+launch_path="${cyber_tool_path}/cyber_launch"
+channel_path="${cyber_tool_path}/cyber_channel"
+node_path="${cyber_tool_path}/cyber_node"
+service_path="${cyber_tool_path}/cyber_service"
 monitor_path="${cyber_tool_path}/cyber_monitor"
-
-launch_path="${CYBER_PATH}/tools/cyber_launch"
-channel_path="${CYBER_PATH}/tools/cyber_channel"
-node_path="${CYBER_PATH}/tools/cyber_node"
-service_path="${CYBER_PATH}/tools/cyber_service"
+visualizer_path="${bazel_bin_path}/modules/tools/visualizer"
 rosbag_to_record_path="${bazel_bin_path}/modules/data/tools/rosbag_to_record"
 
-
 # TODO(all): place all these in one place and add_to_path
-for entry in "${cyber_bin_path}" "${recorder_path}" "${monitor_path}" "${launch_path}" \
-    "${channel_path}" "${node_path}" "${service_path}" \
+for entry in "${cyber_bin_path}" \
+    "${recorder_path}" "${monitor_path}"  \
+    "${channel_path}" "${node_path}" \
+    "${launch_path}" \
     "${visualizer_path}" \
     "${rosbag_to_record_path}" ; do
     add_to_path "${entry}"
 done
 
-PYTHON_LD_PATH="${bazel_bin_path}/cyber/py_wrapper"
-export PYTHONPATH=${PYTHON_LD_PATH}:${CYBER_PATH}/python:$PYTHONPATH
+# ${CYBER_PATH}/python
+export PYTHONPATH=${bazel_bin_path}/cyber/python/internal:${PYTHONPATH}
 
 export CYBER_DOMAIN_ID=80
 export CYBER_IP=127.0.0.1

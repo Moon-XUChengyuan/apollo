@@ -19,8 +19,24 @@
 
 --map_dir=/apollo/modules/map/data/borregas_ave
 
+--map_dir=/apollo/modules/map/data/single_lane_road
+
+--map_dir=/apollo/modules/map/data/borregas_ave
+
+--map_dir=/apollo/modules/map/data/san_francisco
+
+--map_dir=/apollo/modules/map/data/demo
+
 --map_dir=/apollo/modules/map/data/san_francisco
 
 --map_dir=/apollo/modules/map/data/borregas_ave
+
+--map_dir=/apollo/modules/map/data/san_francisco
+
+--map_dir=/apollo/modules/map/data/shalun
+
+--map_dir=/apollo/modules/map/data/san_francisco
+
+--map_dir=/apollo/modules/map/data/shalun
 
 --map_dir=/apollo/modules/map/data/san_francisco

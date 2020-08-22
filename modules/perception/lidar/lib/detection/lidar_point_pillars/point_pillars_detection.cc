@@ -15,15 +15,16 @@
  *****************************************************************************/
 #include "modules/perception/lidar/lib/detection/lidar_point_pillars/point_pillars_detection.h"
 
-#include <cuda_runtime_api.h>
-
 #include <algorithm>
 #include <numeric>
 #include <random>
 
+#include <cuda_runtime_api.h>
+
 #include "cyber/common/log.h"
 
 #include "modules/perception/base/object_pool_types.h"
+#include "modules/perception/base/point_cloud_util.h"
 #include "modules/perception/common/perception_gflags.h"
 #include "modules/perception/lidar/common/lidar_timer.h"
 #include "modules/perception/lidar/common/pcl_util.h"
@@ -77,7 +78,20 @@ bool PointPillarsDetection::Detect(const DetectionOptions& options,
   Timer timer;
 
   int num_points;
-  cur_cloud_ptr_ = std::make_shared<base::AttributePointCloud<base::PointF>>();
+//  cur_cloud_ptr_ = std::make_shared<base::PointFCloud>(*original_cloud_);
+  cur_cloud_ptr_ = original_cloud_;  // TODO(chenjiahao): for emergency use
+
+  // down sample the point cloud through filtering beams
+  if (FLAGS_enable_downsample_beams) {
+    base::PointFCloudPtr downsample_beams_cloud_ptr(new base::PointFCloud());
+    if (DownSamplePointCloudBeams(original_cloud_, downsample_beams_cloud_ptr,
+        FLAGS_downsample_beams_factor)) {
+      cur_cloud_ptr_ = downsample_beams_cloud_ptr;
+    } else {
+      AWARN << "Down sample beams factor must be >= 1. Cancel down sampling."
+               " Current factor: " << FLAGS_downsample_beams_factor;
+    }
+  }
 
   // down sample the point cloud through filtering voxel grid
   if (FLAGS_enable_downsample_pointcloud) {
@@ -85,21 +99,25 @@ bool PointPillarsDetection::Detect(const DetectionOptions& options,
         new pcl::PointCloud<pcl::PointXYZI>());
     pcl::PointCloud<pcl::PointXYZI>::Ptr filtered_cloud_ptr(
         new pcl::PointCloud<pcl::PointXYZI>());
-    TransformToPCLXYZI(*original_cloud_, pcl_cloud_ptr);
+    TransformToPCLXYZI(*cur_cloud_ptr_, pcl_cloud_ptr);
     DownSampleCloudByVoxelGrid(pcl_cloud_ptr, filtered_cloud_ptr,
                                FLAGS_downsample_voxel_size_x,
                                FLAGS_downsample_voxel_size_y,
                                FLAGS_downsample_voxel_size_z);
 
     // transform pcl point cloud to apollo point cloud
-    TransformFromPCLXYZI(filtered_cloud_ptr, cur_cloud_ptr_);
+    base::PointFCloudPtr downsample_voxel_cloud_ptr(new base::PointFCloud());
+    TransformFromPCLXYZI(filtered_cloud_ptr, downsample_voxel_cloud_ptr);
+    cur_cloud_ptr_ = downsample_voxel_cloud_ptr;
   }
   downsample_time_ = timer.toc(true);
 
   num_points = cur_cloud_ptr_->size();
-  ADEBUG << "num points before fusing: " << num_points;
+  AINFO << "num points before fusing: " << num_points;
 
   // fuse clouds of preceding frames with current cloud
+  cur_cloud_ptr_->mutable_points_timestamp()->assign(
+      cur_cloud_ptr_->size(), 0.0);
   if (FLAGS_enable_fuse_frames && FLAGS_num_fuse_frames > 1) {
     // before fusing
     while (!prev_world_clouds_.empty() &&
@@ -136,7 +154,7 @@ bool PointPillarsDetection::Detect(const DetectionOptions& options,
     }
     prev_world_clouds_.emplace_back(cur_world_cloud_ptr);
   }
-  ADEBUG << "num points after fusing: " << num_points;
+  AINFO << "num points after fusing: " << num_points;
   fuse_time_ = timer.toc(true);
 
   // shuffle points and cut off

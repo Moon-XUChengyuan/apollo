@@ -15,24 +15,26 @@
  *****************************************************************************/
 
 #pragma once
-
+#include "modules/common/time/time.h"
 #include <memory>
 #include <string>
 
 #include "cyber/class_loader/class_loader.h"
 #include "cyber/component/timer_component.h"
+
 #include "modules/canbus/proto/chassis.pb.h"
 #include "modules/common/monitor_log/monitor_log_buffer.h"
-#include "modules/common/util/util.h"
-#include "modules/control/common/dependency_injector.h"
-#include "modules/control/controller/controller_agent.h"
 #include "modules/control/proto/control_cmd.pb.h"
 #include "modules/control/proto/control_conf.pb.h"
 #include "modules/control/proto/pad_msg.pb.h"
-#include "modules/control/proto/preprocessor.pb.h"
-#include "modules/control/submodules/preprocessor_submodule.h"
 #include "modules/localization/proto/localization.pb.h"
 #include "modules/planning/proto/planning.pb.h"
+
+#include "modules/common/util/util.h"
+#include "modules/control/controller/controller_agent.h"
+#include "modules/control/proto/preprocessor.pb.h"
+#include "modules/control/submodules/preprocessor_submodule.h"
+#include "modules/control/common/dependency_injector.h"
 
 /**
  * @namespace apollo::control
@@ -57,12 +59,12 @@ class ControlComponent final : public apollo::cyber::TimerComponent {
   bool Proc() override;
 
  private:
-  int calledTimes_Proc = 0;
-  int calledTimes_OnPad = 0;
-  int calledTimes_OnChassis = 0;
-  int calledTimes_OnPlanning = 0;
-  int calledTimes_OnLocalization = 0;
-  int calledTimes_OnMonitor = 0;
+  int calledTimes_Proc=0;
+  int calledTimes_OnPad=0;
+  int calledTimes_OnChassis=0;
+  int calledTimes_OnPlanning=0;
+  int calledTimes_OnLocalization=0;
+  int calledTimes_OnMonitor=0;
   // Upon receiving pad message
   void OnPad(const std::shared_ptr<PadMessage> &pad);
 

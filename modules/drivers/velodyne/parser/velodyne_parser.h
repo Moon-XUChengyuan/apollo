@@ -50,13 +50,14 @@
 
 #pragma once
 
-#include <boost/format.hpp>
 #include <cerrno>
 #include <cmath>
 #include <cstdint>
 #include <limits>
 #include <memory>
 #include <string>
+
+#include <boost/format.hpp>
 
 #include "modules/drivers/proto/pointcloud.pb.h"
 #include "modules/drivers/velodyne/parser/calibration.h"
@@ -327,8 +328,8 @@ class Velodyne32Parser : public VelodyneParser {
                         uint16_t laser_block_id);
   void Unpack(const VelodynePacket& pkt, std::shared_ptr<PointCloud> pc);
   void UnpackVLP32C(const VelodynePacket& pkt, std::shared_ptr<PointCloud> pc);
-  // Previous Velodyne packet time stamp. (offset to the top hour)
-  double previous_packet_stamp_;
+  // Previous laser firing time stamp. (offset to the top hour)
+  double previous_firing_stamp_;
   uint64_t gps_base_usec_;  // full time
 };                          // class Velodyne32Parser
 

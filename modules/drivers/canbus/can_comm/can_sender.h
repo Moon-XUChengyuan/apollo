@@ -287,6 +287,7 @@ void CanSender<SensorType>::PowerSendThreadFunc() {
   AINFO << "Can client sender thread starts.";
 
   while (is_running_) {
+    AINFO << "Can client receiver works...";
     tm_start = absl::ToUnixMicros(common::time::Clock::Now());
     new_delta_period = INIT_PERIOD;
 
@@ -296,6 +297,7 @@ void CanSender<SensorType>::PowerSendThreadFunc() {
       new_delta_period = std::min(new_delta_period, message.curr_period());
 
       if (!need_send) {
+        AINFO << "Can client receiver finishes work this time.";
         continue;
       }
       std::vector<CanFrame> can_frames;
@@ -319,6 +321,7 @@ void CanSender<SensorType>::PowerSendThreadFunc() {
       AWARN << "Too much time for calculation: " << tm_end - tm_start
             << "us is more than minimum period: " << delta_period << "us";
     }
+    AINFO << "Can client receiver finishes work this time.";
   }
   AINFO << "Can client sender thread stopped!";
 }

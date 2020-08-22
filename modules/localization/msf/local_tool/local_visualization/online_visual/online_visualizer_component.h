@@ -25,13 +25,17 @@
 #include <string>
 #include <vector>
 
-#include "cyber/cyber.h"
 #include "glog/logging.h"
 #include "gtest/gtest_prod.h"
-#include "modules/common/status/status.h"
+
+#include "cyber/cyber.h"
+
 #include "modules/drivers/proto/pointcloud.pb.h"
-#include "modules/localization/msf/local_tool/local_visualization/engine/visualization_manager.h"
 #include "modules/localization/proto/localization.pb.h"
+
+#include "modules/common/status/status.h"
+#include "modules/common/util/eigen_defs.h"
+#include "modules/localization/msf/local_tool/local_visualization/engine/visualization_manager.h"
 
 /**
  * @namespace apollo::localization
@@ -66,14 +70,14 @@ class OnlineVisualizerComponent final
 
   void ParsePointCloudMessage(
       const std::shared_ptr<drivers::PointCloud> &message,
-      std::vector<Eigen::Vector3d> *pt3ds,
+      ::apollo::common::EigenVector3dVec *pt3ds,
       std::vector<unsigned char> *intensities);
 
- private:
-  int calledTimes = 0;
-  int calledTimes_OnLidarLocalization = 0;
-  int calledTimes_OnGNSSLocalization = 0;
-  int calledTimes_OnFusionLocalization = 0;
+ private: 
+  int calledTimes=0;
+  int calledTimes_OnLidarLocalization=0;
+  int calledTimes_OnGNSSLocalization=0;
+  int calledTimes_OnFusionLocalization=0;
   std::string lidar_extrinsic_file_;
   std::string map_folder_;
   std::string map_visual_folder_;

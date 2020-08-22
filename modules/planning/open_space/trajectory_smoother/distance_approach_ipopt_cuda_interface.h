@@ -20,15 +20,17 @@
 
 #pragma once
 
+#include <vector>
+
+#include <omp.h>
+
 #include <adolc/adolc.h>
 #include <adolc/adolc_openmp.h>
 #include <adolc/adolc_sparse.h>
 #include <adolc/adouble.h>
-#include <omp.h>
+
 #include <coin/IpTNLP.hpp>
 #include <coin/IpTypes.hpp>
-
-#include <vector>
 
 #include "Eigen/Dense"
 

@@ -55,11 +55,10 @@
 
 #pragma once
 
-#include <unsupported/Eigen/NonLinearOptimization>
-
 #include <limits>
 #include <vector>
 
+#include "unsupported/Eigen/NonLinearOptimization"
 #include "pcl/registration/registration.h"
 
 #include "cyber/common/log.h"
@@ -214,7 +213,7 @@ class NormalDistributionsTransform {
   static void ConvertTransform(const Eigen::Matrix<double, 6, 1> &x,
                                Eigen::Matrix4f *trans) {
     Eigen::Affine3f _affine;
-    ConvertTransform(x, _affine);
+    ConvertTransform(x, &_affine);
     *trans = _affine.matrix();
   }
 

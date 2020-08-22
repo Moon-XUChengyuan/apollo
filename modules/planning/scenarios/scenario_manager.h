@@ -19,10 +19,9 @@
 #include <memory>
 #include <unordered_map>
 
-#include "modules/planning/proto/planning_config.pb.h"
-
 #include "modules/common/status/status.h"
 #include "modules/planning/common/planning_context.h"
+#include "modules/planning/proto/planning_config.pb.h"
 #include "modules/planning/scenarios/scenario.h"
 
 namespace apollo {
@@ -35,7 +34,7 @@ class ScenarioManager final {
 
   explicit ScenarioManager(const std::shared_ptr<DependencyInjector>& injector);
 
-  bool Init();
+  bool Init(const PlanningConfig& planning_config);
 
   Scenario* mutable_scenario() { return current_scenario_.get(); }
 
@@ -106,6 +105,8 @@ class ScenarioManager final {
       const Frame& frame, const ScenarioConfig::ScenarioType& scenario_type);
 
  private:
+  std::shared_ptr<DependencyInjector> injector_;
+  PlanningConfig planning_config_;
   std::unordered_map<ScenarioConfig::ScenarioType, ScenarioConfig,
                      std::hash<int>>
       config_map_;
@@ -115,7 +116,6 @@ class ScenarioManager final {
   std::unordered_map<ReferenceLineInfo::OverlapType, hdmap::PathOverlap,
                      std::hash<int>>
       first_encountered_overlap_map_;
-  std::shared_ptr<DependencyInjector> injector_;
 };
 
 }  // namespace scenario

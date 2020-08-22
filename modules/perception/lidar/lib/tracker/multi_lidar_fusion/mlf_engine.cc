@@ -16,8 +16,9 @@
 
 #include "modules/perception/lidar/lib/tracker/multi_lidar_fusion/mlf_engine.h"
 
-#include <Eigen/Geometry>
 #include <utility>
+
+#include "Eigen/Geometry"
 
 #include "cyber/common/file.h"
 #include "modules/localization/proto/localization.pb.h"
@@ -30,8 +31,8 @@ namespace apollo {
 namespace perception {
 namespace lidar {
 
-using cyber::common::GetAbsolutePath;
 using apollo::prediction::Feature;
+using cyber::common::GetAbsolutePath;
 
 bool MlfEngine::Init(const MultiTargetTrackerInitOptions& options) {
   auto config_manager = lib::ConfigManager::Instance();
@@ -190,13 +191,13 @@ void MlfEngine::TrackStateFilter(const std::vector<MlfTrackDataPtr>& tracks,
 void convertPoseToLoc(const Eigen::Affine3d& pose,
                       localization::LocalizationEstimate* localization) {
   ADEBUG << "translation x y z " << pose.translation()[0] << " "
-        << pose.translation()[1] << " " << pose.translation()[2];
-  localization->mutable_pose()->mutable_position()
-              ->set_x(pose.translation()[0]);
-  localization->mutable_pose()->mutable_position()
-              ->set_y(pose.translation()[1]);
-  localization->mutable_pose()->mutable_position()
-              ->set_z(pose.translation()[2]);
+         << pose.translation()[1] << " " << pose.translation()[2];
+  localization->mutable_pose()->mutable_position()->set_x(
+      pose.translation()[0]);
+  localization->mutable_pose()->mutable_position()->set_y(
+      pose.translation()[1]);
+  localization->mutable_pose()->mutable_position()->set_z(
+      pose.translation()[2]);
   Eigen::Quaterniond p(pose.rotation());
   localization->mutable_pose()->mutable_orientation()->set_qx(p.x());
   localization->mutable_pose()->mutable_orientation()->set_qy(p.y());
@@ -213,13 +214,13 @@ void MlfEngine::AttachDebugInfo(
         (*foreground_objs)[static_cast<int>(i)]->feature.reset(
             new Feature(obj->latest_feature()));
         ADEBUG << "traj size is mlf engine is "
-              << (*foreground_objs)[static_cast<int>(i)]
-                     ->feature->predicted_trajectory_size()
-              << " track id "
-              << (*foreground_objs)[static_cast<int>(i)]->track_id
-              << " feature address is "
-              << static_cast<void*>(
-            (*foreground_objs)[static_cast<int>(i)]->feature.get());
+               << (*foreground_objs)[static_cast<int>(i)]
+                      ->feature->predicted_trajectory_size()
+               << " track id "
+               << (*foreground_objs)[static_cast<int>(i)]->track_id
+               << " feature address is "
+               << static_cast<void*>(
+                      (*foreground_objs)[static_cast<int>(i)]->feature.get());
       }
     }
   }
