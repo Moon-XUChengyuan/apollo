@@ -18,10 +18,10 @@
  * @file
  **/
 
-#include "modules/planning/planner/navi_planner_dispatcher.h"
+#include "gtest/gtest.h"
 
 #include "cyber/common/file.h"
-#include "gtest/gtest.h"
+#include "modules/planning/planner/navi_planner_dispatcher.h"
 #include "modules/planning/planner/planner_dispatcher.h"
 
 namespace apollo {

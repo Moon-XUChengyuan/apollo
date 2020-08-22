@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -29,11 +28,11 @@ cc_library(
     copts = ["-DMODULE_NAME=\\\"planning\\\""],
     deps = [
         "//modules/common/configs:vehicle_config_helper",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/configs/proto:vehicle_config_proto",
+        "//modules/common/proto:pnc_point_proto",
         "//modules/common/status",
         "//modules/map/pnc_map",
-        "//modules/map/proto:map_cc_proto",
+        "//modules/map/proto:map_proto",
         "//modules/planning/common:frame",
         "//modules/planning/common:obstacle",
         "//modules/planning/common:path_decision",
@@ -44,8 +43,9 @@ cc_library(
         "//modules/planning/common/path:path_data",
         "//modules/planning/common/speed:st_boundary",
         "//modules/planning/common/trajectory:discretized_trajectory",
-        "//modules/planning/proto:planning_cc_proto",
-        "//modules/planning/proto:planning_config_cc_proto",
+        "//modules/planning/proto:planning_config_proto",
+        "//modules/planning/proto:planning_proto",
+        "//modules/planning/proto:task_config_proto",
         "//modules/planning/reference_line",
     ],
 )
@@ -57,9 +57,11 @@ cc_library(
     copts = ["-DMODULE_NAME=\\\"planning\\\""],
     deps = [
         "//modules/common/configs:vehicle_config_helper",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
+        "//modules/common/configs/proto:vehicle_config_proto",
+        "//modules/common/proto:pnc_point_proto",
         "//modules/common/status",
         "//modules/map/pnc_map",
+        "//modules/map/proto:map_proto",
         "//modules/planning/common:frame",
         "//modules/planning/common:obstacle",
         "//modules/planning/common:path_decision",
@@ -70,7 +72,9 @@ cc_library(
         "//modules/planning/common/path:path_data",
         "//modules/planning/common/speed:st_boundary",
         "//modules/planning/common/trajectory:discretized_trajectory",
-        "//modules/planning/proto:planning_config_cc_proto",
+        "//modules/planning/proto:planning_config_proto",
+        "//modules/planning/proto:planning_proto",
+        "//modules/planning/proto:task_config_proto",
         "//modules/planning/reference_line",
     ],
 )
@@ -82,10 +86,11 @@ cc_library(
     copts = ["-DMODULE_NAME=\\\"planning\\\""],
     deps = [
         "//modules/common/configs:vehicle_config_helper",
-        "//modules/common/configs/proto:vehicle_config_cc_proto",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/configs/proto:vehicle_config_proto",
+        "//modules/common/proto:pnc_point_proto",
         "//modules/common/status",
         "//modules/map/pnc_map",
+        "//modules/map/proto:map_proto",
         "//modules/planning/common:frame",
         "//modules/planning/common:history",
         "//modules/planning/common:obstacle",
@@ -97,8 +102,9 @@ cc_library(
         "//modules/planning/common/path:path_data",
         "//modules/planning/common/speed:st_boundary",
         "//modules/planning/common/trajectory:discretized_trajectory",
-        "//modules/planning/proto:planning_cc_proto",
-        "//modules/planning/proto:planning_config_cc_proto",
+        "//modules/planning/proto:planning_config_proto",
+        "//modules/planning/proto:planning_proto",
+        "//modules/planning/proto:task_config_proto",
         "//modules/planning/reference_line",
     ],
 )

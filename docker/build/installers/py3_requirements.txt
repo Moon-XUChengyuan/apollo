@@ -1,6 +1,5 @@
 # system utils
 supervisor
-psutil
 
 # Google infras
 absl-py
@@ -15,16 +14,19 @@ flask-cors
 requests
 simplejson
 
+# ROS env
+PyYAML
+
 # Python tools
 pyproj
 shapely
-matplotlib
 
 # Data format
 h5py
 utm
 
+# Audio
+pyalsaaudio
+
 # Learning
 opencv-python
-numpy
-scipy

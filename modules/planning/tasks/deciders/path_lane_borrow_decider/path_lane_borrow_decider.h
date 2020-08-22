@@ -30,8 +30,9 @@ namespace planning {
 
 class PathLaneBorrowDecider : public Decider {
  public:
-  PathLaneBorrowDecider(const TaskConfig& config,
-                        const std::shared_ptr<DependencyInjector>& injector);
+  PathLaneBorrowDecider(
+      const TaskConfig& config,
+      const std::shared_ptr<DependencyInjector>& injector);
 
  private:
   common::Status Process(Frame* frame,

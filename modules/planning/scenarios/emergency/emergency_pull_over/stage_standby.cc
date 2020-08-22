@@ -25,6 +25,7 @@
 #include <vector>
 
 #include "cyber/common/log.h"
+
 #include "modules/planning/common/frame.h"
 #include "modules/planning/common/planning_context.h"
 #include "modules/planning/common/util/common.h"

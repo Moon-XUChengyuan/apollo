@@ -16,10 +16,9 @@
 
 #pragma once
 
+#include <proj_api.h>
 #include <memory>
 #include <string>
-
-#include <proj_api.h>
 
 #include "cyber/cyber.h"
 #include "modules/transform/transform_broadcaster.h"

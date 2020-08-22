@@ -28,7 +28,7 @@
 #include <vector>
 
 #include "CivetServer.h"
-#include "nlohmann/json.hpp"
+#include "third_party/json/json.hpp"
 
 /**
  * @namespace apollo::dreamview

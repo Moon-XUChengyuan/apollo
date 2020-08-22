@@ -11,7 +11,6 @@ topic_config {
   story_telling_topic: "/apollo/storytelling"
   traffic_light_detection_topic: "/apollo/perception/traffic_light"
 }
-learning_mode: NO_LEARNING  # NOLEARNING / E2E / HYBRID
 standard_planning_config {
   planner_type: PUBLIC_ROAD
   planner_public_road_config {
@@ -86,7 +85,7 @@ default_task_config: {
       positive_jerk_coeff: 1.0
       negative_jerk_coeff: 1.0
 
-      max_acceleration: 1.0
+      max_acceleration: 2.0
       max_deceleration: -4.0
       spatial_potential_penalty: 1.0e2
     }
@@ -116,7 +115,7 @@ default_task_config: {
       positive_jerk_coeff: 1.0
       negative_jerk_coeff: 1.0
 
-      max_acceleration: 1.0
+      max_acceleration: 2.0
       max_deceleration: -2.5
       spatial_potential_penalty: 1.0e5
       is_lane_changing: true
@@ -140,17 +139,17 @@ default_task_config: {
 default_task_config: {
   task_type: ST_BOUNDS_DECIDER
   st_bounds_decider_config {
-    total_time: 15.0
+    total_time: 7.0
   }
 }
 default_task_config: {
   task_type: SPEED_BOUNDS_PRIORI_DECIDER
   speed_bounds_decider_config {
-    total_time: 15.0
+    total_time: 7.0
     boundary_buffer: 0.25
     max_centric_acceleration_limit: 2.0
     point_extension: 0.0
-    lowest_speed: 0.1
+    lowest_speed: 2.5
     static_obs_nudge_speed_ratio: 0.6
     dynamic_obs_nudge_speed_ratio: 0.8
   }
@@ -158,11 +157,11 @@ default_task_config: {
 default_task_config: {
   task_type: SPEED_BOUNDS_FINAL_DECIDER
   speed_bounds_decider_config {
-    total_time: 15.0
+    total_time: 7.0
     boundary_buffer: 0.1
     max_centric_acceleration_limit: 2.0
     point_extension: 0.0
-    lowest_speed: 0.1
+    lowest_speed: 2.5
     static_obs_nudge_speed_ratio: 0.6
     dynamic_obs_nudge_speed_ratio: 0.8
   }
@@ -232,9 +231,9 @@ default_task_config: {
           weight_end_state: 1.0
           weight_slack: 1.0
           min_safety_distance: 0.01
-          max_speed_forward: 1.5
+          max_speed_forward: 2.0
           max_speed_reverse: 1.0
-          max_acceleration_forward: 1.0
+          max_acceleration_forward: 2.0
           max_acceleration_reverse: 1.0
           min_time_sample_scaling: 0.8
           max_time_sample_scaling: 1.2

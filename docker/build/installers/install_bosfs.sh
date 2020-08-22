@@ -47,7 +47,7 @@ popd
 
 ok "Successfully installed bosfs-${VERSION}."
 
-# Clean up cache to reduce layer size.
+# Clean
 rm -fr ${PACKAGE} "bosfs-${VERSION}"
 apt-get clean && \
     rm -rf /var/lib/apt/lists/*

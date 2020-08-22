@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -33,16 +32,16 @@ cc_library(
     deps = [
         "//modules/common/util:factory",
         "//modules/common/util:map_util",
-        "//modules/perception/proto:perception_obstacle_cc_proto",
+        "//modules/perception/proto:perception_proto",
         "//modules/planning/common:dependency_injector",
         "//modules/planning/common:frame",
         "//modules/planning/common:planning_context",
         "//modules/planning/common:planning_gflags",
         "//modules/planning/common:reference_line_info",
         "//modules/planning/common/util:common_lib",
-        "//modules/planning/proto:planning_cc_proto",
-        "//modules/planning/proto:planning_config_cc_proto",
-        "//modules/planning/proto:traffic_rule_config_cc_proto",
+        "//modules/planning/proto:planning_config_proto",
+        "//modules/planning/proto:planning_proto",
+        "//modules/planning/proto:traffic_rule_config_proto",
     ],
 )
 
@@ -57,7 +56,7 @@ cc_library(
         "//modules/common/vehicle_state:vehicle_state_provider",
         "//modules/planning/common:frame",
         "//modules/planning/common:reference_line_info",
-        "//modules/planning/proto:traffic_rule_config_cc_proto",
+        "//modules/planning/proto:traffic_rule_config_proto",
         "//modules/planning/tasks:task",
     ],
 )

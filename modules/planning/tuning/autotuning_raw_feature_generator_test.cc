@@ -20,6 +20,7 @@
 #include "modules/planning/tuning/autotuning_raw_feature_generator.h"
 
 #include "gtest/gtest.h"
+
 #include "modules/planning/common/local_view.h"
 
 namespace apollo {

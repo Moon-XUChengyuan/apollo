@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -42,6 +41,7 @@ cc_library(
 cc_test(
     name = "timer_test",
     size = "small",
+    timeout = "moderate",
     srcs = ["timer_test.cc"],
     deps = [
         "//cyber:cyber_core",

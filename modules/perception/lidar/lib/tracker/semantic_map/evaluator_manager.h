@@ -37,11 +37,10 @@
 namespace apollo {
 namespace perception {
 
-using apollo::prediction::Obstacle;
-using apollo::prediction::ObstacleHistory;
 using apollo::prediction::ObstaclesContainer;
+using apollo::prediction::Obstacle;
 using apollo::prediction::SemanticLSTMEvaluator;
-using apollo::prediction::SemanticMap;
+using apollo::prediction::ObstacleHistory;
 
 class EvaluatorManager {
  public:
@@ -70,7 +69,6 @@ class EvaluatorManager {
   void BuildObstacleIdHistoryMap(ObstaclesContainer* obstacles_container);
 
   std::unordered_map<int, ObstacleHistory> obstacle_id_history_map_;
-  std::unique_ptr<SemanticMap> semantic_map_;
   std::unique_ptr<SemanticLSTMEvaluator> evaluator_;
 };
 

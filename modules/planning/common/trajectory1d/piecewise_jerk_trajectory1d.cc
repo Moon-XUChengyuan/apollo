@@ -18,12 +18,11 @@
  * @file
  **/
 
-#include "modules/planning/common/trajectory1d/piecewise_jerk_trajectory1d.h"
-
 #include <algorithm>
 
 #include "cyber/common/log.h"
 #include "modules/planning/common/planning_gflags.h"
+#include "modules/planning/common/trajectory1d/piecewise_jerk_trajectory1d.h"
 
 namespace apollo {
 namespace planning {

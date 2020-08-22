@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -27,7 +26,9 @@ cc_library(
         "//modules/perception/fusion/lib/interface",
         "//modules/perception/lib/thread",
         "//modules/perception/lib/utils",
-        "//modules/perception/proto:probabilistic_fusion_config_cc_proto",
+        "//modules/perception/proto:pbf_tracker_config_proto",
+        "//modules/perception/proto:perception_config_schema_proto",
+        "//modules/perception/proto:probabilistic_fusion_config_proto",
         "@eigen",
     ],
     alwayslink = True,

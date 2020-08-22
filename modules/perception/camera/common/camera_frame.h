@@ -63,9 +63,7 @@ struct CameraFrame {
   std::vector<base::TrafficLightPtr> traffic_lights;
 
   void Reset() {}
-
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-} EIGEN_ALIGN16;  // struct CameraFrame
+};  // struct CameraFrame
 
 }  // namespace camera
 }  // namespace perception

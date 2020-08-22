@@ -381,6 +381,8 @@ Status Frame::InitFrameData(
 
   ReadPadMsgDrivingAction();
 
+  ReadLearningDataFrame();
+
   return Status::OK();
 }
 
@@ -491,6 +493,16 @@ void Frame::ReadTrafficLights() {
   }
   for (const auto &traffic_light : traffic_light_detection->traffic_light()) {
     traffic_lights_[traffic_light.id()] = &traffic_light;
+  }
+}
+
+void Frame::ReadLearningDataFrame() {
+  if (FLAGS_planning_learning_mode != 2 && FLAGS_planning_learning_mode != 3) {
+    return;
+  }
+  auto learning_data_frame = FeatureOutput::GetLatestLearningDataFrame();
+  if (learning_data_frame != nullptr) {
+    learning_based_data_.set_learning_data_frame(*learning_data_frame);
   }
 }
 

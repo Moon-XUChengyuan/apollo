@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -81,7 +80,7 @@ cc_library(
     deps = [
         ":euler_angles_zxy",
         ":geometry",
-        "//modules/common/proto:geometry_cc_proto",
+        "//modules/common/proto:geometry_proto",
         "@eigen",
     ],
 )
@@ -109,7 +108,6 @@ cc_test(
     name = "matrix_operations_test",
     size = "small",
     srcs = ["matrix_operations_test.cc"],
-    linkopts = ["-lm"],
     deps = [
         ":matrix_operations",
         "@com_google_googletest//:gtest_main",
@@ -137,7 +135,7 @@ cc_library(
     hdrs = ["path_matcher.h"],
     deps = [
         "//modules/common/math:linear_interpolation",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
     ],
 )
 
@@ -156,9 +154,6 @@ cc_test(
     name = "angle_test",
     size = "small",
     srcs = ["angle_test.cc"],
-    linkopts = [
-        "-lm",
-    ],
     deps = [
         ":angle",
         "@com_google_googletest//:gtest_main",
@@ -177,7 +172,7 @@ cc_library(
     hdrs = ["linear_interpolation.h"],
     deps = [
         ":geometry",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
     ],
 )
 
@@ -204,9 +199,9 @@ cc_library(
     name = "mpc",
     srcs = ["mpc_solver.cc"],
     hdrs = ["mpc_solver.h"],
-    copts = ["-Iexternal/eigen"],
     deps = [
         "//cyber/common:log",
+        "//modules/common/math/qp_solver",
         "//modules/common/math/qp_solver:active_set_qp_solver",
         "@eigen",
     ],
@@ -238,7 +233,8 @@ cc_test(
     deps = [
         ":mpc",
         ":mpc_osqp",
-        "//cyber/common:log",
+        "//modules/common/math/qp_solver",
+        "//modules/common/math/qp_solver:active_set_qp_solver",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -249,6 +245,8 @@ cc_test(
     srcs = ["mpc_solver_test.cc"],
     deps = [
         ":mpc",
+        "//modules/common/math/qp_solver",
+        "//modules/common/math/qp_solver:active_set_qp_solver",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -279,9 +277,6 @@ cc_test(
     name = "search_test",
     size = "small",
     srcs = ["search_test.cc"],
-    linkopts = [
-        "-lm",
-    ],
     deps = [
         ":search",
         "@com_google_googletest//:gtest_main",
@@ -292,9 +287,6 @@ cc_test(
     name = "integral_test",
     size = "small",
     srcs = ["integral_test.cc"],
-    linkopts = [
-        "-lm",
-    ],
     deps = [
         ":integral",
         "@com_google_googletest//:gtest_main",
@@ -385,7 +377,6 @@ cc_test(
     name = "kalman_filter_test",
     size = "small",
     srcs = ["kalman_filter_test.cc"],
-    linkopts = ["-lm"],
     deps = [
         ":kalman_filter",
         "@com_google_googletest//:gtest_main",

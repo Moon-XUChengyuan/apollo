@@ -18,6 +18,7 @@
 #include "opencv2/opencv.hpp"
 
 #include "modules/perception/inference/inference.h"
+#include "modules/perception/inference/inference_factory.h"
 #include "modules/perception/inference/tensorrt/batch_stream.h"
 #include "modules/perception/inference/tensorrt/entropy_calibrator.h"
 #include "modules/perception/inference/tensorrt/rt_net.h"
@@ -54,8 +55,8 @@ int main(int argc, char **argv) {
     rt_net = new apollo::perception::inference::RTNet(
         proto_file, weight_file, outputs, inputs, calibrator.get());
   } else {
-    rt_net = new apollo::perception::inference::RTNet(proto_file, weight_file,
-                                                      outputs, inputs);
+    rt_net = apollo::perception::inference::CreateInferenceByName(
+        "RTNet", proto_file, weight_file, outputs, inputs);
   }
   const int height = 576;
   const int width = 1440;

@@ -22,8 +22,8 @@ import math
 
 import numpy as np
 
-from modules.tools.prediction.data_pipelines.common.bounding_rectangle import BoundingRectangle
-from modules.tools.prediction.data_pipelines.common.configure import parameters
+from common.bounding_rectangle import BoundingRectangle
+from .configure import parameters
 
 
 param_fea = parameters['feature']

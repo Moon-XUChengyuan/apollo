@@ -21,6 +21,7 @@
 #include <chrono>
 
 #include "gtest/gtest.h"
+
 #include "modules/planning/math/curve_math.h"
 #include "modules/planning/math/smoothing_spline/active_set_spline_2d_solver.h"
 

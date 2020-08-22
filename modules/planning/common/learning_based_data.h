@@ -31,11 +31,13 @@ class LearningBasedData {
  public:
   LearningBasedData() = default;
 
-  void Clear();
+  void set_learning_data_frame(const LearningDataFrame& learning_data_frame) {
+    learning_data_frame_.CopyFrom(learning_data_frame);
+  }
 
-  void InsertLearningDataFrame(const LearningDataFrame& learning_data_frame);
-
-  LearningDataFrame* GetLatestLearningDataFrame();
+  const LearningDataFrame &learning_data_frame() const {
+    return learning_data_frame_;
+  }
 
   void set_learning_data_adc_future_trajectory_points(
       const std::vector<common::TrajectoryPoint> &trajectory_points) {
@@ -48,7 +50,7 @@ class LearningBasedData {
   }
 
  private:
-  LearningData learning_data_;
+  LearningDataFrame learning_data_frame_;
   std::vector<common::TrajectoryPoint>
       learning_data_adc_future_trajectory_points_;
 };

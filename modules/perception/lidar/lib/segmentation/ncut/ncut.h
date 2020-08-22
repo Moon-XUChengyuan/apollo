@@ -15,6 +15,8 @@
  *****************************************************************************/
 #pragma once
 
+#include <opencv2/opencv.hpp>
+
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
@@ -24,7 +26,6 @@
 #include <tuple>
 #include <vector>
 
-#include <opencv2/opencv.hpp>
 #include "Eigen/Core"
 
 #include "modules/perception/lidar/lib/segmentation/ncut/common/flood_fill.h"

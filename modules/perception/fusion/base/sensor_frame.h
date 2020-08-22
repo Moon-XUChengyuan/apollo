@@ -38,9 +38,7 @@ struct SensorFrameHeader {
   SensorFrameHeader(const base::SensorInfo& info, double ts,
                     const Eigen::Affine3d& pose)
       : sensor_info(info), timestamp(ts), sensor2world_pose(pose) {}
-
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-} EIGEN_ALIGN16;
+};
 
 class SensorFrame {
  public:

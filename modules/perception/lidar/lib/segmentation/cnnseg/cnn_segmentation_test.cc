@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "modules/perception/lidar/lib/segmentation/cnnseg/cnn_segmentation.h"
-
 #include <algorithm>
+
+#include "modules/perception/lidar/lib/segmentation/cnnseg/cnn_segmentation.h"
 
 #include "gtest/gtest.h"
 #include "pcl/io/pcd_io.h"
@@ -71,11 +71,10 @@ void PrintObjects(const std::vector<base::ObjectPtr>& objects) {
 TEST(CNNSegmentationTest, cnn_segmentation_sequence_test) {
   unsetenv("CYBER_PATH");
   unsetenv("MODULE_PATH");
-  FLAGS_work_root =
-      "/apollo/modules/perception/testdata/"
+  FLAGS_work_root = "/apollo/modules/perception/testdata/"
       "lidar/lib/segmentation/cnnseg/";
 
-  auto segmentation = std::shared_ptr<CNNSegmentation>(new CNNSegmentation);
+  std::shared_ptr<CNNSegmentation> segmentation(new CNNSegmentation);
   SegmentationOptions options;
   EXPECT_FALSE(segmentation->Segment(options, nullptr));
   LidarFrame frame_data;
@@ -118,43 +117,43 @@ TEST(CNNSegmentationTest, cnn_segmentation_sequence_test) {
 TEST(CNNSegmentationTest, cnn_segmentation_test) {
   unsetenv("CYBER_PATH");
   unsetenv("MODULE_PATH");
-  FLAGS_work_root =
-      "/apollo/modules/perception/testdata/"
+  FLAGS_work_root = "/apollo/modules/perception/testdata/"
       "lidar/lib/segmentation/cnnseg/";
 
   // load pcd data
-  auto pcl_ptr = std::shared_ptr<base::PointFCloud>(new base::PointFCloud);
+  base::PointFCloudPtr pc_ptr;
+  pc_ptr.reset(new base::PointFCloud);
   std::string filename =
       "/apollo/modules/perception/testdata/lidar/app/data/perception/"
       "lidar/files/0002_00.pcd";
-  bool ret = LoadPCDFile(filename, pcl_ptr);
+  bool ret = LoadPCDFile(filename, pc_ptr);
   ACHECK(ret) << "Failed to load " << filename;
   // load non ground indices
   base::PointIndices non_ground_indices;
-  //  auto& indices = non_ground_indices.indices;
-  //  std::ifstream in_file(
-  //      "/apollo/modules/perception/testdata/lidar/app/data/perception/lidar/files/0002_00.txt");
-  //  ASSERT_TRUE(in_file.good());
-  //  std::string line;
-  //  while (getline(in_file, line)) {
-  //    indices.push_back(std::stoi(line));
-  //  }
+//  auto& indices = non_ground_indices.indices;
+//  std::ifstream in_file(
+//      "/apollo/modules/perception/testdata/lidar/app/data/perception/lidar/files/0002_00.txt");
+//  ASSERT_TRUE(in_file.good());
+//  std::string line;
+//  while (getline(in_file, line)) {
+//    indices.push_back(std::stoi(line));
+//  }
 
   // test init
-  auto segmentation = std::shared_ptr<CNNSegmentation>(new CNNSegmentation);
+  std::shared_ptr<CNNSegmentation> segmentation(new CNNSegmentation);
   EXPECT_TRUE(segmentation->Init());
 
   // test segment
   using base::ObjectType;
   SegmentationOptions options;
   LidarFrame frame_data;
-  frame_data.cloud = pcl_ptr;
+  frame_data.cloud = pc_ptr;
   frame_data.world_cloud = base::PointDCloudPool::Instance().Get();
-  frame_data.world_cloud->resize(pcl_ptr->size());
+  frame_data.world_cloud->resize(pc_ptr->size());
   frame_data.non_ground_indices = non_ground_indices;
   segmentation->Segment(options, &frame_data);
   std::vector<base::ObjectPtr>& objects = frame_data.segmented_objects;
-  //  EXPECT_LE(4, objects.size());
+//  EXPECT_LE(4, objects.size());
   EXPECT_GT(objects[0]->lidar_supplement.cloud.size(), 0);
   EXPECT_GT(fabs(objects[3]->confidence), FLT_EPSILON);
   // test heading
@@ -170,7 +169,7 @@ TEST(CNNSegmentationTest, cnn_segmentation_test) {
   segmentation->cnnseg_param_.set_do_heading(false);
   segmentation->Segment(options, &frame_data);
   objects = frame_data.segmented_objects;
-  //  EXPECT_LE(4, objects.size());
+//  EXPECT_LE(4, objects.size());
   EXPECT_GT(objects[0]->lidar_supplement.cloud.size(), 0);
   EXPECT_GT(fabs(objects[3]->confidence), FLT_EPSILON);
   // test no heading
@@ -183,7 +182,7 @@ TEST(CNNSegmentationTest, cnn_segmentation_test) {
   segmentation->InitClusterAndBackgroundSegmentation();
   segmentation->Segment(options, &frame_data);
   objects = frame_data.segmented_objects;
-  //  EXPECT_EQ(4, objects.size());
+//  EXPECT_EQ(4, objects.size());
   EXPECT_GT(objects[0]->lidar_supplement.cloud.size(), 0);
   EXPECT_GT(fabs(objects[3]->confidence), FLT_EPSILON);
   PrintObjects(objects);
@@ -191,7 +190,7 @@ TEST(CNNSegmentationTest, cnn_segmentation_test) {
   EXPECT_TRUE(segmentation->InitClusterAndBackgroundSegmentation());
   EXPECT_TRUE(segmentation->Segment(options, &frame_data));
   objects = frame_data.segmented_objects;
-  //  EXPECT_LE(4, objects.size());
+//  EXPECT_LE(4, objects.size());
 }
 
 }  // namespace lidar

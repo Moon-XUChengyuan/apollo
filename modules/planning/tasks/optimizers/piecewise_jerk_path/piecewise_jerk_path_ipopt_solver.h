@@ -20,11 +20,10 @@
 
 #pragma once
 
-#include <utility>
-#include <vector>
-
 #include <coin/IpTNLP.hpp>
 #include <coin/IpTypes.hpp>
+#include <utility>
+#include <vector>
 
 namespace apollo {
 namespace planning {

@@ -23,11 +23,12 @@
 #include <memory>
 #include <vector>
 
+#include "qpOASES.hpp"
+
 #include "modules/planning/math/smoothing_spline/spline_2d.h"
 #include "modules/planning/math/smoothing_spline/spline_2d_constraint.h"
 #include "modules/planning/math/smoothing_spline/spline_2d_kernel.h"
 #include "modules/planning/math/smoothing_spline/spline_2d_solver.h"
-#include "qpOASES.hpp"
 
 namespace apollo {
 namespace planning {

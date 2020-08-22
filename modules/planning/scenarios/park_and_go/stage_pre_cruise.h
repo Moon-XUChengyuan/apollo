@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "modules/planning/proto/planning_config.pb.h"
+
 #include "modules/planning/scenarios/park_and_go/park_and_go_scenario.h"
 #include "modules/planning/scenarios/stage.h"
 

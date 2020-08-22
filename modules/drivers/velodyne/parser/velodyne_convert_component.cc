@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
-#include "cyber/time/time.h"
+
+#include "modules/drivers/velodyne/parser/velodyne_convert_component.h"
+
 #include <memory>
 #include <string>
 #include <thread>
 
 #include "cyber/cyber.h"
-
-#include "modules/drivers/velodyne/parser/velodyne_convert_component.h"
 
 namespace apollo {
 namespace drivers {
@@ -53,9 +53,9 @@ bool VelodyneConvertComponent::Init() {
 
 bool VelodyneConvertComponent::Proc(
     const std::shared_ptr<VelodyneScan>& scan_msg) {
-   
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
-  std::shared_ptr<PointCloud> point_cloud_out = point_cloud_pool_->GetObject(); 
+  AINFO << "Module " << MODULE_NAME << " Proc start, itr: " << ++calledTimes;
+
+  std::shared_ptr<PointCloud> point_cloud_out = point_cloud_pool_->GetObject();
   if (point_cloud_out == nullptr) {
     AWARN << "poin cloud pool return nullptr, will be create new.";
     point_cloud_out = std::make_shared<PointCloud>();
@@ -63,7 +63,8 @@ bool VelodyneConvertComponent::Proc(
   }
   if (point_cloud_out == nullptr) {
     AWARN << "point cloud out is nullptr";
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    AINFO << "Module " << MODULE_NAME
+          << " Proc end, fail, itr: " << calledTimes;
     return false;
   }
   point_cloud_out->Clear();
@@ -71,11 +72,14 @@ bool VelodyneConvertComponent::Proc(
 
   if (point_cloud_out == nullptr || point_cloud_out->point().empty()) {
     AWARN << "point_cloud_out convert is empty.";
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    AINFO << "Module " << MODULE_NAME
+          << " Proc end, fail, itr: " << calledTimes;
+
     return false;
   }
   writer_->Write(point_cloud_out);
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+  AINFO << "Module " << MODULE_NAME << " Proc end, itr: " << calledTimes;
+
   return true;
 }
 

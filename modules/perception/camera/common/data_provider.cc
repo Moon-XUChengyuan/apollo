@@ -14,9 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 #include "modules/perception/camera/common/data_provider.h"
-
-#include <nppi.h>
-
 #include "cyber/common/log.h"
 
 namespace apollo {

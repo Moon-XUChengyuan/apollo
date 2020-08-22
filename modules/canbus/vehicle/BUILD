@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -9,12 +8,10 @@ cc_library(
     hdrs = ["vehicle_controller.h"],
     copts = ["-DMODULE_NAME=\\\"canbus\\\""],
     deps = [
-        "//modules/canbus/proto:canbus_conf_cc_proto",
-        "//modules/canbus/proto:chassis_detail_cc_proto",
-        "//modules/canbus/proto:vehicle_parameter_cc_proto",
+        "//modules/canbus/proto:canbus_proto",
         "//modules/common/configs:vehicle_config_helper",
-        "//modules/common/proto:error_code_cc_proto",
-        "//modules/control/proto:control_cmd_cc_proto",
+        "//modules/common/proto:error_code_proto",
+        "//modules/control/proto:control_proto",
         "//modules/drivers/canbus/can_client",
         "//modules/drivers/canbus/can_comm:can_sender",
         "//modules/drivers/canbus/can_comm:message_manager_base",
@@ -28,7 +25,7 @@ cc_library(
     hdrs = ["abstract_vehicle_factory.h"],
     copts = ["-DMODULE_NAME=\\\"canbus\\\""],
     deps = [
-        "//modules/canbus/proto:chassis_detail_cc_proto",
+        "//modules/canbus/proto:canbus_proto",
         "//modules/canbus/vehicle:vehicle_controller_base",
         "//modules/drivers/canbus/can_comm:message_manager_base",
         "//modules/drivers/canbus/common:canbus_common",
@@ -41,9 +38,7 @@ cc_library(
     hdrs = ["vehicle_factory.h"],
     copts = ["-DMODULE_NAME=\\\"canbus\\\""],
     deps = [
-        ":abstract_vehicle_factory",
         "//modules/canbus/vehicle/ch:ch_vehicle_factory",
-        "//modules/canbus/vehicle/devkit:devkit_vehicle_factory",
         "//modules/canbus/vehicle/ge3:ge3_vehicle_factory",
         "//modules/canbus/vehicle/gem:gem_vehicle_factory",
         "//modules/canbus/vehicle/lexus:lexus_vehicle_factory",

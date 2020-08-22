@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -12,7 +11,7 @@ cc_library(
     ],
     deps = [
         "//cyber/common:log",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
         "//modules/common/vehicle_state:vehicle_state_provider",
         "//modules/planning/common:planning_gflags",
         "//modules/planning/common/trajectory:discretized_trajectory",
@@ -51,8 +50,7 @@ cc_library(
         "//modules/planning/common:obstacle",
         "//modules/planning/common/trajectory:discretized_trajectory",
         "//modules/planning/lattice/behavior:path_time_graph",
-        "//modules/planning/proto:st_drivable_boundary_cc_proto",
-        "//modules/prediction/proto:prediction_obstacle_cc_proto",
+        "//modules/prediction/proto:prediction_proto",
     ],
 )
 

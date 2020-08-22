@@ -20,8 +20,9 @@
 
 #pragma once
 
-#include "modules/planning/common/frame.h"
 #include "modules/planning/proto/planning_config.pb.h"
+
+#include "modules/planning/common/frame.h"
 
 namespace apollo {
 namespace planning {

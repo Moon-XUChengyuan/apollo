@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *****************************************************************************/
+#define private public
 #include "modules/perception/inference/tensorrt/batch_stream.h"
 
 #include "gtest/gtest.h"

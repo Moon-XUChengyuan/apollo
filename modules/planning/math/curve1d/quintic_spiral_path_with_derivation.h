@@ -24,6 +24,7 @@
 #include <utility>
 
 #include "cyber/common/log.h"
+
 #include "modules/common/math/integral.h"
 #include "modules/planning/math/curve1d/quintic_polynomial_curve1d.h"
 

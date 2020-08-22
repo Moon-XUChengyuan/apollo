@@ -52,7 +52,8 @@ bool RecognitionComponent::Proc(
         << message->timestamp_ << " current timestamp: "
         << apollo::common::time::Clock::NowInSeconds();
 
-  std::shared_ptr<SensorFrameMessage> out_message(new SensorFrameMessage);
+  std::shared_ptr<SensorFrameMessage> out_message =
+      std::make_shared<SensorFrameMessage>();
 
   if (InternalProc(message, out_message)) {
     writer_->Write(out_message);

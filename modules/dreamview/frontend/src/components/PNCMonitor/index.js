@@ -1,16 +1,14 @@
-import React from 'react';
-import {
-  Tab, Tabs, TabList, TabPanel,
-} from 'react-tabs';
+import React from "react";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 
-import ControlMonitor from 'components/PNCMonitor/ControlMonitor';
-import LatencyMonitor from 'components/PNCMonitor/LatencyMonitor';
-import PlanningMonitor from 'components/PNCMonitor/PlanningMonitor';
-import StoryTellingMonitor from 'components/PNCMonitor/StoryTellingMonitor';
+import ControlMonitor from "components/PNCMonitor/ControlMonitor";
+import LatencyMonitor from "components/PNCMonitor/LatencyMonitor";
+import PlanningMonitor from "components/PNCMonitor/PlanningMonitor";
+import StoryTellingMonitor from "components/PNCMonitor/StoryTellingMonitor";
 
 export default class PNCMonitor extends React.Component {
-  render() {
-    return (
+    render() {
+        return (
             <div className="monitor pnc-monitor">
                 <StoryTellingMonitor />
                 <Tabs>
@@ -30,6 +28,6 @@ export default class PNCMonitor extends React.Component {
                     </TabPanel>
                 </Tabs>
             </div>
-    );
-  }
+        );
+    }
 }

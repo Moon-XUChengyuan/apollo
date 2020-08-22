@@ -192,9 +192,7 @@ bool DualVariableWarmStartOSQPInterface::optimize() {
   data->u = ub;
 
   // Workspace
-  OSQPWorkspace* work = nullptr;
-  // osqp_setup(&work, data, settings);
-  work = osqp_setup(data, settings);
+  OSQPWorkspace* work = osqp_setup(data, settings);
 
   // Solve Problem
   osqp_solve(work);

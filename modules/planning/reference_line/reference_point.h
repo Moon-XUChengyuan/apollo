@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "modules/common/proto/pnc_point.pb.h"
+
 #include "modules/map/pnc_map/path.h"
 
 namespace apollo {

@@ -14,9 +14,8 @@ limitations under the License.
 =========================================================================*/
 #pragma once
 
-#include <string>
-
 #include <proj_api.h>
+#include <string>
 
 #include "modules/map/hdmap/adapter/xml_parser/status.h"
 

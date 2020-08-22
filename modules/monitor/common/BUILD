@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -27,22 +26,20 @@ cc_library(
     srcs = ["monitor_manager.cc"],
     hdrs = ["monitor_manager.h"],
     deps = [
-        "//cyber/common:file",
-        "//cyber/common:macros",
-        "//modules/canbus/proto:chassis_cc_proto",
+        "//modules/canbus/proto:canbus_proto",
         "//modules/common/adapters:adapter_gflags",
         "//modules/common/monitor_log",
-        "//modules/common/proto:drive_event_cc_proto",
+        "//modules/common/proto:drive_event_proto",
         "//modules/common/util",
         "//modules/common/util:map_util",
+        "//modules/control/proto:control_proto",
         "//modules/dreamview/backend/common:dreamview_gflags",
         "//modules/dreamview/backend/hmi:hmi_worker",
-        "//modules/dreamview/proto:hmi_config_cc_proto",
-        "//modules/dreamview/proto:hmi_mode_cc_proto",
-        "//modules/dreamview/proto:hmi_status_cc_proto",
-        "//modules/localization/proto:pose_cc_proto",
-        "//modules/monitor/proto:system_status_cc_proto",
-        "@com_github_gflags_gflags//:gflags",
+        "//modules/dreamview/proto:hmi_config_proto",
+        "//modules/dreamview/proto:hmi_mode_proto",
+        "//modules/dreamview/proto:hmi_status_proto",
+        "//modules/localization/proto:pose_proto",
+        "//modules/monitor/proto:system_status_proto",
     ],
 )
 

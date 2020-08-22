@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -7,7 +6,7 @@ cc_library(
     name = "status",
     hdrs = ["status.h"],
     deps = [
-        "//modules/common/proto:error_code_cc_proto",
+        "//modules/common/proto:error_code_proto",
         "//modules/common/util:future",
         "@com_google_protobuf//:protobuf",
     ],

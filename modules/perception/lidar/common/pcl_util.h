@@ -37,7 +37,7 @@ struct PCLPointXYZIT {
   float x;
   float y;
   float z;
-  std::uint8_t intensity;
+  uint8_t intensity;
   double timestamp;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 } EIGEN_ALIGN16;
@@ -139,9 +139,10 @@ inline void DownSampleCloudByVoxelGrid(
 
 POINT_CLOUD_REGISTER_POINT_STRUCT(apollo::perception::lidar::PCLPointXYZIT,
                                   (float, x, x)(float, y, y)(float, z, z)(
-                                      std::uint8_t, intensity,
+                                      uint8_t, intensity,
                                       intensity)(double, timestamp, timestamp))
 
 POINT_CLOUD_REGISTER_POINT_STRUCT(apollo::perception::lidar::PCLPointXYZL,
-                                  (float, x, x)(float, y, y)(float, z, z)(
-                                      std::uint32_t, label, label))
+                                  (float, x, x)(float, y, y)(float, z,
+                                                             z)(uint32_t, label,
+                                                                label))

@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -9,7 +8,7 @@ cc_binary(
     deps = [
         ":client",
         ":client_gflags",
-        "@boost",
+        "//third_party:boost",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
@@ -27,7 +26,7 @@ cc_library(
         ":client_gflags",
         ":client_loops_check",
         "//cyber",
-        "@boost",
+        "//third_party:boost",
         "@com_github_grpc_grpc//:grpc++",
         "@com_github_jbeder_yaml_cpp//:yaml-cpp",
     ],
@@ -42,8 +41,8 @@ cc_library(
         ":client_gflags",
         ":exception_handler",
         "//cyber",
-        "//modules/map/tools/map_datachecker/proto:collection_service_cc_grpc",
-        "@boost",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_grpc",
+        "//third_party:boost",
         "@com_github_grpc_grpc//:grpc++",
         "@com_github_jbeder_yaml_cpp//:yaml-cpp",
     ],
@@ -55,7 +54,7 @@ cc_library(
     hdrs = ["client_common.h"],
     deps = [
         "//cyber",
-        "@boost",
+        "//third_party:boost",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
@@ -78,8 +77,8 @@ cc_library(
         ":client_gflags",
         ":exception_handler",
         "//cyber",
-        "//modules/map/tools/map_datachecker/proto:collection_service_cc_grpc",
-        "@boost",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_grpc",
+        "//third_party:boost",
         "@com_github_grpc_grpc//:grpc++",
         "@com_github_jbeder_yaml_cpp//:yaml-cpp",
     ],
@@ -92,7 +91,7 @@ cc_library(
     deps = [
         ":client_common",
         "//cyber",
-        "//modules/map/tools/map_datachecker/proto:collection_error_code_cc_proto",
+        "//modules/map/tools/map_datachecker/proto:map_datachecker_proto",
     ],
 )
 

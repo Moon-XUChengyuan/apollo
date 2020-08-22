@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "Eigen/Core"
+
 #include "modules/planning/math/polynomial_xd.h"
 
 namespace apollo {

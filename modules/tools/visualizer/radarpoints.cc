@@ -15,7 +15,6 @@
  *****************************************************************************/
 
 #include "radarpoints.h"
-#include <cmath>
 
 #include <iostream>
 

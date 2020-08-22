@@ -25,10 +25,11 @@
 #include <string>
 #include <vector>
 
+#include "modules/planning/proto/planning_config.pb.h"
+
 #include "modules/common/status/status.h"
 #include "modules/common/util/factory.h"
 #include "modules/planning/common/frame.h"
-#include "modules/planning/proto/planning_config.pb.h"
 #include "modules/planning/tasks/task.h"
 
 namespace apollo {
@@ -45,7 +46,7 @@ class Stage {
   };
 
   Stage(const ScenarioConfig::StageConfig& config,
-        const std::shared_ptr<DependencyInjector>& injector);
+        const std::shared_ptr<DependencyInjector> &injector);
 
   virtual ~Stage() = default;
 

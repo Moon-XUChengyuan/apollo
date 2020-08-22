@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include <boost/thread/locks.hpp>
+#include <boost/thread/shared_mutex.hpp>
+
 #include <algorithm>
 #include <list>
 #include <memory>
@@ -28,12 +31,9 @@
 #include <utility>
 #include <vector>
 
-#include <boost/thread/locks.hpp>
-#include <boost/thread/shared_mutex.hpp>
-
 #include "cyber/common/log.h"
 #include "gtest/gtest_prod.h"
-#include "nlohmann/json.hpp"
+#include "third_party/json/json.hpp"
 
 #include "modules/common/monitor_log/monitor_log_buffer.h"
 #include "modules/common/proto/drive_event.pb.h"
@@ -300,8 +300,8 @@ class SimulationWorldService {
       return;
     }
 
-    for (int i = 0; i + 1 < points.size(); i += downsampleInterval) {
-      *downsampled_points->Add() = points[i];
+    for (size_t i = 0; i + 1 < points.size(); i += downsampleInterval) {
+      *downsampled_points->Add() = points[static_cast<int>(i)];
     }
 
     // add the last point

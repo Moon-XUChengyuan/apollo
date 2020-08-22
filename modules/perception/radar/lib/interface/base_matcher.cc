@@ -14,7 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 #include "modules/perception/radar/lib/interface/base_matcher.h"
-#include <numeric>
 
 namespace apollo {
 namespace perception {

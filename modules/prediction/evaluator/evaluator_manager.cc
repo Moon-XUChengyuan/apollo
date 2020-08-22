@@ -24,6 +24,7 @@
 #include "modules/prediction/common/prediction_gflags.h"
 #include "modules/prediction/common/prediction_system_gflags.h"
 #include "modules/prediction/common/prediction_thread_pool.h"
+#include "modules/prediction/common/semantic_map.h"
 #include "modules/prediction/container/container_manager.h"
 #include "modules/prediction/container/obstacles/obstacles_container.h"
 #include "modules/prediction/evaluator/cyclist/cyclist_keep_lane_evaluator.h"
@@ -92,7 +93,7 @@ void GroupObstaclesByObstacleIds(ObstaclesContainer* const obstacles_container,
 
 }  // namespace
 
-EvaluatorManager::EvaluatorManager() {}
+EvaluatorManager::EvaluatorManager() { RegisterEvaluators(); }
 
 void EvaluatorManager::RegisterEvaluators() {
   RegisterEvaluator(ObstacleConf::MLP_EVALUATOR);
@@ -107,14 +108,6 @@ void EvaluatorManager::RegisterEvaluators() {
 }
 
 void EvaluatorManager::Init(const PredictionConf& config) {
-  if (FLAGS_enable_semantic_map) {
-    semantic_map_.reset(new SemanticMap());
-    semantic_map_->Init();
-    ADEBUG << "Init SemanticMap instance.";
-  }
-
-  RegisterEvaluators();
-
   for (const auto& obstacle_conf : config.obstacle_conf()) {
     if (!obstacle_conf.has_obstacle_type()) {
       AERROR << "Obstacle config [" << obstacle_conf.ShortDebugString()
@@ -169,9 +162,7 @@ void EvaluatorManager::Init(const PredictionConf& config) {
           }
           break;
         }
-        default: {
-          break;
-        }
+        default: { break; }
       }
     }
   }
@@ -182,6 +173,11 @@ void EvaluatorManager::Init(const PredictionConf& config) {
         << cyclist_on_lane_evaluator_ << "]";
   AINFO << "Defined default on lane obstacle evaluator ["
         << default_on_lane_evaluator_ << "]";
+
+  if (FLAGS_enable_semantic_map) {
+    SemanticMap::Instance()->Init();
+    ADEBUG << "Init SemanticMap instance.";
+  }
 }
 
 Evaluator* EvaluatorManager::GetEvaluator(
@@ -202,7 +198,7 @@ void EvaluatorManager::Run(ObstaclesContainer* obstacles_container) {
     if (FLAGS_prediction_offline_mode == PredictionConstants::kDumpFrameEnv) {
       return;
     }
-    semantic_map_->RunCurrFrame(obstacle_id_history_map_);
+    SemanticMap::Instance()->RunCurrFrame(obstacle_id_history_map_);
   }
 
   std::vector<Obstacle*> dynamic_env;
@@ -324,7 +320,8 @@ void EvaluatorManager::BuildObstacleIdHistoryMap(
     if (obstacle == nullptr || obstacle->history_size() == 0) {
       continue;
     }
-    size_t num_frames = std::min(max_num_frame, obstacle->history_size());
+    size_t num_frames =
+        std::min(max_num_frame, obstacle->history_size());
     for (size_t i = 0; i < num_frames; ++i) {
       const Feature& obstacle_feature = obstacle->feature(i);
       Feature feature;
@@ -401,16 +398,14 @@ std::unique_ptr<Evaluator> EvaluatorManager::CreateEvaluator(
       break;
     }
     case ObstacleConf::JUNCTION_MAP_EVALUATOR: {
-      evaluator_ptr.reset(new JunctionMapEvaluator(semantic_map_.get()));
+      evaluator_ptr.reset(new JunctionMapEvaluator());
       break;
     }
     case ObstacleConf::SEMANTIC_LSTM_EVALUATOR: {
-      evaluator_ptr.reset(new SemanticLSTMEvaluator(semantic_map_.get()));
+      evaluator_ptr.reset(new SemanticLSTMEvaluator());
       break;
     }
-    default: {
-      break;
-    }
+    default: { break; }
   }
   return evaluator_ptr;
 }

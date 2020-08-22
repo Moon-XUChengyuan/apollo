@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -22,7 +21,7 @@ cc_library(
         "//modules/planning/lattice/trajectory_generation:trajectory_combiner",
         "//modules/planning/lattice/trajectory_generation:trajectory_evaluator",
         "//modules/planning/planner",
-        "//modules/planning/proto:planning_cc_proto",
+        "//modules/planning/proto:planning_proto",
     ],
 )
 

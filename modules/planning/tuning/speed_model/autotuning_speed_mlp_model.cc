@@ -14,7 +14,6 @@
  * limitations under the License.
  *****************************************************************************/
 #include "modules/planning/tuning/speed_model/autotuning_speed_mlp_model.h"
-
 #include "modules/planning/tuning/speed_model/autotuning_speed_feature_builder.h"
 
 namespace apollo {

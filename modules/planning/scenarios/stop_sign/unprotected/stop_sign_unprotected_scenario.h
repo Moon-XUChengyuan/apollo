@@ -26,9 +26,10 @@
 #include <utility>
 #include <vector>
 
+#include "modules/planning/proto/planning.pb.h"
+
 #include "modules/common/util/factory.h"
 #include "modules/map/hdmap/hdmap.h"
-#include "modules/planning/proto/planning.pb.h"
 #include "modules/planning/scenarios/scenario.h"
 
 namespace apollo {

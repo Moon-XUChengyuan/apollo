@@ -30,9 +30,6 @@ namespace base {
 
 class OmnidirectionalCameraDistortionModel : public BaseCameraDistortionModel {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
- public:
   OmnidirectionalCameraDistortionModel() = default;
   ~OmnidirectionalCameraDistortionModel() = default;
 

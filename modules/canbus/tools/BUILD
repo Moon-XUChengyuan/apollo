@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -21,12 +20,12 @@ cc_binary(
     deps = [
         "//cyber",
         "//modules/canbus/common:canbus_common",
-        "//modules/canbus/proto:chassis_detail_cc_proto",
+        "//modules/canbus/proto:canbus_proto",
         "//modules/canbus/vehicle:vehicle_controller_base",
         "//modules/common/adapters:adapter_gflags",
         "//modules/common/configs:vehicle_config_helper",
         "//modules/common/util:message_util",
-        "//modules/control/proto:control_cmd_cc_proto",
+        "//modules/control/proto:control_proto",
         "@com_github_gflags_gflags//:gflags",
     ],
 )

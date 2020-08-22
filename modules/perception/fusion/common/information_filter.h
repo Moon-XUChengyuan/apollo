@@ -23,9 +23,6 @@ namespace fusion {
 
 class InformationFilter : public BaseFilter {
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
- public:
   InformationFilter();
   ~InformationFilter() = default;
 

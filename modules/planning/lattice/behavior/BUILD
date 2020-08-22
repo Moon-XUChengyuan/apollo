@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -10,7 +9,7 @@ cc_library(
     copts = ["-DMODULE_NAME=\\\"planning\\\""],
     deps = [
         "//cyber/common:log",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
         "//modules/planning/common:planning_gflags",
     ],
 )
@@ -24,11 +23,11 @@ cc_library(
         "//cyber/common:log",
         "//modules/common/math:linear_interpolation",
         "//modules/common/math:path_matcher",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
         "//modules/planning/common:frame",
         "//modules/planning/common:obstacle",
         "//modules/planning/common:planning_gflags",
-        "//modules/planning/proto:lattice_structure_cc_proto",
+        "//modules/planning/proto:lattice_structure_proto",
         "//modules/planning/reference_line",
     ],
 )
@@ -42,8 +41,8 @@ cc_library(
         "//modules/common/math",
         "//modules/common/math:path_matcher",
         "//modules/planning/common:obstacle",
-        "//modules/planning/proto:lattice_structure_cc_proto",
-        "//modules/planning/proto:planning_cc_proto",
+        "//modules/planning/proto:lattice_structure_proto",
+        "//modules/planning/proto:planning_proto",
     ],
 )
 

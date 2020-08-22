@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -8,13 +7,10 @@ cc_library(
     srcs = ["util.cc"],
     hdrs = ["util.h"],
     deps = [
-        "//cyber/common:log",
         "//cyber/common:types",
-        "//modules/common/configs:config_gflags",
         "//modules/common/math",
-        "//modules/common/math:geometry",
-        "//modules/common/proto:geometry_cc_proto",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
+        "//modules/common/configs:config_gflags",
     ],
 )
 
@@ -34,7 +30,7 @@ cc_library(
     hdrs = ["point_factory.h"],
     deps = [
         "//modules/common/math:geometry",
-        "//modules/common/proto:pnc_point_cc_proto",
+        "//modules/common/proto:pnc_point_proto",
     ],
 )
 
@@ -44,7 +40,7 @@ cc_test(
     srcs = ["util_test.cc"],
     deps = [
         ":util",
-        "//modules/common/util/testdata:simple_cc_proto",
+        "//modules/common/util/testdata:simple_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -88,7 +84,7 @@ cc_test(
     ],
     deps = [
         ":message_util",
-        "//modules/common/util/testdata:simple_cc_proto",
+        "//modules/common/util/testdata:simple_proto",
         "@com_google_googletest//:gtest_main",
     ],
 )
@@ -164,7 +160,7 @@ cc_library(
     hdrs = ["json_util.h"],
     deps = [
         "//cyber/common",
-        "@com_github_nlohmann_json//:json",
+        "//third_party/json",
         "@com_google_protobuf//:protobuf",
     ],
 )
@@ -175,15 +171,9 @@ cc_test(
     srcs = ["json_util_test.cc"],
     deps = [
         ":json_util",
-        "//modules/common/proto:error_code_cc_proto",
+        "//modules/common/proto:error_code_proto",
         "@com_google_googletest//:gtest_main",
     ],
-)
-
-cc_library(
-    name = "eigen_defs",
-    hdrs = ["eigen_defs.h"],
-    deps = ["@eigen"],
 )
 
 cpplint()

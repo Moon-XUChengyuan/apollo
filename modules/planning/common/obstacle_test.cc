@@ -22,10 +22,12 @@
 
 #include "cyber/common/file.h"
 #include "gtest/gtest.h"
-#include "modules/common/util/util.h"
+
 #include "modules/perception/proto/perception_obstacle.pb.h"
-#include "modules/planning/common/planning_gflags.h"
 #include "modules/prediction/proto/prediction_obstacle.pb.h"
+
+#include "modules/common/util/util.h"
+#include "modules/planning/common/planning_gflags.h"
 
 namespace apollo {
 namespace planning {

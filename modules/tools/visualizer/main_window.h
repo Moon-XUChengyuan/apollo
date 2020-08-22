@@ -19,9 +19,6 @@
 #include <QtCore/QMutex>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
-#include <map>
-#include <memory>
-#include <string>
 
 #include "modules/drivers/proto/pointcloud.pb.h"
 #include "modules/drivers/proto/radar.pb.h"
@@ -57,7 +54,7 @@ class MainWindow : public QMainWindow {
  protected:
   void resizeEvent(QResizeEvent*) override;
 
- private slots:  // NOLINT
+ private slots:
   void ActionAddGrid(void);
 
   void ActionOpenPointCloud(void);

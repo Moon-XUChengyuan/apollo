@@ -50,11 +50,10 @@ void TimingWheel::Tick() {
       if (task) {
         ADEBUG << "index: " << current_work_wheel_index_
                << " timer id: " << task->timer_id_;
-        auto* callback =
-            reinterpret_cast<std::function<void()>*>(&(task->callback));
+        auto callback = task->callback;
         cyber::Async([this, callback] {
           if (this->running_) {
-            (*callback)();
+            callback();
           }
         });
       }

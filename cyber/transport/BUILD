@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_library", "cc_test")
 load("//tools:cpplint.bzl", "cpplint")
 
 package(default_visibility = ["//visibility:public"])
@@ -309,7 +308,7 @@ cc_library(
     hdrs = ["rtps/underlay_message.h"],
     deps = [
         "//cyber/common:log",
-        "@fastcdr",
+        "@fastrtps",
     ],
 )
 
@@ -341,7 +340,6 @@ cc_library(
     hdrs = ["rtps/underlay_message_type.h"],
     deps = [
         ":underlay_message",
-        "@fastcdr",
         "@fastrtps",
     ],
 )
@@ -353,7 +351,6 @@ cc_test(
     deps = [
         "//cyber:cyber_core",
         "@com_google_googletest//:gtest_main",
-        "@fastcdr",
     ],
 )
 

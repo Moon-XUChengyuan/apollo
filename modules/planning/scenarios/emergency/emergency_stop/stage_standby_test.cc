@@ -16,9 +16,10 @@
 
 #include "modules/planning/scenarios/emergency/emergency_stop/stage_standby.h"
 
+#include "gtest/gtest.h"
+
 #include "cyber/common/file.h"
 #include "cyber/common/log.h"
-#include "gtest/gtest.h"
 
 namespace apollo {
 namespace planning {

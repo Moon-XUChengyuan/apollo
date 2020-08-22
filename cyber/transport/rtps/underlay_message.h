@@ -17,9 +17,8 @@
 #ifndef CYBER_TRANSPORT_RTPS_UNDERLAY_MESSAGE_H_
 #define CYBER_TRANSPORT_RTPS_UNDERLAY_MESSAGE_H_
 
-#include <cstdint>
-
 #include <array>
+#include <cstdint>
 #include <string>
 #include <utility>
 #include <vector>

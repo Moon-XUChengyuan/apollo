@@ -53,8 +53,7 @@ ScenarioManager::ScenarioManager(
     const std::shared_ptr<DependencyInjector>& injector)
     : injector_(injector) {}
 
-bool ScenarioManager::Init(const PlanningConfig& planning_config) {
-  planning_config_.CopyFrom(planning_config);
+bool ScenarioManager::Init() {
   RegisterScenarios();
   default_scenario_type_ = ScenarioConfig::LANE_FOLLOW;
   current_scenario_ = CreateScenario(default_scenario_type_);
@@ -133,7 +132,7 @@ std::unique_ptr<Scenario> ScenarioManager::CreateScenario(
 
 void ScenarioManager::RegisterScenarios() {
   // lane_follow
-  if (planning_config_.learning_mode() == PlanningConfig::HYBRID) {
+  if (FLAGS_planning_learning_mode == 3) {
     // HYBRID
     ACHECK(Scenario::LoadConfig(FLAGS_scenario_lane_follow_hybrid_config_file,
                                 &config_map_[ScenarioConfig::LANE_FOLLOW]));
@@ -805,16 +804,14 @@ void ScenarioManager::Update(const common::TrajectoryPoint& ego_point,
 
 void ScenarioManager::ScenarioDispatch(const Frame& frame) {
   ACHECK(!frame.reference_line_info().empty());
+
   ScenarioConfig::ScenarioType scenario_type;
 
-  int history_points_len = 0;
-  if (injector_->learning_based_data() &&
-      injector_->learning_based_data()->GetLatestLearningDataFrame()) {
-    history_points_len = injector_->learning_based_data()
-                                  ->GetLatestLearningDataFrame()
-                                  ->adc_trajectory_point_size();
-  }
-  if (planning_config_.learning_mode() == PlanningConfig::E2E &&
+  const int history_points_len = frame.learning_based_data()
+                                     .learning_data_frame()
+                                     .adc_trajectory_point_size();
+
+  if (FLAGS_planning_learning_mode == 2 &&
       history_points_len >= FLAGS_min_past_history_points_len) {
     scenario_type = ScenarioDispatchLearning();
   } else {
@@ -987,7 +984,7 @@ void ScenarioManager::UpdatePlanningContextEmergencyStopcenario(
   auto* emergency_stop = injector_->planning_context()
                              ->mutable_planning_status()
                              ->mutable_emergency_stop();
-  if (scenario_type != ScenarioConfig::EMERGENCY_STOP) {
+  if (!scenario_type == ScenarioConfig::EMERGENCY_STOP) {
     emergency_stop->Clear();
   }
 }

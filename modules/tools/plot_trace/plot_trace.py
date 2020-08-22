@@ -22,7 +22,6 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
 
-from cyber.python.cyber_py3 import cyber
 from modules.canbus.proto import chassis_pb2
 from modules.localization.proto import localization_pb2
 

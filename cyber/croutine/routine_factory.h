@@ -48,7 +48,7 @@ class RoutineFactory {
 };
 
 template <typename M0, typename F>
-RoutineFactory CreateRoutineFactory(//协程任务需要一个参数
+RoutineFactory CreateRoutineFactory(
     F&& f, const std::shared_ptr<data::DataVisitor<M0>>& dv) {
   RoutineFactory factory;
   factory.SetDataVisitor(dv);
@@ -70,7 +70,7 @@ RoutineFactory CreateRoutineFactory(//协程任务需要一个参数
 }
 
 template <typename M0, typename M1, typename F>
-RoutineFactory CreateRoutineFactory(//协程任务需要两个参数
+RoutineFactory CreateRoutineFactory(
     F&& f, const std::shared_ptr<data::DataVisitor<M0, M1>>& dv) {
   RoutineFactory factory;
   factory.SetDataVisitor(dv);
@@ -93,7 +93,7 @@ RoutineFactory CreateRoutineFactory(//协程任务需要两个参数
 }
 
 template <typename M0, typename M1, typename M2, typename F>
-RoutineFactory CreateRoutineFactory(//协程任务需要三个参数
+RoutineFactory CreateRoutineFactory(
     F&& f, const std::shared_ptr<data::DataVisitor<M0, M1, M2>>& dv) {
   RoutineFactory factory;
   factory.SetDataVisitor(dv);
@@ -117,7 +117,7 @@ RoutineFactory CreateRoutineFactory(//协程任务需要三个参数
 }
 
 template <typename M0, typename M1, typename M2, typename M3, typename F>
-RoutineFactory CreateRoutineFactory(//协程任务需要四个参数
+RoutineFactory CreateRoutineFactory(
     F&& f, const std::shared_ptr<data::DataVisitor<M0, M1, M2, M3>>& dv) {
   RoutineFactory factory;
   factory.SetDataVisitor(dv);
@@ -142,7 +142,7 @@ RoutineFactory CreateRoutineFactory(//协程任务需要四个参数
 }
 
 template <typename Function>
-RoutineFactory CreateRoutineFactory(Function&& f) {//协程任务不需要参数
+RoutineFactory CreateRoutineFactory(Function&& f) {
   RoutineFactory factory;
   factory.create_routine = [f = std::forward<Function&&>(f)]() { return f; };
   return factory;

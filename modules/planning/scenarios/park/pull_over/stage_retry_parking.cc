@@ -23,6 +23,7 @@
 #include <memory>
 
 #include "cyber/common/log.h"
+
 #include "modules/common/vehicle_state/vehicle_state_provider.h"
 #include "modules/planning/common/frame.h"
 #include "modules/planning/common/planning_context.h"

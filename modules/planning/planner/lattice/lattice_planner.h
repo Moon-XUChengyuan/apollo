@@ -36,7 +36,8 @@ class LatticePlanner : public PlannerWithReferenceLine {
  public:
   LatticePlanner() = delete;
 
-  explicit LatticePlanner(const std::shared_ptr<DependencyInjector>& injector)
+  explicit LatticePlanner(
+      const std::shared_ptr<DependencyInjector>& injector)
       : PlannerWithReferenceLine(injector) {}
 
   virtual ~LatticePlanner() = default;
