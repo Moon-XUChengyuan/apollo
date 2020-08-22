@@ -18,3 +18,9 @@
 --use_cyber_time=true
 
 --map_dir=/apollo/modules/map/data/borregas_ave
+
+--map_dir=/apollo/modules/map/data/san_francisco
+
+--map_dir=/apollo/modules/map/data/borregas_ave
+
+--map_dir=/apollo/modules/map/data/san_francisco
