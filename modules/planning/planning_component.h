@@ -61,6 +61,7 @@ class PlanningComponent final
 
  private:
   int calledTimes=0;
+  int index=1;
   std::shared_ptr<cyber::Reader<perception::TrafficLightDetection>>
       traffic_light_reader_;
   std::shared_ptr<cyber::Reader<routing::RoutingResponse>> routing_reader_;

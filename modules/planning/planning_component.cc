@@ -179,7 +179,9 @@ bool PlanningComponent::Proc(
   for (auto& p : *adc_trajectory_pb.mutable_trajectory_point()) {
     p.set_relative_time(p.relative_time() + dt);
   }
+  adc_trajectory_pb.set_index_num(index);
   planning_writer_->Write(adc_trajectory_pb);
+  ++index;
 
   // record in history
   auto* history = injector_->history();

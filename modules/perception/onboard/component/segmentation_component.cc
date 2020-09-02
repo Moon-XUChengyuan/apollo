@@ -68,9 +68,11 @@ bool SegmentationComponent::Proc(
   if (status) {
     writer_->Write(out_message);
     AINFO << "Send lidar segment output message.";
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   }
-
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+  else{
+    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    }
   return status;
 }
 

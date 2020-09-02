@@ -162,7 +162,7 @@ Status ControlComponent::ProduceControlCommand(
     ControlCommand *control_command) {
   Status status = CheckInput(&local_view_);
   // check data
-
+  AINFO<<"Trajectory index used by control component: "<<local_view_.trajectory().index_num();
   if (!status.ok()) {
     AERROR_EVERY(100) << "Control input data failed: "
                       << status.error_message();
