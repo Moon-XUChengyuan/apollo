@@ -26,6 +26,7 @@
 #include "modules/map/hdmap/adapter/opendrive_adapter.h"
 #include "modules/map/hdmap/hdmap_util.h"
 #include "modules/perception/proto/traffic_light_detection.pb.h"
+#include <sched.h>
 
 using apollo::common::color::ANSI_GREEN;
 using apollo::common::color::ANSI_RED;
@@ -59,7 +60,7 @@ class ManualTrafficLight final : public apollo::cyber::TimerComponent {
   }
 
   bool Proc() {
-    AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
     std::vector<SignalInfoConstPtr> signals;
     bool result = false;
     if (FLAGS_all_lights) {
@@ -112,7 +113,7 @@ class ManualTrafficLight final : public apollo::cyber::TimerComponent {
     }
     CreateTrafficLightDetection(signals, color, &traffic_light_detection);
     traffic_light_detection_writer_->Write(traffic_light_detection);
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
 
@@ -224,10 +225,10 @@ class ManualTrafficLight final : public apollo::cyber::TimerComponent {
 
   void OnLocalization(
       const std::shared_ptr<LocalizationEstimate> &localization) {
-    AINFO<<"Module "<< MODULE_NAME<<" OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
     localization_ = *localization;
     has_localization_ = true;
-    AINFO<<"Module "<< MODULE_NAME<<" OnLocalization end, itr: "<< calledTimes_OnLocalization;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnLocalization end, itr: "<< calledTimes_OnLocalization;
   }
 
  private:

@@ -21,6 +21,7 @@
 #include "modules/common/time/time.h"
 #include "modules/drivers/velodyne/compensator/compensator_component.h"
 #include "modules/drivers/velodyne/proto/velodyne.pb.h"
+#include <sched.h>
 
 namespace apollo {
 namespace drivers {
@@ -52,7 +53,7 @@ bool CompensatorComponent::Init() {
 bool CompensatorComponent::Proc(
     const std::shared_ptr<PointCloud>& point_cloud) {
          
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   const auto start_time = common::time::Clock::Now();
   std::shared_ptr<PointCloud> point_cloud_compensated =
       compensator_pool_->GetObject();
@@ -64,7 +65,7 @@ bool CompensatorComponent::Proc(
   if (point_cloud_compensated == nullptr) {
     AWARN << "compensator point_cloud is nullptr";
 
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
   point_cloud_compensated->Clear();
@@ -87,7 +88,7 @@ bool CompensatorComponent::Proc(
     seq_++;
   }
 
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

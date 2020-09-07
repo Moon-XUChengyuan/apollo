@@ -28,6 +28,8 @@
 #include "modules/common/vehicle_state/vehicle_state_provider.h"
 #include "modules/control/common/control_gflags.h"
 
+#include <sched.h>
+
 namespace apollo {
 namespace control {
 
@@ -65,7 +67,7 @@ bool PreprocessorSubmodule::Init() {
 
 bool PreprocessorSubmodule::Proc(const std::shared_ptr<LocalView> &local_view) {
      
-  AINFO<<"Module "<< MODULE_NAME<<"Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<"Proc start, itr: "<< ++calledTimes;
   ADEBUG << "Preprocessor started ....";
   const auto start_time = Clock::Now();
 
@@ -116,7 +118,7 @@ bool PreprocessorSubmodule::Proc(const std::shared_ptr<LocalView> &local_view) {
 
   preprocessor_writer_->Write(control_preprocessor);
   ADEBUG << "Preprocessor finished.";
-  AINFO<<"Module "<< MODULE_NAME<<"Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<"Proc end, itr: "<< calledTimes;
   return true;
 }
 

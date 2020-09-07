@@ -30,6 +30,7 @@
 #include "modules/perception/common/sensor_manager/sensor_manager.h"
 #include "modules/perception/onboard/common_flags/common_flags.h"
 #include "modules/perception/onboard/component/camera_perception_viz_message.h"
+#include <sched.h>
 
 namespace apollo {
 namespace perception {
@@ -262,7 +263,7 @@ bool FusionCameraDetectionComponent::Init() {
 void FusionCameraDetectionComponent::OnReceiveImage(
     const std::shared_ptr<apollo::drivers::Image> &message,
     const std::string &camera_name) {
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
   std::lock_guard<std::mutex> lock(mutex_);
   const double msg_timestamp = message->measurement_time() + timestamp_offset_;
   AINFO << "Enter FusionCameraDetectionComponent::Proc(), "
@@ -272,7 +273,7 @@ void FusionCameraDetectionComponent::OnReceiveImage(
     AINFO << "Received an old message. Last ts is " << std::setprecision(19)
           << last_timestamp_ << " current ts is " << msg_timestamp
           << " last - current is " << last_timestamp_ - msg_timestamp;
-    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
   last_timestamp_ = msg_timestamp;
@@ -303,13 +304,13 @@ void FusionCameraDetectionComponent::OnReceiveImage(
     if (MakeProtobufMsg(msg_timestamp, seq_num_, {}, {}, error_code,
                         out_message.get()) != cyber::SUCC) {
       AERROR << "MakeProtobufMsg failed";
-      AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
+     AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
       return;
     }
     if (output_final_obstacles_) {
       writer_->Write(out_message);
     }
-    AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveImage end, fail, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
 
@@ -330,7 +331,7 @@ void FusionCameraDetectionComponent::OnReceiveImage(
           << GLOG_TIMESTAMP(end_timestamp) << "]:cur_latency[" << end_latency
           << "]";
   }
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
 }
 
 int FusionCameraDetectionComponent::InitConfig() {
@@ -618,7 +619,7 @@ int FusionCameraDetectionComponent::InitMotionService() {
 // On receiving motion service input, convert it to motion_buff_
 void FusionCameraDetectionComponent::OnMotionService(
     const MotionServiceMsgType &message) {
-  AINFO<<"Module "<< MODULE_NAME<<" OnMotionService start, itr: "<< ++calledTimes_OnMotionService;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnMotionService start, itr: "<< ++calledTimes_OnMotionService;
   // Comment: use the circular buff to do it smartly, only push the latest
   // circular_buff only saves only the incremental motion between frames.
   // motion_service is now hard-coded for camera front 6mm
@@ -654,7 +655,7 @@ void FusionCameraDetectionComponent::OnMotionService(
 
   motion_buffer_->push_back(vehicledata);
   // TODO(@yg13): output motion in text file
-  AINFO<<"Module "<< MODULE_NAME<<" OnMotionService end, itr: "<< calledTimes_OnMotionService;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnMotionService end, itr: "<< calledTimes_OnMotionService;
 }
 
 void FusionCameraDetectionComponent::SetCameraHeightAndPitch() {

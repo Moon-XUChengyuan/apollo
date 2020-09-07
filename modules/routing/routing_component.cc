@@ -20,6 +20,7 @@
 
 #include "modules/common/adapters/adapter_gflags.h"
 #include "modules/routing/common/routing_gflags.h"
+#include <sched.h>
 
 DECLARE_string(flagfile);
 
@@ -81,11 +82,11 @@ bool RoutingComponent::Init() {
 
 bool RoutingComponent::Proc(const std::shared_ptr<RoutingRequest>& request) {
    
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   
   auto response = std::make_shared<RoutingResponse>();
   if (!routing_.Process(request, response.get())) {
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
   common::util::FillHeader(node_->Name(), response.get());
@@ -94,7 +95,7 @@ bool RoutingComponent::Proc(const std::shared_ptr<RoutingRequest>& request) {
     std::lock_guard<std::mutex> guard(mutex_);
     response_ = std::move(response);
   }
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

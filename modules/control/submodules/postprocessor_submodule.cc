@@ -26,6 +26,8 @@
 #include "modules/common/latency_recorder/latency_recorder.h"
 #include "modules/control/common/control_gflags.h"
 
+#include <sched.h>
+
 namespace apollo {
 namespace control {
 
@@ -53,7 +55,7 @@ bool PostprocessorSubmodule::Init() {
 bool PostprocessorSubmodule::Proc(
     const std::shared_ptr<ControlCommand>& control_core_command) {
          
-  AINFO<<"Module "<< MODULE_NAME<<"Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<"Proc start, itr: "<< ++calledTimes;
   const auto start_time = Clock::Now();
   ControlCommand control_command;
   // get all fields from control_core_command for now
@@ -86,7 +88,7 @@ bool PostprocessorSubmodule::Proc(
       control_command.header().lidar_timestamp(), start_time, end_time);
 
   postprocessor_writer_->Write(control_command);
-  AINFO<<"Module "<< MODULE_NAME<<"Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<"Proc end, itr: "<< calledTimes;
   return true;
 }
 

@@ -21,6 +21,7 @@
 #include "modules/common/time/time.h"
 #include "modules/prediction/common/message_process.h"
 #include "modules/prediction/common/prediction_system_gflags.h"
+#include <sched.h>
 
 namespace apollo {
 namespace prediction {
@@ -54,7 +55,7 @@ bool EvaluatorSubmodule::Init() {
 bool EvaluatorSubmodule::Proc(
     const std::shared_ptr<SubmoduleOutput>& container_output) {
          
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   constexpr static size_t kHistorySize = 1;
   const auto frame_start_time = container_output->frame_start_time();
   ObstaclesContainer obstacles_container(*container_output);
@@ -62,7 +63,7 @@ bool EvaluatorSubmodule::Proc(
   SubmoduleOutput submodule_output =
       obstacles_container.GetSubmoduleOutput(kHistorySize, frame_start_time);
   evaluator_writer_->Write(submodule_output);
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

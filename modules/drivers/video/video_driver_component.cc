@@ -18,6 +18,8 @@
 
 #include "cyber/common/file.h"
 
+#include  <sched.h>
+
 namespace apollo {
 namespace drivers {
 namespace video {
@@ -77,7 +79,7 @@ void CompCameraH265Compressed::VideoPoll() {
   }
   int poll_failure_number = 0;
   while (!apollo::cyber::IsShutdown()) {
-    AINFO<<"Module "<< MODULE_NAME<<" VideoPoll start, itr: "<< ++calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" VideoPoll start, itr: "<< ++calledTimes;
     if (!camera_deivce_->Poll(pb_image_)) {
       AERROR << "H265 poll failed on port: " << camera_deivce_->Port();
       static constexpr int kTolerance = 256;
@@ -85,7 +87,7 @@ void CompCameraH265Compressed::VideoPoll() {
         AERROR << "H265 poll keep failing for " << kTolerance << " times, Exit";
         break;
       }
-      AINFO<<"Module "<< MODULE_NAME<<" VideoPoll end, fail, itr: "<< calledTimes;
+      AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" VideoPoll end, fail, itr: "<< calledTimes;
       continue;
     }
     poll_failure_number = 0;
@@ -97,7 +99,7 @@ void CompCameraH265Compressed::VideoPoll() {
     if (camera_deivce_->Record()) {
       fout.write(pb_image_->data().c_str(), pb_image_->data().size());
     }
-    AINFO<<"Module "<< MODULE_NAME<<" VideoPoll end, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" VideoPoll end, itr: "<< calledTimes;
   }
 
   if (camera_deivce_->Record()) {

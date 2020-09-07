@@ -20,6 +20,7 @@
 #include "modules/perception/lib/utils/perf.h"
 #include "modules/perception/lidar/common/lidar_error_code.h"
 #include "modules/perception/lidar/common/lidar_log.h"
+#include <sched.h>
 // #include "modules/perception/onboard/component/lidar_common_flags.h"
 
 namespace apollo {
@@ -46,7 +47,7 @@ bool RecognitionComponent::Proc(
     const std::shared_ptr<LidarFrameMessage>& message) {
 
    
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   AINFO << std::setprecision(16)
         << "Enter Tracking component, message timestamp: "
         << message->timestamp_ << " current timestamp: "
@@ -58,10 +59,10 @@ bool RecognitionComponent::Proc(
   if (InternalProc(message, out_message)) {
     writer_->Write(out_message);
     AINFO << "Send lidar recognition output message.";
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
   return false;
 }
 

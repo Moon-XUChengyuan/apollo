@@ -18,6 +18,7 @@
 
 #include <memory>
 #include <thread>
+#include <sched.h>
 
 namespace apollo {
 namespace drivers {
@@ -44,7 +45,7 @@ bool PriSecFusionComponent::Init() {
 bool PriSecFusionComponent::Proc(
     const std::shared_ptr<PointCloud>& point_cloud) {
    
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   auto target = point_cloud;
   auto fusion_readers = readers_;
   auto start_time = Time::Now().ToSecond();
@@ -70,7 +71,7 @@ bool PriSecFusionComponent::Proc(
   AINFO << "Pointcloud fusion diff: " << diff / 1000000 << "ms";
   fusion_writer_->Write(target);
 
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

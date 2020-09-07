@@ -18,6 +18,7 @@
 
 #include "modules/common/adapters/adapter_gflags.h"
 #include "modules/third_party_perception/proto/third_party_perception_component.pb.h"
+#include <sched.h>
 
 DECLARE_string(flagfile);
 
@@ -56,14 +57,14 @@ bool ThirdPartyPerceptionComponent::Init() {
 
 bool ThirdPartyPerceptionComponent::Proc() {
    
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   auto response = std::make_shared<apollo::perception::PerceptionObstacles>();
   if (!perception_->Process(response.get())) {
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
   writer_->Write(response);
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

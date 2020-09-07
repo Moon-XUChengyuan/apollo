@@ -21,6 +21,7 @@
 #include "modules/common/util/util.h"
 #include "modules/common/vehicle_state/vehicle_state_provider.h"
 #include "modules/map/relative_map/common/relative_map_gflags.h"
+#include <sched.h>
 
 namespace apollo {
 namespace relative_map {
@@ -83,38 +84,38 @@ bool RelativeMap::Process(MapMsg* const map_msg) {
 
 void RelativeMap::OnNavigationInfo(const NavigationInfo& navigation_info) {
   {
-    AINFO<<"Module "<< MODULE_NAME<<" OnNavigationInfo start, itr: "<< ++calledTimes_OnNavigationInfo;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnNavigationInfo start, itr: "<< ++calledTimes_OnNavigationInfo;
     std::lock_guard<std::mutex> lock(navigation_lane_mutex_);
     navigation_lane_.UpdateNavigationInfo(navigation_info);
-    AINFO<<"Module "<< MODULE_NAME<<" OnNavigationInfo end, itr: "<< calledTimes_OnNavigationInfo;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnNavigationInfo end, itr: "<< calledTimes_OnNavigationInfo;
   }
 }
 
 void RelativeMap::OnPerception(
     const PerceptionObstacles& perception_obstacles) {
   {
-    AINFO<<"Module "<< MODULE_NAME<<" OnPerception start, itr: "<< ++calledTimes_OnPerception;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnPerception start, itr: "<< ++calledTimes_OnPerception;
     std::lock_guard<std::mutex> lock(navigation_lane_mutex_);
     perception_obstacles_.CopyFrom(perception_obstacles);
-    AINFO<<"Module "<< MODULE_NAME<<" OnPerception end, itr: "<< calledTimes_OnPerception;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnPerception end, itr: "<< calledTimes_OnPerception;
   }
 }
 
 void RelativeMap::OnChassis(const Chassis& chassis) {
   {
-    AINFO<<"Module "<< MODULE_NAME<<" OnChassis start, itr: "<< ++calledTimes_OnChassis;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnChassis start, itr: "<< ++calledTimes_OnChassis;
     std::lock_guard<std::mutex> lock(navigation_lane_mutex_);
     chassis_.CopyFrom(chassis);
-    AINFO<<"Module "<< MODULE_NAME<<" OnChassis end, itr: "<< calledTimes_OnChassis;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnChassis end, itr: "<< calledTimes_OnChassis;
   }
 }
 
 void RelativeMap::OnLocalization(const LocalizationEstimate& localization) {
   {
-    AINFO<<"Module "<< MODULE_NAME<<" OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
     std::lock_guard<std::mutex> lock(navigation_lane_mutex_);
     localization_.CopyFrom(localization);
-    AINFO<<"Module "<< MODULE_NAME<<" OnLocalization end, itr: "<< calledTimes_OnLocalization;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnLocalization end, itr: "<< calledTimes_OnLocalization;
   }
 }
 

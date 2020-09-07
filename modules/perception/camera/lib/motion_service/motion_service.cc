@@ -24,6 +24,7 @@
 #include "cyber/common/log.h"
 #include "modules/common/math/math_utils.h"
 #include "modules/perception/common/sensor_manager/sensor_manager.h"
+#include <sched.h>
 
 namespace apollo {
 namespace perception {
@@ -81,19 +82,19 @@ bool MotionService::Init() {
 // On receiving image input, just need to record its timestamp
 void MotionService::OnReceiveImage(const ImageMsgType &message,
                                    const std::string &camera_name) {
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
   std::lock_guard<std::mutex> lock(mutex_);
   const double curr_timestamp = message->measurement_time() + timestamp_offset_;
   ADEBUG << "image received: camera_name: " << camera_name
          << " image ts: " << curr_timestamp;
   camera_timestamp_ = curr_timestamp;
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
 }
 
 // On reveiving localization input, register it to camera timestamp,
 // compute motion between camera time stamps
 void MotionService::OnLocalization(const LocalizationMsgType &message) {
-  AINFO<<"Module "<< MODULE_NAME<<" OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnLocalization start, itr: "<< ++calledTimes_OnLocalization;
   std::lock_guard<std::mutex> lock(mutex_);
   ADEBUG << "localization received: localization ts: "
          << message->measurement_time();
@@ -158,7 +159,7 @@ void MotionService::OnLocalization(const LocalizationMsgType &message) {
   }
 
   pre_camera_timestamp_ = camera_timestamp;
-  AINFO<<"Module "<< MODULE_NAME<<" OnLocalization end, itr: "<< calledTimes_OnLocalization;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnLocalization end, itr: "<< calledTimes_OnLocalization;
 }
 
 // pubulish vehicle status buffer to output channel

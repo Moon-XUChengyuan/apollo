@@ -22,6 +22,8 @@
 #include "modules/common/vehicle_state/vehicle_state_provider.h"
 #include "modules/control/common/control_gflags.h"
 
+#include <sched.h>
+
 namespace apollo {
 namespace control {
 
@@ -77,7 +79,7 @@ bool LatLonControllerSubmodule::Init() {
 bool LatLonControllerSubmodule::Proc(
     const std::shared_ptr<Preprocessor>& preprocessor_status) {
          
-  AINFO<<"Module "<< MODULE_NAME<<"Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<"Proc start, itr: "<< ++calledTimes;
   const auto start_time = Clock::Now();
   ControlCommand control_core_command;
 
@@ -94,7 +96,7 @@ bool LatLonControllerSubmodule::Proc(
     control_core_command.mutable_header()->mutable_status()->CopyFrom(
         pre_status);
     AERROR << "Error in preprocessor submodule.";
-    AINFO<<"Module "<< MODULE_NAME<<"Proc end, fail, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<"Proc end, fail, itr: "<< calledTimes;
     return false;
   }
 
@@ -124,7 +126,7 @@ bool LatLonControllerSubmodule::Proc(
       status.error_message());
 
   control_core_writer_->Write(control_core_command);
-  AINFO<<"Module "<< MODULE_NAME<<"Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<"Proc end, itr: "<< calledTimes;
   return status.ok();
 }
 

@@ -18,6 +18,7 @@
 #include "modules/common/time/time.h"
 #include "modules/perception/common/sensor_manager/sensor_manager.h"
 #include "modules/perception/lib/utils/perf.h"
+#include <sched.h>
 
 namespace apollo {
 namespace perception {
@@ -60,19 +61,19 @@ bool RadarDetectionComponent::Init() {
 
 bool RadarDetectionComponent::Proc(const std::shared_ptr<ContiRadar>& message) {
      
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   AINFO << "Enter radar preprocess, message timestamp: "
         << message->header().timestamp_sec() << " current timestamp "
         << apollo::common::time::Clock::NowInSeconds();
   std::shared_ptr<SensorFrameMessage> out_message(new (std::nothrow)
                                                       SensorFrameMessage);
   if (!InternalProc(message, out_message)) {
-     AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
   writer_->Write(out_message);
   AINFO << "Send radar processing output message.";
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

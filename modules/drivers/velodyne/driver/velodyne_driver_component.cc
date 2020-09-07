@@ -22,6 +22,7 @@
 
 #include "modules/common/util/message_util.h"
 #include "modules/drivers/velodyne/driver/velodyne_driver_component.h"
+#include <sched.h>
 
 namespace apollo {
 namespace drivers {
@@ -54,17 +55,17 @@ bool VelodyneDriverComponent::Init() {
 /** @brief Device poll thread main loop. */
 void VelodyneDriverComponent::device_poll() {
   while (!apollo::cyber::IsShutdown()) {
-    AINFO<<"Module "<< MODULE_NAME<<" device_poll start, itr: "<< ++calledTimes_device_poll;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" device_poll start, itr: "<< ++calledTimes_device_poll;
     // poll device until end of file
     std::shared_ptr<VelodyneScan> scan = std::make_shared<VelodyneScan>();
     bool ret = dvr_->Poll(scan);
     if (ret) {
       common::util::FillHeader("velodyne", scan.get());
       writer_->Write(scan);
-      AINFO<<"Module "<< MODULE_NAME<<" device_poll end, itr: "<< calledTimes_device_poll;
+      AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" device_poll end, itr: "<< calledTimes_device_poll;
     } else {
       AWARN << "device poll failed";
-      AINFO<<"Module "<< MODULE_NAME<<" device_poll end, fail, itr: "<< calledTimes_device_poll;
+      AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" device_poll end, fail, itr: "<< calledTimes_device_poll;
     }
   }
 

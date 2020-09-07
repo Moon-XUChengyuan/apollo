@@ -24,6 +24,8 @@
 #include "modules/common/vehicle_state/vehicle_state_provider.h"
 #include "modules/control/common/control_gflags.h"
 
+#include <sched.h>
+
 namespace apollo {
 namespace control {
 
@@ -277,7 +279,7 @@ Status ControlComponent::ProduceControlCommand(
 }
 
 bool ControlComponent::Proc() {
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes_Proc;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes_Proc;
 
   const auto start_time =
       FLAGS_use_system_time_in_control ? absl::Now() : Clock::Now();
@@ -286,7 +288,7 @@ bool ControlComponent::Proc() {
   const auto &chassis_msg = chassis_reader_->GetLatestObserved();
   if (chassis_msg == nullptr) {
     AERROR << "Chassis msg is not ready!";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
+        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
 
     return false;
   }
@@ -297,7 +299,7 @@ bool ControlComponent::Proc() {
   const auto &trajectory_msg = trajectory_reader_->GetLatestObserved();
   if (trajectory_msg == nullptr) {
     AERROR << "planning msg is not ready!";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
+        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
 
     return false;
   }
@@ -307,7 +309,7 @@ bool ControlComponent::Proc() {
   const auto &localization_msg = localization_reader_->GetLatestObserved();
   if (localization_msg == nullptr) {
     AERROR << "localization msg is not ready!";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
+        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
 
     return false;
   }
@@ -350,7 +352,7 @@ bool ControlComponent::Proc() {
         end_time);
 
     local_view_writer_->Write(local_view_);
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
+        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
 
     return true;
   }
@@ -370,7 +372,7 @@ bool ControlComponent::Proc() {
       absl::ToDoubleSeconds(start_time - init_time_) >
           control_conf_.control_test_duration()) {
     AERROR << "Control finished testing. exit";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
+        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
 
     return false;
   }
@@ -404,7 +406,7 @@ bool ControlComponent::Proc() {
   ADEBUG << control_command.ShortDebugString();
   if (control_conf_.is_control_test_mode()) {
     ADEBUG << "Skip publish control command in test mode";
-        AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
+        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
 
     return true;
   }
@@ -431,7 +433,7 @@ bool ControlComponent::Proc() {
   }
 
   control_cmd_writer_->Write(control_command);
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
 
   return true;
 }

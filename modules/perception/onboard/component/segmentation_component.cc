@@ -22,6 +22,7 @@
 #include "modules/perception/lidar/common/lidar_frame_pool.h"
 #include "modules/perception/lidar/common/lidar_log.h"
 #include "modules/perception/onboard/common_flags/common_flags.h"
+#include  <sched.h>
 
 namespace apollo {
 namespace perception {
@@ -55,7 +56,7 @@ bool SegmentationComponent::Init() {
 bool SegmentationComponent::Proc(
     const std::shared_ptr<drivers::PointCloud>& message) {
          
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   AINFO << std::setprecision(16)
         << "Enter segmentation component, message timestamp: "
         << message->measurement_time() << " current timestamp: "
@@ -68,10 +69,10 @@ bool SegmentationComponent::Proc(
   if (status) {
     writer_->Write(out_message);
     AINFO << "Send lidar segment output message.";
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   }
   else{
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     }
   return status;
 }

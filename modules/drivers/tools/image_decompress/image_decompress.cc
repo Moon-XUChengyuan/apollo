@@ -20,6 +20,7 @@
 
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include <sched.h>
 
 namespace apollo {
 namespace image_decompress {
@@ -39,7 +40,7 @@ bool ImageDecompressComponent::Init() {
 bool ImageDecompressComponent::Proc(
     const std::shared_ptr<apollo::drivers::CompressedImage>& compressed_image) {
          
-  AINFO<<"Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc start, itr: "<< ++calledTimes;
   auto image = std::make_shared<Image>();
   image->mutable_header()->CopyFrom(compressed_image->header());
   if (compressed_image->has_measurement_time()) {
@@ -60,7 +61,7 @@ bool ImageDecompressComponent::Proc(
   auto size = mat_image.step * mat_image.rows;
   image->set_data(&(mat_image.data[0]), size);
   writer_->Write(image);
-  AINFO<<"Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

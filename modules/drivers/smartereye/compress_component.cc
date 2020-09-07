@@ -23,6 +23,8 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
+#include <sched.h>
+
 namespace apollo {
 namespace drivers {
 namespace smartereye {
@@ -49,7 +51,7 @@ bool CompressComponent::Init() {
 
 bool CompressComponent::Proc(const std::shared_ptr<Image>& image) {
      
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   ADEBUG << "procing compressed";
   auto compressed_image = image_pool_->GetObject();
   compressed_image->mutable_header()->CopyFrom(image->header());
@@ -70,17 +72,17 @@ bool CompressComponent::Proc(const std::shared_ptr<Image>& image) {
     std::vector<uint8_t> compress_buffer;
     if (!cv::imencode(".jpg", tmp_mat, compress_buffer, params)) {
       AERROR << "cv::imencode (jpeg) failed on input image";
-      AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+      AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
       return false;
     }
     compressed_image->set_data(compress_buffer.data(), compress_buffer.size());
     writer_->Write(compressed_image);
   } catch (std::exception& e) {
     AERROR << "cv::imencode (jpeg) exception :" << e.what();
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

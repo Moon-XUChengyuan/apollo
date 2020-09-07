@@ -20,6 +20,8 @@
 
 #include "modules/drivers/hesai/parser.h"
 
+#include <sched.h>
+
 namespace apollo {
 namespace drivers {
 namespace hesai {
@@ -103,7 +105,7 @@ void Parser::ResetRawPointCloud() {
 }
 
 bool Parser::Parse(const std::shared_ptr<HesaiScan>& scan) {
-  AINFO<<"Module "<< MODULE_NAME<<" Parse start, itr: "<< ++calledTimes_Parse;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Parse start, itr: "<< ++calledTimes_Parse;
   ResetRawPointCloud();
   bool is_end = false;
   for (int i = 0; i < scan->firing_pkts_size(); ++i) {
@@ -113,7 +115,7 @@ bool Parser::Parse(const std::shared_ptr<HesaiScan>& scan) {
     ParseRawPacket(data, pkt.data().size(), &is_end);
   }
   PublishRawPointCloud(scan->header().sequence_num());
-  AINFO<<"Module "<< MODULE_NAME<<" Parse end, itr: "<< calledTimes_Parse;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Parse end, itr: "<< calledTimes_Parse;
   return true;
 }
 

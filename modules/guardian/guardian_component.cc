@@ -18,6 +18,7 @@
 #include "cyber/common/log.h"
 #include "modules/common/adapters/adapter_gflags.h"
 #include "modules/common/util/message_util.h"
+#include <sched.h>
 
 namespace apollo {
 namespace guardian {
@@ -63,7 +64,7 @@ bool GuardianComponent::Init() {
 
 bool GuardianComponent::Proc() {
      
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   ADEBUG << "Timer is triggered: publish GuardianComponent result";
   bool safety_mode_triggered = false;
   if (guardian_conf_.guardian_enable()) {
@@ -87,7 +88,7 @@ bool GuardianComponent::Proc() {
 
   common::util::FillHeader(node_->Name(), &guardian_cmd_);
   guardian_writer_->Write(guardian_cmd_);
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

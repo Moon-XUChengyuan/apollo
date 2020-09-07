@@ -28,6 +28,8 @@
 #include "modules/drivers/radar/conti_radar/conti_radar_canbus_component.h"
 #include "modules/drivers/radar/conti_radar/conti_radar_message_manager.h"
 
+#include <sched.h>
+
 /**
  * @namespace apollo::drivers::conti_radar
  * @brief apollo::drivers
@@ -138,11 +140,11 @@ bool ContiRadarCanbusComponent::OnError(const std::string& error_msg) {
 
 void ContiRadarCanbusComponent::PoseCallback(
     const std::shared_ptr<LocalizationEstimate>& pose_msg) {
-  AINFO<<"Module "<< MODULE_NAME<<" PoseCallback start, itr: "<< ++calledTimes_PoseCallback;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" PoseCallback start, itr: "<< ++calledTimes_PoseCallback;
   auto send_interval = conti_radar_conf_.radar_conf().input_send_interval();
   uint64_t now_nsec = cyber::Time().Now().ToNanosecond();
   if (last_nsec_ != 0 && (now_nsec - last_nsec_) < send_interval) {
-    AINFO<<"Module "<< MODULE_NAME<<" PoseCallback end, fail, itr: "<< calledTimes_PoseCallback;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" PoseCallback end, fail, itr: "<< calledTimes_PoseCallback;
     return;
   }
   last_nsec_ = now_nsec;
@@ -172,7 +174,7 @@ void ContiRadarCanbusComponent::PoseCallback(
                                                    &input_yawrate);
   sender_message_yawrate.Update();
   can_client_->SendSingleFrame({sender_message_yawrate.CanFrame()});
-  AINFO<<"Module "<< MODULE_NAME<<" PoseCallback end, itr: "<< calledTimes_PoseCallback;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" PoseCallback end, itr: "<< calledTimes_PoseCallback;
 }
 
 }  // namespace conti_radar

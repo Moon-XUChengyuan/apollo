@@ -16,6 +16,7 @@
 
 #include "modules/localization/rtk/rtk_localization_component.h"
 #include "modules/common/time/time.h"
+#include <sched.h>
 
 namespace apollo {
 namespace localization {
@@ -85,7 +86,7 @@ bool RTKLocalizationComponent::InitIO() {
 bool RTKLocalizationComponent::Proc(
     const std::shared_ptr<localization::Gps>& gps_msg) {
    
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   localization_->GpsCallback(gps_msg);
 
   if (localization_->IsServiceStarted()) {
@@ -100,7 +101,7 @@ bool RTKLocalizationComponent::Proc(
     PublishLocalizationStatus(localization_status);
     ADEBUG << "[OnTimer]: Localization message publish success!";
   }
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
 
   return true;
 }

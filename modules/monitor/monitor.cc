@@ -28,6 +28,7 @@
 #include "modules/monitor/software/process_monitor.h"
 #include "modules/monitor/software/recorder_monitor.h"
 #include "modules/monitor/software/summary_monitor.h"
+#include <sched.h>
 
 DEFINE_bool(enable_functional_safety, true,
             "Whether to enable functional safety check.");
@@ -71,10 +72,10 @@ bool Monitor::Init() {
 bool Monitor::Proc() {
 
    
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   const double current_time = apollo::common::time::Clock::NowInSeconds();
   if (!MonitorManager::Instance()->StartFrame(current_time)) {
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
   for (auto& runner : runners_) {
@@ -82,7 +83,7 @@ bool Monitor::Proc() {
   }
   MonitorManager::Instance()->EndFrame();
 
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

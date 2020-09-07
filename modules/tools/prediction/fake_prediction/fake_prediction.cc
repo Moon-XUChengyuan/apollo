@@ -23,6 +23,7 @@
 #include "modules/common/adapters/adapter_gflags.h"
 #include "modules/common/util/message_util.h"
 #include "modules/prediction/proto/prediction_obstacle.pb.h"
+#include <sched.h>
 
 namespace apollo {
 namespace prediction {
@@ -43,11 +44,11 @@ class FakePredictionComponent : public apollo::cyber::TimerComponent {
     return true;
   }
   bool Proc() override {
-    AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
     auto prediction = std::make_shared<PredictionObstacles>();
     common::util::FillHeader("fake_prediction", prediction.get());
     prediction_writer_->Write(prediction);
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
 

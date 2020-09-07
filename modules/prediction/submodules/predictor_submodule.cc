@@ -23,6 +23,7 @@
 #include "modules/common/time/time.h"
 #include "modules/common/util/message_util.h"
 #include "modules/prediction/common/prediction_system_gflags.h"
+#include <sched.h>
 
 namespace apollo {
 namespace prediction {
@@ -59,7 +60,7 @@ bool PredictorSubmodule::Proc(
     const std::shared_ptr<ADCTrajectoryContainer>& adc_trajectory_container,
     const std::shared_ptr<SubmoduleOutput>& submodule_output) {
          
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   const apollo::common::Header& perception_header =
       perception_obstacles->header();
   const apollo::common::ErrorCode& perception_error_code =
@@ -87,7 +88,7 @@ bool PredictorSubmodule::Proc(
   ADEBUG << "End to end time = "
          << absl::ToDoubleMilliseconds(end_time - frame_start_time) << " ms";
 
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 

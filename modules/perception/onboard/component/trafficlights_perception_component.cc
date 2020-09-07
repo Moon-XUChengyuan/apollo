@@ -35,6 +35,7 @@
 #include "modules/perception/lib/utils/time_util.h"
 #include "modules/perception/onboard/common_flags/common_flags.h"
 #include "modules/transform/proto/transform.pb.h"
+#include <sched.h>
 
 namespace apollo {
 namespace perception {
@@ -305,7 +306,7 @@ int TrafficLightsPerceptionComponent::InitCameraFrame() {
 void TrafficLightsPerceptionComponent::OnReceiveImage(
     const std::shared_ptr<apollo::drivers::Image> msg,
     const std::string& camera_name) {
-  AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
   std::lock_guard<std::mutex> lck(mutex_);
   double receive_img_timestamp = apollo::common::time::Clock::NowInSeconds();
   double image_msg_ts = msg->measurement_time();
@@ -326,7 +327,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
   if (!CheckCameraImageStatus(image_msg_ts, check_image_status_interval_thresh_,
                               camera_name)) {
     AERROR << "CheckCameraImageStatus failed";
-    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
   const auto check_camera_status_time =
@@ -352,7 +353,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
           << " ,_last_proc_image_ts: " << last_proc_image_ts_
           << " , _proc_interval_seconds: " << proc_interval_seconds_;
     //    SendSimulationMsg();
-    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
   // sync image with cached projections
@@ -365,7 +366,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
     AINFO << "PreprocessComponent not publish image, ts:" << image_msg_ts
           << ", camera_name: " << camera_name;
     //    SendSimulationMsg();
-    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
 
@@ -425,7 +426,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
   if (!TransformOutputMessage(&frame_, camera_name, &out_msg)) {
     AERROR << "transform_output_message failed, msg_time: "
            << GLOG_TIMESTAMP(msg->measurement_time());
-    AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
     return;
   }
 
@@ -462,15 +463,15 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
           << GLOG_TIMESTAMP(end_timestamp) << "]:cur_latency[" << end_latency
           << "]";
   }
-  AINFO<<"Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage end, itr: "<< calledTimes_OnReceiveImage;
 }
 
 void TrafficLightsPerceptionComponent::OnReceiveV2XMsg(
     const std::shared_ptr<apollo::v2x::IntersectionTrafficLightData> v2x_msg) {
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveV2XMsg start, itr: "<< ++calledTimes_OnReceiveV2XMsg;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveV2XMsg start, itr: "<< ++calledTimes_OnReceiveV2XMsg;
   std::lock_guard<std::mutex> lck(mutex_);
   v2x_msg_buffer_.push_back(*v2x_msg);
-  AINFO<<"Module "<< MODULE_NAME<<" OnReceiveV2XMsg end, itr: "<< calledTimes_OnReceiveV2XMsg;
+ AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" OnReceiveV2XMsg end, itr: "<< calledTimes_OnReceiveV2XMsg;
 }
 
 void TrafficLightsPerceptionComponent::GenerateTrafficLights(

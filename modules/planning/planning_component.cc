@@ -27,6 +27,8 @@
 #include "modules/planning/navi_planning.h"
 #include "modules/planning/on_lane_planning.h"
 
+#include <sched.h>
+
 namespace apollo {
 namespace planning {
 
@@ -119,7 +121,7 @@ bool PlanningComponent::Proc(
         localization_estimate) {
 
    
-  AINFO<<"Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   
   ACHECK(prediction_obstacles != nullptr);
 
@@ -155,7 +157,7 @@ bool PlanningComponent::Proc(
 
   if (!CheckInput()) {
     AERROR << "Input check failed";
-    AINFO<<"Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes;
     return false;
   }
 
@@ -186,7 +188,7 @@ bool PlanningComponent::Proc(
   // record in history
   auto* history = injector_->history();
   history->Add(adc_trajectory_pb);
-  AINFO<<"Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
+  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }
 
