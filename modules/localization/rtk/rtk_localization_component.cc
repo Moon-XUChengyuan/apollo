@@ -88,12 +88,12 @@ bool RTKLocalizationComponent::Proc(
    
   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
   localization_->GpsCallback(gps_msg);
-
   if (localization_->IsServiceStarted()) {
     LocalizationEstimate localization;
     localization_->GetLocalization(&localization);
     LocalizationStatus localization_status;
     localization_->GetLocalizationStatus(&localization_status);
+    AINFO<<localization.header().module_name()<<' '<<localization.header().timestamp_sec()<<' '<<localization.header().sequence_num();
 
     // publish localization messages
     PublishPoseBroadcastTopic(localization);

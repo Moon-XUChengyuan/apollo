@@ -54,10 +54,12 @@ bool FusionComponent::Init() {
 bool FusionComponent::Proc(const std::shared_ptr<SensorFrameMessage>& message) {
      
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+  AINFO<<message->type_name_<<' '<<message->timestamp_<<' '<<message->seq_num_;
   if (message->process_stage_ == ProcessStage::SENSOR_FUSION) {
    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
+  AINFO<<message->type_name_<<' '<<message->timestamp_<<' '<<message->seq_num_;
   std::shared_ptr<PerceptionObstacles> out_message(new (std::nothrow)
                                                        PerceptionObstacles);
   std::shared_ptr<SensorFrameMessage> viz_message(new (std::nothrow)

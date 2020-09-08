@@ -307,6 +307,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
     const std::shared_ptr<apollo::drivers::Image> msg,
     const std::string& camera_name) {
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
+ AINFO<<camera_name<<'  '<<msg->header().module_name()<<' '<<msg->header().timestamp_sec()<<' '<<msg->header().sequence_num();
   std::lock_guard<std::mutex> lck(mutex_);
   double receive_img_timestamp = apollo::common::time::Clock::NowInSeconds();
   double image_msg_ts = msg->measurement_time();

@@ -292,7 +292,6 @@ bool ControlComponent::Proc() {
 
     return false;
   }
-
   OnChassis(chassis_msg);
 
   trajectory_reader_->Observe();
@@ -331,6 +330,10 @@ bool ControlComponent::Proc() {
       local_view_.mutable_pad_msg()->CopyFrom(pad_msg_);
     }
   }
+  AINFO<<local_view_.chassis().header().module_name()<<' '<<local_view_.chassis().header().timestamp_sec()<<' '<<local_view_.chassis().header().sequence_num();
+  AINFO<<local_view_.localization().header().module_name()<<' '<<local_view_.localization().header().timestamp_sec()<<' '<<local_view_.localization().header().sequence_num();
+  AINFO<<local_view_.trajectory().header().module_name()<<' '<<local_view_.trajectory().header().timestamp_sec()<<' '<<local_view_.trajectory().header().sequence_num();
+
 
   // use control submodules
   if (FLAGS_use_control_submodules) {

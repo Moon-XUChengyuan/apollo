@@ -48,6 +48,7 @@ bool RecognitionComponent::Proc(
 
    
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
+ AINFO<<message->type_name_<<' '<<message->timestamp_<<' '<<message->seq_num_;
   AINFO << std::setprecision(16)
         << "Enter Tracking component, message timestamp: "
         << message->timestamp_ << " current timestamp: "
