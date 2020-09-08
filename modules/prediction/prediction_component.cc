@@ -115,7 +115,7 @@ bool PredictionComponent::Proc(
     const std::shared_ptr<PerceptionObstacles>& perception_obstacles) {
    
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
-  AINFO<<perception_obstacles->header().module_name()<<' '<<perception_obstacles->header().timestamp_sec()<<' '<<perception_obstacles->header().sequence_num();
+  AINFO<<perception_obstacles->header().module_name()<<' '<<static_cast<int64_t>(perception_obstacles->header().timestamp_sec()*1e6)<<' '<<perception_obstacles->header().sequence_num();
   if (FLAGS_use_lego) {
     return ContainerSubmoduleProcess(perception_obstacles);
   }
@@ -137,14 +137,14 @@ bool PredictionComponent::ContainerSubmoduleProcess(
   MessageProcess::OnLocalization(container_manager_.get(),
                                  *ptr_localization_msg);
 
-  AINFO<<ptr_localization_msg->header().module_name()<<' '<<ptr_localization_msg->header().timestamp_sec()<<' '<<ptr_localization_msg->header().sequence_num();
+  AINFO<<ptr_localization_msg->header().module_name()<<' '<<static_cast<int64_t>(ptr_localization_msg->header().timestamp_sec()*1e6)<<' '<<ptr_localization_msg->header().sequence_num();
   // Read planning info. of last frame and call OnPlanning to update
   // the ADCTrajectoryContainer
   planning_reader_->Observe();
   auto ptr_trajectory_msg = planning_reader_->GetLatestObserved();
   if (ptr_trajectory_msg != nullptr) {
     MessageProcess::OnPlanning(container_manager_.get(), *ptr_trajectory_msg);
-    AINFO<<ptr_trajectory_msg->header().module_name()<<' '<<ptr_trajectory_msg->header().timestamp_sec()<<' '<<ptr_trajectory_msg->header().sequence_num();
+    AINFO<<ptr_trajectory_msg->header().module_name()<<' '<<static_cast<int64_t>(ptr_trajectory_msg->header().timestamp_sec()*1e6)<<' '<<ptr_trajectory_msg->header().sequence_num();
   }
 
   // Read storytelling message and call OnStorytelling to update the
@@ -208,7 +208,7 @@ bool PredictionComponent::PredictionEndToEndProc(
 
   MessageProcess::OnLocalization(container_manager_.get(),
                                  *ptr_localization_msg);
-  AINFO<<ptr_localization_msg->header().module_name()<<' '<<ptr_localization_msg->header().timestamp_sec()<<' '<<ptr_localization_msg->header().sequence_num();
+  AINFO<<ptr_localization_msg->header().module_name()<<' '<<static_cast<int64_t>(ptr_localization_msg->header().timestamp_sec()*1e6)<<' '<<ptr_localization_msg->header().sequence_num();
   auto end_time2 = std::chrono::system_clock::now();
   std::chrono::duration<double> diff = end_time2 - end_time1;
   ADEBUG << "Time for updating PoseContainer: " << diff.count() * 1000
@@ -229,7 +229,7 @@ bool PredictionComponent::PredictionEndToEndProc(
   auto ptr_trajectory_msg = planning_reader_->GetLatestObserved();
   if (ptr_trajectory_msg != nullptr) {
     MessageProcess::OnPlanning(container_manager_.get(), *ptr_trajectory_msg);
-    AINFO<<ptr_trajectory_msg->header().module_name()<<' '<<ptr_trajectory_msg->header().timestamp_sec()<<' '<<ptr_trajectory_msg->header().sequence_num();
+    AINFO<<ptr_trajectory_msg->header().module_name()<<' '<<static_cast<int64_t>(ptr_trajectory_msg->header().timestamp_sec()*1e6)<<' '<<ptr_trajectory_msg->header().sequence_num();
   }
   auto end_time3 = std::chrono::system_clock::now();
   diff = end_time3 - end_time2;

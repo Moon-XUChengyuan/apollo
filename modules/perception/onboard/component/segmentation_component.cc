@@ -57,7 +57,7 @@ bool SegmentationComponent::Proc(
     const std::shared_ptr<drivers::PointCloud>& message) {
          
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
- AINFO<<message->header().module_name()<<' '<<message->header().timestamp_sec()<<' '<<message->header().sequence_num();
+ AINFO<<message->header().module_name()<<' '<<static_cast<int64_t>(message->header().timestamp_sec()*1e6)<<' '<<message->header().sequence_num();
   AINFO << std::setprecision(16)
         << "Enter segmentation component, message timestamp: "
         << message->measurement_time() << " current timestamp: "

@@ -170,10 +170,10 @@ bool PlanningComponent::Proc(
     message_process_.OnLocalization(*local_view_.localization_estimate);
   }
 
-  AINFO<<local_view_.prediction_obstacles->header().module_name()<<' '<<local_view_.prediction_obstacles->header().timestamp_sec()<<' '<<local_view_.prediction_obstacles->header().sequence_num();
-  AINFO<<local_view_.chassis->header().module_name()<<' '<<local_view_.chassis->header().timestamp_sec()<<' '<<local_view_.chassis->header().sequence_num();
-  AINFO<<local_view_.localization_estimate->header().module_name()<<' '<<local_view_.localization_estimate->header().timestamp_sec()<<' '<<local_view_.localization_estimate->header().sequence_num();
-  AINFO<<local_view_.traffic_light->header().module_name()<<' '<<local_view_.traffic_light->header().timestamp_sec()<<' '<<local_view_.traffic_light->header().sequence_num();
+  AINFO<<local_view_.prediction_obstacles->header().module_name()<<' '<<static_cast<int64_t>(local_view_.prediction_obstacles->header().timestamp_sec()*1e6)<<' '<<local_view_.prediction_obstacles->header().sequence_num();
+  AINFO<<local_view_.chassis->header().module_name()<<' '<<static_cast<int64_t>(local_view_.chassis->header().timestamp_sec()*1e6)<<' '<<local_view_.chassis->header().sequence_num();
+  AINFO<<local_view_.localization_estimate->header().module_name()<<' '<<static_cast<int64_t>(local_view_.localization_estimate->header().timestamp_sec()*1e6)<<' '<<local_view_.localization_estimate->header().sequence_num();
+  AINFO<<local_view_.traffic_light->header().module_name()<<' '<<static_cast<int64_t>(local_view_.traffic_light->header().timestamp_sec()*1e6)<<' '<<local_view_.traffic_light->header().sequence_num();
   ADCTrajectory adc_trajectory_pb;
   planning_base_->RunOnce(local_view_, &adc_trajectory_pb);
   auto start_time = adc_trajectory_pb.header().timestamp_sec();

@@ -43,7 +43,7 @@ bool ImageDecompressComponent::Proc(
   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc start, itr: "<< ++calledTimes;
   auto image = std::make_shared<Image>();
   image->mutable_header()->CopyFrom(compressed_image->header());
-  AINFO<<config_.channel_name()<<'  '<<compressed_image->header().module_name()<<' '<<compressed_image->header().timestamp_sec()<<' '<<compressed_image->header().sequence_num();
+  AINFO<<config_.channel_name()<<'  '<<compressed_image->header().module_name()<<' '<<static_cast<int64_t>(compressed_image->header().timestamp_sec()*1e6)<<' '<<compressed_image->header().sequence_num();
   if (compressed_image->has_measurement_time()) {
     image->set_measurement_time(compressed_image->measurement_time());
   } else {

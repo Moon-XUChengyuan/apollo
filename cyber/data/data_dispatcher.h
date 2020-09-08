@@ -82,10 +82,10 @@ bool DataDispatcher<T>::Dispatch(const uint64_t channel_id,
       if (auto buffer = buffer_wptr.lock()) {
         std::lock_guard<std::mutex> lock(buffer->Mutex());
         buffer->Fill(msg);
-        AINFO<<GlobalData::GetChannelById(channel_id) ;
         //AINFO<<msg.header().module_name()<<' '<<msg.header().timestamp_sec()<<' '<<msg.header().sequence_num();
       }
     }
+    AINFO<<GlobalData::GetChannelById(channel_id) ;
   } else {
     return false;
   }

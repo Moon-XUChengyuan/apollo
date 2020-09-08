@@ -93,7 +93,7 @@ bool RTKLocalizationComponent::Proc(
     localization_->GetLocalization(&localization);
     LocalizationStatus localization_status;
     localization_->GetLocalizationStatus(&localization_status);
-    AINFO<<localization.header().module_name()<<' '<<localization.header().timestamp_sec()<<' '<<localization.header().sequence_num();
+    AINFO<<localization.header().module_name()<<' '<<static_cast<int64_t>(localization.header().timestamp_sec()*1e6)<<' '<<localization.header().sequence_num();
 
     // publish localization messages
     PublishPoseBroadcastTopic(localization);
