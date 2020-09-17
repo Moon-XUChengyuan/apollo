@@ -74,6 +74,8 @@ message Image {
   optional string encoding = 6;
   optional uint32 step = 7;  // Full row length in bytes
   optional bytes data = 8;   // actual matrix data, size is (step * rows)
+  //XUChengyuan
+  optional double raw_timestamp_sec = 9;
 }
 
 message CompressedImage {

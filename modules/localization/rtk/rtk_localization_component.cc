@@ -93,8 +93,8 @@ bool RTKLocalizationComponent::Proc(
     localization_->GetLocalization(&localization);
     LocalizationStatus localization_status;
     localization_->GetLocalizationStatus(&localization_status);
-    AINFO<<localization.header().module_name()<<' '<<static_cast<int64_t>(localization.header().timestamp_sec()*1e6)<<' '<<localization.header().sequence_num();
-
+    AINFO<<"/apollo/sensor/gnss/odometry :"<<static_cast<int64_t>(localization.header().timestamp_sec()*1e6)<<" "<<static_cast<int64_t>(gps_msg->header().timestamp_sec()*1e6);
+    localization.set_raw_timestamp_sec(gps_msg->header().timestamp_sec());
     // publish localization messages
     PublishPoseBroadcastTopic(localization);
     PublishPoseBroadcastTF(localization);

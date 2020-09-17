@@ -170,10 +170,10 @@ bool PlanningComponent::Proc(
     message_process_.OnLocalization(*local_view_.localization_estimate);
   }
 
-  AINFO<<local_view_.prediction_obstacles->header().module_name()<<' '<<static_cast<int64_t>(local_view_.prediction_obstacles->header().timestamp_sec()*1e6)<<' '<<local_view_.prediction_obstacles->header().sequence_num();
-  AINFO<<local_view_.chassis->header().module_name()<<' '<<static_cast<int64_t>(local_view_.chassis->header().timestamp_sec()*1e6)<<' '<<local_view_.chassis->header().sequence_num();
-  AINFO<<local_view_.localization_estimate->header().module_name()<<' '<<static_cast<int64_t>(local_view_.localization_estimate->header().timestamp_sec()*1e6)<<' '<<local_view_.localization_estimate->header().sequence_num();
-  AINFO<<local_view_.traffic_light->header().module_name()<<' '<<static_cast<int64_t>(local_view_.traffic_light->header().timestamp_sec()*1e6)<<' '<<local_view_.traffic_light->header().sequence_num();
+  AINFO<<"/apollo/prediction :"<<static_cast<int64_t>(local_view_.prediction_obstacles->header().timestamp_sec()*1e6);
+  AINFO<<"/apollo/canbus/chassis :"<<static_cast<int64_t>(local_view_.chassis->header().timestamp_sec()*1e6);
+  AINFO<<"/apollo/localization/pose :"<<static_cast<int64_t>(local_view_.localization_estimate->header().timestamp_sec()*1e6);
+  AINFO<<"/apollo/perception/traffic_light :"<<static_cast<int64_t>(local_view_.traffic_light->header().timestamp_sec()*1e6);
   ADCTrajectory adc_trajectory_pb;
   planning_base_->RunOnce(local_view_, &adc_trajectory_pb);
   auto start_time = adc_trajectory_pb.header().timestamp_sec();
@@ -191,6 +191,10 @@ bool PlanningComponent::Proc(
   // record in history
   auto* history = injector_->history();
   history->Add(adc_trajectory_pb);
+  AINFO<<"lidar raw data timestamp :"<<static_cast<int64_t>(local_view_.prediction_obstacles->raw_timestamp_sec()*1e6);
+  AINFO<<"chassis raw data timestamp :"<<static_cast<int64_t>(local_view_.chassis->header().timestamp_sec()*1e6);
+  AINFO<<"gps raw data timestamp :"<<static_cast<int64_t>(local_view_.localization_estimate->raw_timestamp_sec()*1e6);
+  AINFO<<"camera raw data timestamp :"<<static_cast<int64_t>(local_view_.traffic_light->raw_timestamp_sec()*1e6);
   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
   return true;
 }

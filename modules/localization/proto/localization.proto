@@ -60,6 +60,8 @@ message LocalizationEstimate {
   optional MsfStatus msf_status = 6;
   // msf quality
   optional MsfSensorMsgStatus sensor_status = 7;
+  //XUChengyuan
+  optional double raw_timestamp_sec = 8;
 }
 
 enum MeasureState {

@@ -307,7 +307,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
     const std::shared_ptr<apollo::drivers::Image> msg,
     const std::string& camera_name) {
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<camera_name<<" OnReceiveImage start, itr: "<< ++calledTimes_OnReceiveImage;
- AINFO<<camera_name<<'  '<<msg->header().module_name()<<' '<<static_cast<int64_t>(msg->header().timestamp_sec()*1e6)<<' '<<msg->header().sequence_num();
+ AINFO<<"/apollo/sensor/camera/"<<camera_name<<"/image :"<<static_cast<int64_t>(msg->header().timestamp_sec()*1e6);
   std::lock_guard<std::mutex> lck(mutex_);
   double receive_img_timestamp = apollo::common::time::Clock::NowInSeconds();
   double image_msg_ts = msg->measurement_time();
@@ -338,7 +338,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
   camera::TLPreprocessorOption preprocess_option;
   preprocess_option.image_borders_size = &image_border_sizes_;
 
-  // query pose and signals, add cached camera selection by lights' projections
+  // query pose and signals, add cached camera selection by lights" projections
   if (!UpdateCameraSelection(image_msg_ts, preprocess_option, &frame_)) {
     AWARN << "add_cached_camera_selection failed, ts: " << image_msg_ts;
   }
@@ -432,6 +432,7 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
   }
 
   // send msg
+  out_msg->set_raw_timestamp_sec(msg->raw_timestamp_sec());
   writer_->Write(out_msg);
 
   //  SendSimulationMsg();

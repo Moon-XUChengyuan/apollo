@@ -30,4 +30,7 @@ message Header {
   optional StatusPb status = 8;
 
   optional string frame_id = 9;
+
+  // XUChengyuan
+  //optional double raw_timestamp_sec = 10;
 }

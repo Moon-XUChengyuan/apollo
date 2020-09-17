@@ -330,9 +330,9 @@ bool ControlComponent::Proc() {
       local_view_.mutable_pad_msg()->CopyFrom(pad_msg_);
     }
   }
-  AINFO<<local_view_.chassis().header().module_name()<<' '<<static_cast<int64_t>(local_view_.chassis().header().timestamp_sec()*1e6)<<' '<<local_view_.chassis().header().sequence_num();
-  AINFO<<local_view_.localization().header().module_name()<<' '<<static_cast<int64_t>(local_view_.localization().header().timestamp_sec()*1e6)<<' '<<local_view_.localization().header().sequence_num();
-  AINFO<<local_view_.trajectory().header().module_name()<<' '<<static_cast<int64_t>(local_view_.trajectory().header().timestamp_sec()*1e6)<<' '<<local_view_.trajectory().header().sequence_num();
+  AINFO<<"/apollo/canbus/chassis :"<<static_cast<int64_t>(local_view_.chassis().header().timestamp_sec()*1e6);
+  AINFO<<"/apollo/localization/pose :"<<static_cast<int64_t>(local_view_.localization().header().timestamp_sec()*1e6);
+  AINFO<<"/apollo/planning :"<<static_cast<int64_t>(local_view_.trajectory().header().timestamp_sec()*1e6);
 
 
   // use control submodules

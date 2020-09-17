@@ -54,12 +54,12 @@ bool FusionComponent::Init() {
 bool FusionComponent::Proc(const std::shared_ptr<SensorFrameMessage>& message) {
      
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
-  AINFO<<message->type_name_<<' '<<message->timestamp_<<' '<<message->seq_num_;
+  AINFO<<"/perception/inner/PrefusedObjects :"<<static_cast<int64_t>(message->timestamp_*1e6);
   if (message->process_stage_ == ProcessStage::SENSOR_FUSION) {
    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
-  AINFO<<message->type_name_<<' '<<message->timestamp_<<' '<<message->seq_num_;
+  AINFO<<"/perception/inner/PrefusedObjects :"<<static_cast<int64_t>(message->timestamp_*1e6);
   std::shared_ptr<PerceptionObstacles> out_message(new (std::nothrow)
                                                        PerceptionObstacles);
   std::shared_ptr<SensorFrameMessage> viz_message(new (std::nothrow)
@@ -72,6 +72,7 @@ bool FusionComponent::Proc(const std::shared_ptr<SensorFrameMessage>& message) {
             << fusion_main_sensor_ << ". Skip send.";
     } else {
       // Send("/apollo/perception/obstacles", out_message);
+      out_message->set_raw_timestamp_sec(message->raw_timestamp_sec);
       writer_->Write(out_message);
       AINFO << "Send fusion processing output message.";
       // send msg for visualization

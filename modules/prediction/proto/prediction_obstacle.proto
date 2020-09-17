@@ -75,4 +75,7 @@ message PredictionObstacles {
 
   // Scenario
   optional Scenario scenario = 7;
+
+  //XUChengyuan
+  optional double raw_timestamp_sec = 8;
 }

@@ -48,7 +48,7 @@ bool RecognitionComponent::Proc(
 
    
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
- AINFO<<message->type_name_<<' '<<message->timestamp_<<' '<<message->seq_num_;
+ AINFO<<"/perception/inner/SegmentationObjects :"<<static_cast<int64_t>(message->timestamp_*1e6);
   AINFO << std::setprecision(16)
         << "Enter Tracking component, message timestamp: "
         << message->timestamp_ << " current timestamp: "
@@ -89,6 +89,7 @@ bool RecognitionComponent::InternalProc(
   auto& sensor_name = in_message->lidar_frame_->sensor_info.name;
   PERCEPTION_PERF_FUNCTION_WITH_INDICATOR(sensor_name);
   out_message->timestamp_ = in_message->timestamp_;
+  out_message->raw_timestamp_sec=in_message->raw_timestamp_sec;
   out_message->lidar_timestamp_ = in_message->lidar_timestamp_;
   out_message->seq_num_ = in_message->seq_num_;
   out_message->process_stage_ = ProcessStage::LIDAR_RECOGNITION;
