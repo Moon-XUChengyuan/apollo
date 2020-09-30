@@ -347,6 +347,8 @@ void TrafficLightsPerceptionComponent::OnReceiveImage(
                                                "UpdateCameraSelection");
 
   // skipping frame according to last proc image timestamp
+  // XUChengyuan
+  proc_interval_seconds_=-1;
   if (last_proc_image_ts_ > 0.0 &&
       receive_img_timestamp - last_proc_image_ts_ < proc_interval_seconds_) {
     AINFO << "skip current image, img_ts: " << image_msg_ts

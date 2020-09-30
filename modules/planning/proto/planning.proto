@@ -64,6 +64,9 @@ message ADCTrajectory {
 
   // XUChengyuan
   optional int32 index_num = 24;
+  optional double lidar_raw_timestamp_sec = 25;
+  optional double gps_raw_timestamp_sec = 26;
+  optional double camera_raw_timestamp_sec = 27;
 
   optional apollo.planning.DecisionResult decision = 14;
 
