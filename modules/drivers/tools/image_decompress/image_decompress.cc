@@ -47,8 +47,10 @@ bool ImageDecompressComponent::Proc(
   AINFO<<config_.channel_name()<<"/compressed :"<<static_cast<int64_t>(compressed_image->header().timestamp_sec()*1e6);
   if (compressed_image->has_measurement_time()) {
     image->set_measurement_time(compressed_image->measurement_time());
+    AINFO<<"measurement :"<<static_cast<int64_t>(compressed_image->measurement_time()*1e6);
   } else {
     image->set_measurement_time(compressed_image->header().timestamp_sec());
+    AINFO<<"header timestamp :"<<static_cast<int64_t>(compressed_image->header().timestamp_sec()*1e6);
   }
   std::vector<uint8_t> compressed_raw_data(compressed_image->data().begin(),
                                            compressed_image->data().end());

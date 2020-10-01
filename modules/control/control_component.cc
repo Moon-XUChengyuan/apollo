@@ -165,6 +165,11 @@ Status ControlComponent::ProduceControlCommand(
   Status status = CheckInput(&local_view_);
   // check data
   AINFO<<"Trajectory index used by control component: "<<local_view_.trajectory().index_num();
+  AINFO<<"lidar raw data timestamp :"<<static_cast<int64_t>(local_view_.trajectory().lidar_raw_timestamp_sec()*1e6);
+  AINFO<<"gps raw data timestamp :"<<static_cast<int64_t>(local_view_.trajectory().gps_raw_timestamp_sec()*1e6);
+  AINFO<<"camera raw data timestamp :"<<static_cast<int64_t>(local_view_.trajectory().camera_raw_timestamp_sec()*1e6);
+  const double now_time = apollo::common::time::Clock::NowInSeconds();
+  AINFO<<"now timestamp :"<<static_cast<int64_t>(now_time*1e6);
   if (!status.ok()) {
     AERROR_EVERY(100) << "Control input data failed: "
                       << status.error_message();
@@ -355,7 +360,7 @@ bool ControlComponent::Proc() {
         end_time);
 
     local_view_writer_->Write(local_view_);
-        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
 
     return true;
   }
@@ -375,7 +380,7 @@ bool ControlComponent::Proc() {
       absl::ToDoubleSeconds(start_time - init_time_) >
           control_conf_.control_test_duration()) {
     AERROR << "Control finished testing. exit";
-        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, fail, itr: "<< calledTimes_Proc;
 
     return false;
   }
@@ -409,7 +414,7 @@ bool ControlComponent::Proc() {
   ADEBUG << control_command.ShortDebugString();
   if (control_conf_.is_control_test_mode()) {
     ADEBUG << "Skip publish control command in test mode";
-        AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
+    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes_Proc;
 
     return true;
   }

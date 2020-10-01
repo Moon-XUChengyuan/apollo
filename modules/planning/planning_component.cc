@@ -185,6 +185,9 @@ bool PlanningComponent::Proc(
     p.set_relative_time(p.relative_time() + dt);
   }
   adc_trajectory_pb.set_index_num(index);
+  adc_trajectory_pb.set_lidar_raw_timestamp_sec(local_view_.prediction_obstacles->raw_timestamp_sec());
+  adc_trajectory_pb.set_gps_raw_timestamp_sec(local_view_.localization_estimate->raw_timestamp_sec());
+  adc_trajectory_pb.set_camera_raw_timestamp_sec(local_view_.traffic_light->raw_timestamp_sec());
   planning_writer_->Write(adc_trajectory_pb);
   ++index;
 
