@@ -115,7 +115,7 @@ bool PredictionComponent::Proc(
     const std::shared_ptr<PerceptionObstacles>& perception_obstacles) {
    
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
-  AINFO<<"/apollo/perception/obstacles :"<<static_cast<int64_t>(perception_obstacles->header().timestamp_sec()*1e6);
+  AINFO<<"lidar raw data timestamp :"<<static_cast<int64_t>(perception_obstacles->raw_timestamp_sec()*1e6);
   if (FLAGS_use_lego) {
     return ContainerSubmoduleProcess(perception_obstacles);
   }
@@ -274,6 +274,9 @@ bool PredictionComponent::PredictionEndToEndProc(
       }
     }
   }
+
+  for (auto const& prediction_obstacle :prediction_obstacles.prediction_obstacle()) { AINFO<<"prediction_obstacle: "<<prediction_obstacle.perception_obstacle().type();}
+  AINFO<<"scenario: "<<prediction_obstacles.scenario().type();
 
   auto end_time5 = std::chrono::system_clock::now();
   diff = end_time5 - end_time1;

@@ -42,9 +42,10 @@ bool ImageDecompressComponent::Proc(
          
   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc start, itr: "<< ++calledTimes;
   auto image = std::make_shared<Image>();
-  //std::shared_ptr<apollo::drivers::Image>& image = std::make_shared<Image>();
+  //std::shared_ptr<apollo::drivers::Image>& image = std::make_shared<Image>();  
   image->mutable_header()->CopyFrom(compressed_image->header());
-  AINFO<<config_.channel_name()<<"/compressed :"<<static_cast<int64_t>(compressed_image->header().timestamp_sec()*1e6);
+  AINFO<<config_.channel_name()<<" camera raw data timestamp :"<<static_cast<int64_t>(compressed_image->header().timestamp_sec()*1e6);
+  
   if (compressed_image->has_measurement_time()) {
     image->set_measurement_time(compressed_image->measurement_time());
     AINFO<<"measurement :"<<static_cast<int64_t>(compressed_image->measurement_time()*1e6);
@@ -66,6 +67,7 @@ bool ImageDecompressComponent::Proc(
   image->set_data(&(mat_image.data[0]), size);
   image->set_raw_timestamp_sec(compressed_image->header().timestamp_sec());
   writer_->Write(image);
+   AINFO<<image->data();
   AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" "<<config_.channel_name()<<" Proc end, itr: "<< calledTimes;
   return true;
 }

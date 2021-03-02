@@ -48,7 +48,7 @@ bool RecognitionComponent::Proc(
 
    
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
- AINFO<<"/perception/inner/SegmentationObjects :"<<static_cast<int64_t>(message->timestamp_*1e6);
+ AINFO<<"lidar raw data timestamp :"<<static_cast<int64_t>(message->raw_timestamp_sec*1e6);
   AINFO << std::setprecision(16)
         << "Enter Tracking component, message timestamp: "
         << message->timestamp_ << " current timestamp: "

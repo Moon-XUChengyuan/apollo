@@ -54,12 +54,12 @@ bool FusionComponent::Init() {
 bool FusionComponent::Proc(const std::shared_ptr<SensorFrameMessage>& message) {
      
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
-  AINFO<<"/perception/inner/PrefusedObjects :"<<static_cast<int64_t>(message->timestamp_*1e6);
+  AINFO<<"lidar raw data timestamp :"<<static_cast<int64_t>(message->raw_timestamp_sec*1e6);
   if (message->process_stage_ == ProcessStage::SENSOR_FUSION) {
    AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc end, itr: "<< calledTimes;
     return true;
   }
-  AINFO<<"/perception/inner/PrefusedObjects :"<<static_cast<int64_t>(message->timestamp_*1e6);
+  AINFO<<"lidar raw data timestamp :"<<static_cast<int64_t>(message->raw_timestamp_sec*1e6);
   std::shared_ptr<PerceptionObstacles> out_message(new (std::nothrow)
                                                        PerceptionObstacles);
   std::shared_ptr<SensorFrameMessage> viz_message(new (std::nothrow)

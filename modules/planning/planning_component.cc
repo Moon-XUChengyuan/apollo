@@ -173,7 +173,7 @@ bool PlanningComponent::Proc(
   AINFO<<"/apollo/prediction :"<<static_cast<int64_t>(local_view_.prediction_obstacles->header().timestamp_sec()*1e6);
   AINFO<<"/apollo/canbus/chassis :"<<static_cast<int64_t>(local_view_.chassis->header().timestamp_sec()*1e6);
   AINFO<<"/apollo/localization/pose :"<<static_cast<int64_t>(local_view_.localization_estimate->header().timestamp_sec()*1e6);
-  AINFO<<"/apollo/perception/traffic_light :"<<static_cast<int64_t>(local_view_.traffic_light->header().timestamp_sec()*1e6);
+  AINFO<<"scenario-trafficlight: "<<local_view_.traffic_light->ShortDebugString();//AINFO<<"/apollo/perception/traffic_light :"<<static_cast<int64_t>(local_view_.traffic_light->header().timestamp_sec()*1e6);
   ADCTrajectory adc_trajectory_pb;
   planning_base_->RunOnce(local_view_, &adc_trajectory_pb);
   auto start_time = adc_trajectory_pb.header().timestamp_sec();

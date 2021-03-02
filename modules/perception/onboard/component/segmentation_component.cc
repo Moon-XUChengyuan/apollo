@@ -57,7 +57,7 @@ bool SegmentationComponent::Proc(
     const std::shared_ptr<drivers::PointCloud>& message) {
          
  AINFO<<"CPU core:  "<< sched_getcpu()<<" Module "<< MODULE_NAME<<" Proc start, itr: "<< ++calledTimes;
- AINFO<<"/apollo/sensor/lidar128/compensator/PointCloud2 :"<<static_cast<int64_t>(message->header().timestamp_sec()*1e6);
+ AINFO<<"lidar raw data timestamp :"<<static_cast<int64_t>(message->header().timestamp_sec()*1e6);
   AINFO << std::setprecision(16)
         << "Enter segmentation component, message timestamp: "
         << message->measurement_time() << " current timestamp: "
