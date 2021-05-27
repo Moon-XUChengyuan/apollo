@@ -229,6 +229,12 @@ void OnLanePlanning::RunOnce(const LocalView& local_view,
       << "start_timestamp is behind vehicle_state_timestamp by "
       << start_timestamp - vehicle_state_timestamp << " secs";
 
+
+  // added by me
+  AINFO << "exp:speed:acceleration "
+        << vehicle_state.linear_velocity() << " " 
+        << vehicle_state.linear_acceleration();
+
   if (!status.ok() || !util::IsVehicleStateValid(vehicle_state)) {
     std::string msg(
         "Update VehicleStateProvider failed "
@@ -280,6 +286,8 @@ void OnLanePlanning::RunOnce(const LocalView& local_view,
 
   // Update reference line provider and reset pull over if necessary
   reference_line_provider_->UpdateVehicleState(vehicle_state);
+  //added by me
+  double refline_timestamp=Clock::NowInSeconds();
 
   // planning is triggered by prediction data, but we can still use an estimated
   // cycle time for stitching
@@ -307,6 +315,7 @@ void OnLanePlanning::RunOnce(const LocalView& local_view,
   }
   ptr_trajectory_pb->mutable_latency_stats()->set_init_frame_time_ms(
       Clock::NowInSeconds() - start_timestamp);
+  //added by me
 
   if (!status.ok()) {
     AERROR << status.ToString();
@@ -337,6 +346,9 @@ void OnLanePlanning::RunOnce(const LocalView& local_view,
     return;
   }
 
+  //added by me
+  int refline_size=frame_->reference_line_info().size();
+
   for (auto& ref_line_info : *frame_->mutable_reference_line_info()) {
     TrafficDecider traffic_decider;
     traffic_decider.Init(traffic_rule_configs_);
@@ -361,6 +373,14 @@ void OnLanePlanning::RunOnce(const LocalView& local_view,
   const auto time_diff_ms =
       (end_system_timestamp - start_system_timestamp) * 1000;
   ADEBUG << "total planning time spend: " << time_diff_ms << " ms.";
+
+  //added by me
+  double end_timestamp=Clock::NowInSeconds();
+  AINFO << "exp:ref_line_duration:choosing_path_duration "
+        << refline_timestamp-start_timestamp << " " 
+        << end_timestamp-refline_timestamp <<"\n"
+        << "exp:ref_line_num " <<refline_size;
+
 
   ptr_trajectory_pb->mutable_latency_stats()->set_total_time_ms(time_diff_ms);
   ADEBUG << "Planning latency: "

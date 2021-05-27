@@ -27,6 +27,9 @@
 #include "modules/planning/navi_planning.h"
 #include "modules/planning/on_lane_planning.h"
 
+#include "modules/common/math/quaternion.h"
+#include "modules/common/time/time.h"
+
 namespace apollo {
 namespace planning {
 
@@ -117,10 +120,14 @@ bool PlanningComponent::Proc(
     const std::shared_ptr<canbus::Chassis>& chassis,
     const std::shared_ptr<localization::LocalizationEstimate>&
         localization_estimate) {
+
+  AINFO << "exp:planning_start";
+
   ACHECK(prediction_obstacles != nullptr);
 
   // check and process possible rerouting request
   CheckRerouting();
+
 
   // process fused input data
   local_view_.prediction_obstacles = prediction_obstacles;
@@ -149,6 +156,39 @@ bool PlanningComponent::Proc(
     local_view_.stories = std::make_shared<Stories>(stories_);
   }
 
+  
+  //added by me
+  // AINFO << "exp:ego_speed_from_chasis "
+  //       << local_view_.chassis->speed_mps() << "\n"
+    AINFO << "exp:self_car_intent "
+        << local_view_.prediction_obstacles->intent().type() << "\n"
+        << "exp:scenario "
+        << local_view_.prediction_obstacles->scenario().type() << "\n"
+        << "exp:obs_num "
+        << local_view_.prediction_obstacles->prediction_obstacle_size() << "\n";
+  int ob=0;
+  for(const auto &obs: local_view_.prediction_obstacles->prediction_obstacle()){
+    AINFO <<"exp:ob"<< ob <<"_static "
+            // <<obs.DebugString();
+          << obs.is_static() << "\n"
+          << "exp:ob"<< ob <<"_intent "
+          << obs.intent().type() << "\n"
+          << "exp:ob"<< ob <<"_priority "
+          << obs.priority().priority() << "\n"
+          <<"exp:ob"<< ob <<"_heading "
+          <<obs.perception_obstacle().theta()<<"\n"
+          << "exp:ob"<< ob <<"_vx:ob"<< ob <<"_vy:ob"<< ob <<"_vz "
+          <<obs.perception_obstacle().velocity().x() << " "
+          <<obs.perception_obstacle().velocity().y() << " "
+          <<obs.perception_obstacle().velocity().z() << "\n"
+          << "exp:ob"<< ob <<"_ax:ob"<< ob <<"_ay:ob"<< ob <<"_az "
+          <<obs.perception_obstacle().acceleration().x() << " "
+          <<obs.perception_obstacle().acceleration().y() << " "
+          <<obs.perception_obstacle().acceleration().z() << " ";
+          // << obs.perception_obstacle().type();
+    ob+=1;
+  }
+
   if (!CheckInput()) {
     AERROR << "Input check failed";
     return false;
@@ -164,8 +204,13 @@ bool PlanningComponent::Proc(
     message_process_.OnLocalization(*local_view_.localization_estimate);
   }
 
+  double start_timestamp=apollo::common::time::Clock::NowInSeconds();
+
   ADCTrajectory adc_trajectory_pb;
   planning_base_->RunOnce(local_view_, &adc_trajectory_pb);
+
+  AINFO << "exp:planning_duration "<<apollo::common::time::Clock::NowInSeconds()-start_timestamp<< '\n';
+
   auto start_time = adc_trajectory_pb.header().timestamp_sec();
   common::util::FillHeader(node_->Name(), &adc_trajectory_pb);
 
@@ -179,6 +224,26 @@ bool PlanningComponent::Proc(
   // record in history
   auto* history = injector_->history();
   history->Add(adc_trajectory_pb);
+
+  apollo::common::VehicleState vehicle_state = injector_->vehicle_state()->vehicle_state();
+  apollo::common::Point3D v=vehicle_state.pose().linear_velocity();
+  Eigen::Vector3d vec1(v.x(),
+                      v.y(),
+                      v.z());
+  // Eigen::Vector3d vec1=common::math::QuaternionRotate(vehicle_state.pose().orientation(),orig);
+  // Eigen::Vector3d vec2=common::math::QuaternionRotate(vehicle_state.pose().orientation(),orig);
+
+  AINFO << "exp:speed:acceleration:heading "
+        << vehicle_state.linear_velocity() << " " 
+        << vehicle_state.linear_acceleration() <<" "
+        << vehicle_state.heading()<<"\n"
+        << "exp:vx:vy:vz "
+        << vec1[0] << " " <<vec1[1]<< " " <<vec1[2]<< " " <<"\n"
+        <<"exp:ax_vrf:ay_vrf:az_vrf "
+        << vehicle_state.pose().linear_acceleration_vrf().x()<<" "
+        << vehicle_state.pose().linear_acceleration_vrf().y()<<" "
+        << vehicle_state.pose().linear_acceleration_vrf().z()<<"\n"
+        <<"exp:planning_end";
 
   return true;
 }

@@ -126,6 +126,12 @@ void TrafficLight::MakeDecisions(Frame* const frame,
            << "] start_s[" << traffic_light_overlap.start_s << "] color["
            << signal_color << "] stop_deceleration[" << stop_deceleration
            << "]";
+    
+    //added by me
+    AINFO << "exp:traffic_light_id:traffic_light_color "
+          << traffic_light_overlap.object_id
+          << " "
+           << signal_color ;
 
     // debug info
     planning_internal::SignalLightDebug::SignalDebug* signal_debug =

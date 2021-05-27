@@ -74,7 +74,22 @@ Scenario::ScenarioStatus Scenario::Process(
     scenario_status_ = STATUS_DONE;
     return scenario_status_;
   }
+  // added by me
+  double start_timestamp=apollo::common::time::Clock::NowInSeconds();
+
   auto ret = current_stage_->Process(planning_init_point, frame);
+
+  AINFO <<"exp:stage_processing_time:ret_state "
+      <<apollo::common::time::Clock::NowInSeconds()-start_timestamp<<' '
+      <<ret;
+  /*/home/jupiter/Desktop/apollo/modules/planning/scenarios/stage.h
+  enum StageStatus {
+    ERROR = 1,
+    READY = 2,
+    RUNNING = 3,
+    FINISHED = 4,
+  };*/
+  
   switch (ret) {
     case Stage::ERROR: {
       AERROR << "Stage '" << current_stage_->Name() << "' returns error";
